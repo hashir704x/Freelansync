@@ -1,0 +1,40 @@
+export type UserType = {
+    id: string;
+    username: string;
+    email: string;
+    role: "client" | "freelancer";
+    profile_pic: string;
+};
+
+export type UserStoreType = {
+    user: UserType | null;
+    setUser: (user: UserType) => void;
+    userExists: boolean;
+    resetUser: () => void;
+};
+
+export type SignupParamsType = {
+    username: string;
+    email: string;
+    password: string;
+    description?: string;
+    skills?: string[];
+    domains?: string[];
+    role: "freelancer" | "client";
+};
+
+export type SignupResponseType = {
+    id: string;
+    username: string;
+    email: string;
+    role: "freelancer" | "client";
+    profile_pic: string;
+};
+
+export type LoginResponseType = {
+    id: string;
+    username: string;
+    email: string;
+    role: "freelancer" | "client";
+    profile_pic: string;
+};
