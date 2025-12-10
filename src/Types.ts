@@ -38,3 +38,13 @@ export type LoginResponseType = {
     role: "freelancer" | "client";
     profile_pic: string;
 };
+
+export type ClientProfileOwnDataFromBackendType = {
+    id: string;
+    username: string;
+    email: string;
+    role: string;
+    profile_pic: string;
+    wallet_amount: number;
+    created_at: string;
+};
