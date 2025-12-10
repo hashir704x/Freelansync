@@ -1,13 +1,18 @@
-import { getClientProfileOwnDataById } from "@/api-functions/client-function";
-import { Button } from "@/components/ui/button";
+import {
+    getClientProfileOwnDataById,
+    updateClientProfileImage,
+} from "@/api-functions/client-function";
 import { Spinner } from "@/components/ui/spinner";
 import { userStore } from "@/stores/user-store";
 import type { UserType } from "@/Types";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { CircleCheck, CircleX } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const ClientProfileOwnPage = () => {
     const user = userStore((state) => state.user) as UserType;
+    const setUser = userStore((state) => state.setUser);
 
     // local states
     const [preview, setPreview] = useState<string | null>(null);
@@ -16,6 +21,28 @@ const ClientProfileOwnPage = () => {
     const { data, isError, isLoading } = useQuery({
         queryFn: () => getClientProfileOwnDataById(user.id),
         queryKey: ["get-client-profile-own-data"],
+    });
+
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setSelectedFile(file);
+        setPreview(URL.createObjectURL(file));
+        e.target.value = "";
+    }
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: updateClientProfileImage,
+        onSuccess(url) {
+            setSelectedFile(null);
+            setPreview(null);
+            setUser({ ...user, profile_pic: url });
+            toast.success("Profile image updated successfully");
+        },
+        onError(error) {
+            console.error(error);
+            toast.error("Something went wrong! Failed to update profile image.");
+        },
     });
 
     return (
@@ -37,29 +64,69 @@ const ClientProfileOwnPage = () => {
             )}
 
             {data && (
-                <div className="flex justify-center items-center px-4 py-6">
-                    <div className="w-full max-w-5xl bg-white rounded-2xl shadow-lg border border-gray-100 p-8 md:p-10 flex flex-col md:flex-row items-center md:items-start gap-10">
-                        {/* Left Section — Profile Picture */}
-                        <div className="flex flex-col items-center w-full md:w-1/3 text-center">
-                            <img
-                                src={preview || data.profile_pic}
-                                alt="profile-img"
-                                className="w-44 h-44 rounded-full object-cover border border-gray-200 shadow-sm"
-                            />
+                <div>
+                    <div className="p-7 md:p-10 flex flex-col items-center gap-10">
+                        {/* Upper Section — Profile Picture */}
+                        <div className="flex flex-col items-center relative overflow-hidden">
+                            {isPending && (
+                                <div className="bg-black/40 w-48 h-48 z-10 absolute rounded-full flex justify-center items-center">
+                                    <Spinner className="w-8 h-8 text-white" />
+                                </div>
+                            )}
 
-                            <input
-                                type="file"
-                                accept="image/*"
-                                id="profilePicInput"
-                                // onChange={handleFileChange}
-                                hidden
-                                // disabled={isPending}
+                            <img
+                                src={preview || user.profile_pic}
+                                alt="profile-img"
+                                className="w-48 h-48 rounded-full object-cover border border-gray-200"
                             />
-                            <label htmlFor="profilePicInput" className="bg-(--my-blue) text-white p-2 px-3 rounded-md mt-4 hover:bg-(--my-blue-light) cursor-pointer">Change Image</label>
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    id="profilePicInput"
+                                    onChange={handleFileChange}
+                                    hidden
+                                    disabled={isPending}
+                                />
+                                {selectedFile ? (
+                                    <button
+                                        onClick={() =>
+                                            mutate({
+                                                clientId: user.id,
+                                                file: selectedFile,
+                                            })
+                                        }
+                                        disabled={isPending}
+                                        className="bg-(--my-blue) text-white p-2 rounded-md mt-4 hover:bg-(--my-blue-light) disabled:bg-(--my-blue-light)/30"
+                                    >
+                                        <CircleCheck size={30} />
+                                    </button>
+                                ) : (
+                                    <label
+                                        htmlFor="profilePicInput"
+                                        className="bg-(--my-blue) text-white p-2 px-3 rounded-md mt-4 hover:bg-(--my-blue-light) cursor-pointer"
+                                    >
+                                        Change Image
+                                    </label>
+                                )}
+
+                                {selectedFile && (
+                                    <button
+                                        disabled={isPending}
+                                        onClick={() => {
+                                            setPreview(null);
+                                            setSelectedFile(null);
+                                        }}
+                                        className="bg-red-700 text-white p-2 rounded-lg mt-4 hover:bg-red-600 cursor-pointer disabled:bg-red-300"
+                                    >
+                                        <CircleX size={30} />
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Right Section — Client Info */}
-                        <div className="flex-1 w-full space-y-6 text-gray-700">
+                        {/* Bottom Section — Client Info */}
+                        <div className="w-full space-y-6 text-gray-700">
                             <h2 className="text-2xl font-semibold text-(--my-blue) border-b pb-2">
                                 Client Profile
                             </h2>
