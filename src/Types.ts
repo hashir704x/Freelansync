@@ -68,5 +68,5 @@ export type CreateProjectParamsType = {
     budget: number;
     skills: string[];
     domains: string[];
-    client: string;
+    clientId: string;
 };

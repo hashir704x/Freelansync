@@ -89,7 +89,7 @@ export default function SkillsPicker({ value, onChange }: SkillPickerProps) {
                 isSearchable
                 options={options}
                 styles={customStyles}
-                placeholder="Select Skills..."
+                placeholder="Select Skills ..."
                 value={selectedOptions}
                 onChange={(newValue) =>
                     onChange((newValue as Option[]).map((opt) => opt.value))

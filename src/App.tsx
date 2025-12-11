@@ -13,6 +13,10 @@ import FreelancerLayout from "./layouts/Freelancer-layout";
 // client pages
 import ClientDashboard from "./pages/client-pages/Client-dashboard";
 import ClientProfileOwnPage from "./pages/client-pages/Client-profile-own-page";
+import CreateProjectPage from "./pages/client-pages/Create-project-page";
+import ProjectDetialsClientPage from "./pages/client-pages/Project-details-client-page";
+
+// freelancer pages
 import FreelancerDashboard from "./pages/freelancer-pages/Freelancer-dashboard";
 import FreelancerProfileOwnPage from "./pages/freelancer-pages/Freelancer-profile-own-page";
 
@@ -37,6 +41,14 @@ const router = createBrowserRouter([
             {
                 path: "client-profile-own",
                 element: <ClientProfileOwnPage />,
+            },
+            {
+                path: "create-project",
+                element: <CreateProjectPage />,
+            },
+            {
+                path: "project-details/:projectId",
+                element: <ProjectDetialsClientPage />,
             },
         ],
     },

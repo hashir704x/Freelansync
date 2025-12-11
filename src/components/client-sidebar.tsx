@@ -1,4 +1,4 @@
-import { CircleX, Inbox, LogOut, User } from "lucide-react";
+import { CircleX, Inbox, LogOut, User, FilePlus } from "lucide-react";
 
 import { userStore } from "@/stores/user-store";
 import { supabaseClient } from "@/supabase-client";
@@ -30,6 +30,11 @@ const items = [
         title: "My Profile",
         url: "/client/client-profile-own",
         icon: User,
+    },
+    {
+        title: "Create Project",
+        url: "/client/create-project",
+        icon: FilePlus,
     },
 ];
 

@@ -89,7 +89,7 @@ export default function DomainPicker({ value, onChange }: DomainPickerProps) {
                 isSearchable
                 options={options}
                 styles={customStyles}
-                placeholder="Select Skills..."
+                placeholder="Select Domains ..."
                 value={selectedOptions}
                 onChange={(newValue) =>
                     onChange((newValue as Option[]).map((opt) => opt.value))
