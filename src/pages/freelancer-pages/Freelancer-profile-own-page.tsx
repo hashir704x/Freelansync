@@ -1,7 +1,7 @@
 import {
-    getClientProfileOwnDataById,
-    updateClientProfileImage,
-} from "@/api-functions/client-function";
+    getFreelancerProfileOwnDataById,
+    updateFreelancerProfileImage,
+} from "@/api-functions/freelancer-functions";
 import { Spinner } from "@/components/ui/spinner";
 import { userStore } from "@/stores/user-store";
 import type { UserType } from "@/Types";
@@ -10,7 +10,7 @@ import { CircleCheck, CircleX } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const ClientProfileOwnPage = () => {
+const FreelancerProfileOwnPage = () => {
     const user = userStore((state) => state.user) as UserType;
     const setUser = userStore((state) => state.setUser);
 
@@ -19,8 +19,8 @@ const ClientProfileOwnPage = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const { data, isError, isLoading } = useQuery({
-        queryFn: () => getClientProfileOwnDataById(user.id),
-        queryKey: ["get-client-profile-own-data"],
+        queryFn: () => getFreelancerProfileOwnDataById(user.id),
+        queryKey: ["get-freelancer-profile-own-data"],
     });
 
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -32,7 +32,7 @@ const ClientProfileOwnPage = () => {
     }
 
     const { mutate, isPending } = useMutation({
-        mutationFn: updateClientProfileImage,
+        mutationFn: updateFreelancerProfileImage,
         onSuccess(url) {
             setSelectedFile(null);
             setPreview(null);
@@ -59,7 +59,7 @@ const ClientProfileOwnPage = () => {
 
             {isError && (
                 <div className="h-[calc(100vh-70px)] flex justify-center items-center w-full">
-                    <p>Error in getting Client data</p>
+                    <p>Error in getting Freelancer data</p>
                 </div>
             )}
 
@@ -92,12 +92,12 @@ const ClientProfileOwnPage = () => {
                                     <button
                                         onClick={() =>
                                             mutate({
-                                                clientId: user.id,
+                                                freelancerId: user.id,
                                                 file: selectedFile,
                                             })
                                         }
                                         disabled={isPending}
-                                        className="bg-(--my-blue) text-white p-2 rounded-md mt-4 hover:bg-(--my-blue-light) disabled:bg-(--my-blue-light)/30 cursor-pointer"
+                                        className="bg-(--my-blue) text-white p-2 rounded-md mt-4 hover:bg-(--my-blue-light) disabled:bg-(--my-blue-light)/30"
                                     >
                                         <CircleCheck size={30} />
                                     </button>
@@ -112,11 +112,11 @@ const ClientProfileOwnPage = () => {
 
                                 {selectedFile && (
                                     <button
+                                        disabled={isPending}
                                         onClick={() => {
                                             setPreview(null);
                                             setSelectedFile(null);
                                         }}
-                                        disabled={isPending}
                                         className="bg-red-700 text-white p-2 rounded-lg mt-4 hover:bg-red-600 cursor-pointer disabled:bg-red-300"
                                     >
                                         <CircleX size={30} />
@@ -125,10 +125,10 @@ const ClientProfileOwnPage = () => {
                             </div>
                         </div>
 
-                        {/* Bottom Section — Client Info */}
+                        {/* Bottom Section — Freelancer Info */}
                         <div className="w-full space-y-6 text-gray-700">
                             <h2 className="text-2xl font-semibold text-(--my-blue) border-b pb-2">
-                                Client Profile
+                                Freelancer Profile
                             </h2>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -160,13 +160,47 @@ const ClientProfileOwnPage = () => {
                                     </p>
                                 </div>
 
-                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm sm:col-span-2">
+                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm">
                                     <p className="text-sm text-gray-500">
                                         Account Created On
                                     </p>
                                     <p className="text-lg font-semibold">
                                         {new Date(data.created_at).toLocaleDateString()}
                                     </p>
+                                </div>
+
+                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm sm:col-span-2">
+                                    <p className="text-sm text-gray-500 mb-3">Domains</p>
+
+                                    <div className="flex flex-wrap gap-2">
+                                        {data.domains.map(
+                                            (domain: string, index: number) => (
+                                                <span
+                                                    key={index}
+                                                    className="px-3 py-1 bg-(--my-blue)/10 text-(--my-blue) font-medium rounded-full text-sm shadow-sm hover:bg-(--my-blue)/20 transition-colors"
+                                                >
+                                                    {domain}
+                                                </span>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm sm:col-span-2">
+                                    <p className="text-sm text-gray-500 mb-3">Skillset</p>
+
+                                    <div className="flex flex-wrap gap-2">
+                                        {data.skills.map(
+                                            (skill: string, index: number) => (
+                                                <span
+                                                    key={index}
+                                                    className="px-3 py-1 bg-(--my-blue)/10 text-(--my-blue) font-medium rounded-full text-sm shadow-sm hover:bg-(--my-blue)/20 transition-colors"
+                                                >
+                                                    {skill}
+                                                </span>
+                                            )
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -177,4 +211,4 @@ const ClientProfileOwnPage = () => {
     );
 };
 
-export default ClientProfileOwnPage;
+export default FreelancerProfileOwnPage;

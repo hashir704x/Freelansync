@@ -8,9 +8,13 @@ import LoginPage from "./pages/public-pages/Login-page";
 
 // layouts
 import ClientLayout from "./layouts/Client-layout";
+import FreelancerLayout from "./layouts/Freelancer-layout";
 
 // client pages
+import ClientDashboard from "./pages/client-pages/Client-dashboard";
 import ClientProfileOwnPage from "./pages/client-pages/Client-profile-own-page";
+import FreelancerDashboard from "./pages/freelancer-pages/Freelancer-dashboard";
+import FreelancerProfileOwnPage from "./pages/freelancer-pages/Freelancer-profile-own-page";
 
 const router = createBrowserRouter([
     {
@@ -29,7 +33,7 @@ const router = createBrowserRouter([
         path: "/client",
         element: <ClientLayout />,
         children: [
-            { index: true, element: <div></div> },
+            { index: true, element: <ClientDashboard /> },
             {
                 path: "client-profile-own",
                 element: <ClientProfileOwnPage />,
@@ -38,7 +42,11 @@ const router = createBrowserRouter([
     },
     {
         path: "/freelancer",
-        element: <div>Freelancers page</div>,
+        element: <FreelancerLayout />,
+        children: [
+            { index: true, element: <FreelancerDashboard /> },
+            { path: "freelancer-profile-own", element: <FreelancerProfileOwnPage /> },
+        ],
     },
 ]);
 

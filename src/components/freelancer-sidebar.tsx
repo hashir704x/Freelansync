@@ -23,17 +23,17 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const items = [
     {
         title: "Dashboard",
-        url: "/client",
+        url: "/freelancer",
         icon: Inbox,
     },
     {
         title: "My Profile",
-        url: "/client/client-profile-own",
+        url: "/freelancer/freelancer-profile-own",
         icon: User,
     },
 ];
 
-export default function ClientSidebar() {
+export default function FreelancerSidebar() {
     const isMobile = useIsMobile();
     const { toggleSidebar } = useSidebar();
     const queryClient = useQueryClient();

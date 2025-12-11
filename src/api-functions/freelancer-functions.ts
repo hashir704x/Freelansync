@@ -1,27 +1,27 @@
 import { supabaseClient } from "@/supabase-client";
-import type { ClientProfileOwnDataFromBackendType } from "@/Types";
+import type { FreelancerProfileOwnDataFromBackendType } from "@/Types";
 
-export async function getClientProfileOwnDataById(
-    clientId: string
-): Promise<ClientProfileOwnDataFromBackendType> {
+export async function getFreelancerProfileOwnDataById(
+    freelancerId: string
+): Promise<FreelancerProfileOwnDataFromBackendType> {
     const { data, error } = await supabaseClient
-        .from("clients")
+        .from("freelancers")
         .select("*")
-        .eq("id", clientId)
+        .eq("id", freelancerId)
         .single();
     if (error) {
-        console.error(error.message)
-        throw new Error("Failed to fetch client profile data");
+        console.error(error.message);
+        throw new Error("Failed to fetch freelancer profile data!");
     }
-
+    console.log(data);
     return data;
 }
 
-export async function updateClientProfileImage({
-    clientId,
+export async function updateFreelancerProfileImage({
+    freelancerId,
     file,
 }: {
-    clientId: string;
+    freelancerId: string;
     file: File;
 }): Promise<string> {
     const fileName = `${Date.now()}-${file.name}`;
@@ -44,9 +44,9 @@ export async function updateClientProfileImage({
     }
 
     const { error: updateImageError } = await supabaseClient
-        .from("clients")
+        .from("freelancers")
         .update({ profile_pic: imageData.publicUrl })
-        .eq("id", clientId);
+        .eq("id", freelancerId);
 
     if (updateImageError) {
         throw new Error(updateImageError.message || "Error in uploading image");
