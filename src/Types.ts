@@ -61,3 +61,12 @@ export type FreelancerProfileOwnDataFromBackendType = {
     email: string;
     domains: string[];
 };
+
+export type CreateProjectParamsType = {
+    title: string;
+    description: string;
+    budget: number;
+    skills: string[];
+    domains: string[];
+    client: string;
+};

@@ -1,5 +1,6 @@
 import { supabaseClient } from "@/supabase-client";
 import type { SignupParamsType, SignupResponseType, LoginResponseType } from "@/Types";
+import { errorMessageMaker } from "./error-message-maker";
 
 export async function signup(params: SignupParamsType): Promise<SignupResponseType> {
     const authResponse = await supabaseClient.auth.signUp({
@@ -7,21 +8,22 @@ export async function signup(params: SignupParamsType): Promise<SignupResponseTy
         password: params.password,
     });
     if (authResponse.error) {
-        throw new Error(authResponse.error.message || "Error in auth process");
+        console.error(authResponse.error.message);
+        throw new Error(errorMessageMaker(authResponse.error.message));
     }
 
     const userId = authResponse.data.user?.id;
     if (!userId) {
-        throw new Error("Error in auth process, cannot get user id");
+        console.error("User id not found");
+        throw new Error(errorMessageMaker("Something went wrong, User id not found"));
     }
 
     const rolesTableResponse = await supabaseClient
         .from("user_roles")
         .insert([{ id: userId, role: params.role }]);
     if (rolesTableResponse.error) {
-        throw new Error(
-            rolesTableResponse.error.message || "Error in roles table response"
-        );
+        console.error(rolesTableResponse.error.message);
+        throw new Error(errorMessageMaker(rolesTableResponse.error.message));
     }
 
     if (params.role === "client") {
@@ -31,7 +33,8 @@ export async function signup(params: SignupParamsType): Promise<SignupResponseTy
             .select("id, email, username, role, profile_pic")
             .single();
         if (clientResponse.error) {
-            throw new Error(clientResponse.error.message || "Error in client response");
+            console.error(clientResponse.error.message);
+            throw new Error(errorMessageMaker(clientResponse.error.message));
         }
 
         return clientResponse.data;
@@ -51,9 +54,8 @@ export async function signup(params: SignupParamsType): Promise<SignupResponseTy
             .select("id, email, username, role, profile_pic")
             .single();
         if (freelancerResponse.error) {
-            throw new Error(
-                freelancerResponse.error.message || "Error in client response"
-            );
+            console.error(freelancerResponse.error.message);
+            throw new Error(errorMessageMaker(freelancerResponse.error.message));
         }
 
         return freelancerResponse.data;
@@ -69,7 +71,8 @@ export async function login(params: {
         password: params.password,
     });
     if (authResponse.error) {
-        throw new Error(authResponse.error.message || "Error in auth process");
+        console.error(authResponse.error.message);
+        throw new Error(errorMessageMaker(authResponse.error.message));
     }
 
     const rolesTableResponse = await supabaseClient
@@ -77,9 +80,8 @@ export async function login(params: {
         .select("id, role")
         .single();
     if (rolesTableResponse.error) {
-        throw new Error(
-            rolesTableResponse.error.message || "Error in roles table response"
-        );
+        console.error(rolesTableResponse.error.message);
+        throw new Error(errorMessageMaker(rolesTableResponse.error.message));
     }
 
     const userId = rolesTableResponse.data.id;
@@ -93,9 +95,8 @@ export async function login(params: {
         .single();
 
     if (targetRoleTableResponse.error) {
-        throw new Error(
-            targetRoleTableResponse.error.message || "Error in target table response"
-        );
+        console.error(targetRoleTableResponse.error.message);
+        throw new Error(errorMessageMaker(targetRoleTableResponse.error.message));
     }
 
     return targetRoleTableResponse.data;

@@ -63,12 +63,7 @@ const SignupPage = () => {
             navigate(`/${data.role}`);
         },
         onError(error) {
-            console.error("signup failed", error.message);
-            const message =
-                error.message.length > 100
-                    ? error.message.substring(0, 100) + "..."
-                    : error.message;
-            toast.error(`Signup failed! ${message}`);
+            toast.error(`Signup failed! ${error.message}`);
         },
     });
 

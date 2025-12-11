@@ -1,5 +1,6 @@
 import { supabaseClient } from "@/supabase-client";
 import type { ClientProfileOwnDataFromBackendType } from "@/Types";
+import { errorMessageMaker } from "./error-message-maker";
 
 export async function getClientProfileOwnDataById(
     clientId: string
@@ -10,8 +11,8 @@ export async function getClientProfileOwnDataById(
         .eq("id", clientId)
         .single();
     if (error) {
-        console.error(error.message)
-        throw new Error("Failed to fetch client profile data");
+        console.error(error.message);
+        throw new Error();
     }
 
     return data;
@@ -33,14 +34,18 @@ export async function updateClientProfileImage({
             contentType: file.type,
         });
     if (uploadError) {
-        throw new Error(uploadError.message || "Error in uploading image");
+        console.error(uploadError.message);
+        throw new Error(errorMessageMaker(uploadError.message));
     }
 
     const { data: imageData } = supabaseClient.storage
         .from("freelansync-media")
         .getPublicUrl(`profile-pics/${fileName}`);
     if (!imageData.publicUrl) {
-        throw new Error("Error in uploading image");
+        console.error("Error! Failed to get image public url");
+        throw new Error(
+            errorMessageMaker("Failed to upload image, Failed to get public url")
+        );
     }
 
     const { error: updateImageError } = await supabaseClient
@@ -49,7 +54,8 @@ export async function updateClientProfileImage({
         .eq("id", clientId);
 
     if (updateImageError) {
-        throw new Error(updateImageError.message || "Error in uploading image");
+        console.error(updateImageError.message);
+        throw new Error(errorMessageMaker(updateImageError.message));
     }
 
     return imageData.publicUrl;

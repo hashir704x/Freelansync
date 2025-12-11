@@ -40,8 +40,7 @@ const FreelancerProfileOwnPage = () => {
             toast.success("Profile image updated successfully");
         },
         onError(error) {
-            console.error(error);
-            toast.error("Something went wrong! Failed to update profile image.");
+            toast.error(`Failed to change image, ${error.message}`);
         },
     });
 

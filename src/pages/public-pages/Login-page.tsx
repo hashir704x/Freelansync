@@ -39,12 +39,7 @@ const LoginPage = () => {
             navigate(`/${data.role}`);
         },
         onError(error) {
-            console.error("Login failed", error.message);
-            const message =
-                error.message.length > 100
-                    ? error.message.substring(0, 100) + "..."
-                    : error.message;
-            toast.error(`Login failed! ${message}`);
+            toast.error(`Login failed! ${error.message}`);
         },
     });
 
