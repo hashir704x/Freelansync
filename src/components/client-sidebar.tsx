@@ -1,10 +1,8 @@
-import { CircleX, Inbox, LogOut, User, FilePlus } from "lucide-react";
-
+import { CircleX, Inbox, LogOut, User, FilePlus, FolderKanban } from "lucide-react";
 import { userStore } from "@/stores/user-store";
 import { supabaseClient } from "@/supabase-client";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-
 import {
     Sidebar,
     SidebarContent,
@@ -27,14 +25,19 @@ const items = [
         icon: Inbox,
     },
     {
-        title: "My Profile",
-        url: "/client/client-profile-own",
-        icon: User,
+        title: "My Projects",
+        url: "/client/all-projects",
+        icon: FolderKanban,
     },
     {
         title: "Create Project",
         url: "/client/create-project",
         icon: FilePlus,
+    },
+    {
+        title: "My Profile",
+        url: "/client/client-profile-own",
+        icon: User,
     },
 ];
 
@@ -53,7 +56,7 @@ export default function ClientSidebar() {
     }
 
     return (
-        <div className="">
+        <div className="shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]">
             <Sidebar className="border">
                 <SidebarHeader>
                     <div className="flex justify-between items-center">

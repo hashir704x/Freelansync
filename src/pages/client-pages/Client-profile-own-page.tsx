@@ -46,7 +46,7 @@ const ClientProfileOwnPage = () => {
 
     return (
         <div>
-            <h1 className="text-2xl font-semibold h-[60px] border-b flex justify-center items-center">
+            <h1 className="text-2xl font-semibold h-[60px] border-b flex justify-center items-center shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                 My Profile
             </h1>
 

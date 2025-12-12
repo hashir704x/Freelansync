@@ -48,7 +48,7 @@ export default function FreelancerSidebar() {
     }
 
     return (
-        <div className="">
+        <div className="shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]">
             <Sidebar className="border">
                 <SidebarHeader>
                     <div className="flex justify-between items-center">

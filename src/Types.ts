@@ -70,3 +70,35 @@ export type CreateProjectParamsType = {
     domains: string[];
     clientId: string;
 };
+
+export type ProjectFromBackendType = {
+    id: string;
+    title: string;
+    description: string;
+    budget: number;
+    skills: string[];
+    domains: string[];
+    clientId: string;
+    status: "DRAFT";
+    created_at: string;
+};
+
+export type ProjectDetailsByIdFromBackendType = {
+    id: string;
+    title: string;
+    description: string;
+    created_at: string;
+    domains: string[];
+    skills: string[];
+    status: "DRAFT";
+    budget: number;
+    client: string;
+
+    clients: {
+        id: string;
+        username: string;
+        email: string;
+        profile_pic: string;
+        role: string;
+    };
+};

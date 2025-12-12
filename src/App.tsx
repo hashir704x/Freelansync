@@ -19,6 +19,7 @@ import ProjectDetialsClientPage from "./pages/client-pages/Project-details-clien
 // freelancer pages
 import FreelancerDashboard from "./pages/freelancer-pages/Freelancer-dashboard";
 import FreelancerProfileOwnPage from "./pages/freelancer-pages/Freelancer-profile-own-page";
+import AllProjectsPage from "./pages/client-pages/All-Projects-page";
 
 const router = createBrowserRouter([
     {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
             {
                 path: "create-project",
                 element: <CreateProjectPage />,
+            },
+            {
+                path: "all-projects",
+                element: <AllProjectsPage />,
             },
             {
                 path: "project-details/:projectId",

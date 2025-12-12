@@ -62,7 +62,7 @@ const CreateProjectPage = () => {
 
     return (
         <div>
-            <h1 className="text-2xl font-semibold h-[60px] border-b flex justify-center items-center">
+            <h1 className="text-2xl font-semibold h-[60px] border-b flex justify-center items-center shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                 Create New Project
             </h1>
 
@@ -95,7 +95,7 @@ const CreateProjectPage = () => {
                         </label>
                         <textarea
                             id="description"
-                            rows={5}
+                            rows={4}
                             placeholder="Describe your project in detail..."
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
