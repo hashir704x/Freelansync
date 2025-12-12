@@ -102,3 +102,14 @@ export type ProjectDetailsByIdFromBackendType = {
         role: string;
     };
 };
+
+export type FreelancerDataFromBackendType = {
+    id: string;
+    username: string;
+    description: string;
+    profile_pic: string;
+    role: string;
+    email: string;
+    domains: string[];
+    skills: [];
+};

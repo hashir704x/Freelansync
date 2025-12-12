@@ -1,5 +1,8 @@
 import { supabaseClient } from "@/supabase-client";
-import type { FreelancerProfileOwnDataFromBackendType } from "@/Types";
+import type {
+    FreelancerDataFromBackendType,
+    FreelancerProfileOwnDataFromBackendType,
+} from "@/Types";
 import { errorMessageMaker } from "./error-message-maker";
 
 export async function getFreelancerProfileOwnDataById(
@@ -59,4 +62,17 @@ export async function updateFreelancerProfileImage({
     }
 
     return imageData.publicUrl;
+}
+
+export async function getAllFreelancers(): Promise<FreelancerDataFromBackendType[]> {
+    const { data, error } = await supabaseClient
+        .from("freelancers")
+        .select("id, username, description, email, profile_pic, role, skills, domains");
+
+    if (error) {
+        console.error(error.message);
+        throw new Error();
+    }
+
+    return data;
 }
