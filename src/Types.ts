@@ -111,5 +111,5 @@ export type FreelancerDataFromBackendType = {
     role: string;
     email: string;
     domains: string[];
-    skills: [];
+    skills: string[];
 };

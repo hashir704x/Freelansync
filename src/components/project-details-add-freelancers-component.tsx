@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllFreelancers } from "@/api-functions/freelancer-functions";
-import { Spinner } from "../ui/spinner";
-import FreelancerCard from "../freelancer-card";
-import type { UserType } from "@/Types";
+import { Spinner } from "./ui/spinner";
+import FreelancerCard from "./freelancer-card";
+import type { FreelancerDataFromBackendType, UserType } from "@/Types";
+import { Button } from "./ui/button";
 
-const ProjectDetailsAddFreelancersComponent = ({user}: {user: UserType}) => {
+const ProjectDetailsAddFreelancersComponent = ({ user }: { user: UserType }) => {
     const { data, isError, isLoading } = useQuery({
         queryFn: getAllFreelancers,
         queryKey: ["get-all-freelancers"],
@@ -14,25 +15,42 @@ const ProjectDetailsAddFreelancersComponent = ({user}: {user: UserType}) => {
     const [findBy, setFindBy] = useState<"ai_matchmaking" | "manually">("manually");
     const [search, setSearch] = useState("");
 
+    let filteredFreelancers: FreelancerDataFromBackendType[] = data || [];
+    const s = search.trim().toLocaleLowerCase();
+    if (data && s !== "") {
+        filteredFreelancers = data.filter(
+            (freelancer) =>
+                freelancer.username.toLowerCase().includes(s) ||
+                freelancer.email.toLowerCase().includes(s) ||
+                freelancer.domains.some((domain) => domain.toLowerCase().includes(s)) ||
+                freelancer.skills.some((skill) => skill.toLowerCase().includes(s))
+        );
+    }
     return (
         <div>
-            <div className="flex gap-2 border-2 border-(--my-blue) rounded-md w-fit text-xs sm:text-sm">
-                <button
-                    onClick={() => setFindBy("manually")}
-                    className={`${
-                        findBy === "manually" && "bg-(--my-blue) text-white"
-                    } h-10 rounded cursor-pointer w-[150px] sm:w-[200px] transition-all duration-200 px-2`}
-                >
-                    Find Manually
-                </button>
-                <button
-                    onClick={() => setFindBy("ai_matchmaking")}
-                    className={`${
-                        findBy === "ai_matchmaking" && "bg-(--my-blue) text-white"
-                    } w-[150px] sm:w-[200px] h-10 rounded cursor-pointer transition-all duration-200 px-2`}
-                >
-                    Use Ai Matchmaking
-                </button>
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center">
+                <div className="flex gap-2 border-2 border-(--my-blue) rounded-md w-fit text-xs sm:text-sm">
+                    <button
+                        onClick={() => setFindBy("manually")}
+                        className={`${
+                            findBy === "manually" && "bg-(--my-blue) text-white"
+                        } h-10 rounded cursor-pointer w-[150px] sm:w-[200px] transition-all duration-200 px-2`}
+                    >
+                        Find Manually
+                    </button>
+                    <button
+                        onClick={() => setFindBy("ai_matchmaking")}
+                        className={`${
+                            findBy === "ai_matchmaking" && "bg-(--my-blue) text-white"
+                        } w-[150px] sm:w-[200px] h-10 rounded cursor-pointer transition-all duration-200 px-2`}
+                    >
+                        Use Ai Matchmaking
+                    </button>
+                </div>
+
+                <Button variant="custom" className="w-[150px] mt-3 sm:mt-0 h-10">
+                    View Invitations
+                </Button>
             </div>
 
             <div className="mt-4">
@@ -66,7 +84,7 @@ const ProjectDetailsAddFreelancersComponent = ({user}: {user: UserType}) => {
 
                         {data && (
                             <div className="mt-8 flex gap-8 flex-wrap">
-                                {data.map((item) => (
+                                {filteredFreelancers.map((item) => (
                                     <FreelancerCard
                                         key={item.id}
                                         data={item}

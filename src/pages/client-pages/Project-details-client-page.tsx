@@ -1,7 +1,7 @@
 import { getProjectDetailsById } from "@/api-functions/project-functions";
-import ProjectDetailsAddFreelancersComponent from "@/components/project-details-page-components/project-details-add-freelancers-component";
-import ProjectDetailsFreelancersComponent from "@/components/project-details-page-components/project-details-freelancers-component";
-import ProjectDetailsInfoComponent from "@/components/project-details-page-components/project-details-info-components";
+import ProjectDetailsAddFreelancersComponent from "@/components/project-details-add-freelancers-component";
+import ProjectDetailsFreelancersComponent from "@/components/project-details-freelancers-component";
+import ProjectDetailsInfoComponent from "@/components/project-details-info-components";
 import { Spinner } from "@/components/ui/spinner";
 import { userStore } from "@/stores/user-store";
 import type { UserType } from "@/Types";
@@ -119,7 +119,7 @@ const ProjectDetialsClientPage = () => {
                     )}
 
                     {activeOption === "add_freelancer" && (
-                        <ProjectDetailsAddFreelancersComponent user={user}/>
+                        <ProjectDetailsAddFreelancersComponent user={user} />
                     )}
                 </div>
             )}

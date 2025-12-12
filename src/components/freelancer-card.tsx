@@ -1,6 +1,7 @@
 import type { FreelancerDataFromBackendType, UserType } from "@/Types";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
+import InviteFreelancerConfirmDialog from "./invite-freelancer-confirm-dialog";
 
 type PropsType = {
     data: FreelancerDataFromBackendType;
@@ -49,12 +50,11 @@ const FreelancerCard = (props: PropsType) => {
                 </div>
             </div>
 
-            
             {/* Skills */}
             <div className="w-full mt-3">
                 <h3 className="text-sm text-gray-700 font-medium">Skills:</h3>
                 <div className="flex flex-wrap gap-2 mt-1">
-                    {props.data.skills.slice(0, 4).map((skill, i) => (
+                    {props.data.skills.slice(0, 3).map((skill, i) => (
                         <span
                             key={i}
                             className="text-xs bg-gray-100 text-(--my-blue) font-medium px-2.5 py-1 rounded-full border border-gray-200"
@@ -90,14 +90,12 @@ const FreelancerCard = (props: PropsType) => {
             )}
 
             {/* Action Button */}
-
-            <Button variant="custom" className="mt-2">
-                Invite
-            </Button>
-
-            {/* {props.showInviteButton && (
-                <InviteFreelancerConfirmDialog freelancerId={props.freelancerData.id} />
-            )} */}
+            {props.showInviteButton && props.user.role === "client" && (
+                <InviteFreelancerConfirmDialog
+                    clientId={props.user.id}
+                    freelancerId={props.data.id}
+                />
+            )}
         </div>
     );
 };
