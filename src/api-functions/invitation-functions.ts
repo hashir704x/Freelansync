@@ -64,3 +64,32 @@ export async function getAllInvitationsForFreelancer(): Promise<
     }
     return data;
 }
+
+export async function acceptInviteAndAddFreelancerToProject({
+    invitationId,
+    clientId,
+    freelancerId,
+    projectId,
+}: {
+    invitationId: string;
+    clientId: string;
+    freelancerId: string;
+    projectId: string;
+}): Promise<void> {
+    const { error } = await supabaseClient
+        .from("project_and_freelancer_link")
+        .insert([{ client: clientId, project: projectId, freelancer: freelancerId }]);
+    if (error) {
+        console.error(error);
+        throw new Error(errorMessageMaker(error.message));
+    }
+
+    const { error: secondError } = await supabaseClient
+        .from("invitations")
+        .delete()
+        .eq("id", invitationId);
+    if (secondError) {
+        console.error(secondError);
+        throw new Error(errorMessageMaker(secondError.message));
+    }
+}

@@ -70,8 +70,20 @@ const FreelancerInvitationCard = ({
                 </div>
 
                 <div className="flex flex-wrap justify-center md:justify-end gap-3 pt-2">
-                    <FreelancerConfirmInvitationDialog key={"2"} action="accept"/>
-                    <FreelancerConfirmInvitationDialog key={"1"} action="reject"/>
+                    <FreelancerConfirmInvitationDialog
+                        key={"2"}
+                        action="accept"
+                        clientId={invitationData.client.id}
+                        projectId={invitationData.project.id}
+                        invitationId={invitationData.id}
+                    />
+                    <FreelancerConfirmInvitationDialog
+                        key={"1"}
+                        action="reject"
+                        clientId={invitationData.client.id}
+                        projectId={invitationData.project.id}
+                        invitationId={invitationData.id}
+                    />
                 </div>
             </div>
         </div>

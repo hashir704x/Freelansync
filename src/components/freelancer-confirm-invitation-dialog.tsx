@@ -11,35 +11,73 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+    acceptInviteAndAddFreelancerToProject,
+    deleteInvitation,
+} from "@/api-functions/invitation-functions";
+import { toast } from "sonner";
+import { userStore } from "@/stores/user-store";
+import type { UserType } from "@/Types";
 
 type PropsType = {
     action: "accept" | "reject";
+    projectId: string;
+    clientId: string;
+    invitationId: string;
 };
 
 const FreelancerConfirmInvitationDialog = (props: PropsType) => {
+    const user = userStore((state) => state.user) as UserType;
+    const queryClient = useQueryClient();
 
-    
+    const { mutate: acceptMutation, isPending: acceptPending } = useMutation({
+        mutationFn: acceptInviteAndAddFreelancerToProject,
+        onSuccess() {
+            toast.success("You have been added to project successfully");
+            queryClient.invalidateQueries({
+                queryKey: ["get-invitattions-for-freelancer"],
+            });
+        },
+        onError(error) {
+            toast.error(`Something went wrong: ${error.message}`);
+        },
+    });
+
+    const { mutate: rejectMutation, isPending: rejectionPending } = useMutation({
+        mutationFn: deleteInvitation,
+        onSuccess() {
+            toast.success("Invitation rejected successfully");
+            queryClient.invalidateQueries({
+                queryKey: ["get-invitattions-for-freelancer"],
+            });
+        },
+        onError(error) {
+            toast.error(`Something went wrong: ${error.message}`);
+        },
+    });
+
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 {props.action === "accept" ? (
                     <Button
                         variant="custom"
-                        // disabled={isPending || rejectionPending}
+                        disabled={acceptPending || rejectionPending}
                         className="mt-3"
                     >
                         {" "}
-                        {true && <Spinner />}
+                        {acceptPending && <Spinner />}
                         Accept
                     </Button>
                 ) : (
                     <Button
                         variant="destructive"
-                        // disabled={rejectionPending || isPending}
+                        disabled={rejectionPending || acceptPending}
                         className="mt-3 cursor-pointer"
                     >
                         {" "}
-                        {true && <Spinner />}
+                        {rejectionPending && <Spinner />}
                         Reject
                     </Button>
                 )}
@@ -60,6 +98,16 @@ const FreelancerConfirmInvitationDialog = (props: PropsType) => {
                     </AlertDialogCancel>
 
                     <AlertDialogAction
+                        onClick={() => {
+                            if (props.action === "accept")
+                                acceptMutation({
+                                    clientId: props.clientId,
+                                    freelancerId: user.id,
+                                    invitationId: props.invitationId,
+                                    projectId: props.projectId,
+                                });
+                            else rejectMutation(props.invitationId);
+                        }}
                         className={`${
                             props.action === "accept"
                                 ? "bg-(--my-blue) hover:bg-(--my-blue-light) cursor-pointer"
