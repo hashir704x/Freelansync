@@ -15,11 +15,12 @@ import ClientDashboard from "./pages/client-pages/Client-dashboard";
 import ClientProfileOwnPage from "./pages/client-pages/Client-profile-own-page";
 import CreateProjectPage from "./pages/client-pages/Create-project-page";
 import ProjectDetialsClientPage from "./pages/client-pages/Project-details-client-page";
+import ClientAllProjectsPage from "./pages/client-pages/All-Projects-page";
 
 // freelancer pages
 import FreelancerDashboard from "./pages/freelancer-pages/Freelancer-dashboard";
 import FreelancerProfileOwnPage from "./pages/freelancer-pages/Freelancer-profile-own-page";
-import AllProjectsPage from "./pages/client-pages/All-Projects-page";
+import FreelancerInvitationsPage from "./pages/freelancer-pages/Freelancer-invitations-page";
 
 const router = createBrowserRouter([
     {
@@ -49,7 +50,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "all-projects",
-                element: <AllProjectsPage />,
+                element: <ClientAllProjectsPage />,
             },
             {
                 path: "project-details/:projectId",
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
         children: [
             { index: true, element: <FreelancerDashboard /> },
             { path: "freelancer-profile-own", element: <FreelancerProfileOwnPage /> },
+            {
+                path: "freelancer-invitations",
+                element: <FreelancerInvitationsPage />,
+            },
         ],
     },
 ]);

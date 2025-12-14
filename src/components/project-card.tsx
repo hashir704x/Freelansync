@@ -10,11 +10,7 @@ const ProjectCard = (props: ProjectFromBackendType) => {
                 {props.title}
             </h2>
 
-            <p className="text-gray-600 text-sm mt-2 line-clamp-2">
-                {props.description.length > 100
-                    ? props.description.slice(0, 100) + "..."
-                    : props.description}
-            </p>
+            <p className="text-gray-600 text-sm mt-2 line-clamp-3">{props.description}</p>
 
             {/* Budget & Status */}
             <div className="flex justify-between items-center mt-3">

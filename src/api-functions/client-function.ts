@@ -1,10 +1,10 @@
 import { supabaseClient } from "@/supabase-client";
-import type { ClientProfileOwnDataFromBackendType } from "@/Types";
+import type { ClientProfileOwnFromBackendType } from "@/Types";
 import { errorMessageMaker } from "./error-message-maker";
 
 export async function getClientProfileOwnDataById(
     clientId: string
-): Promise<ClientProfileOwnDataFromBackendType> {
+): Promise<ClientProfileOwnFromBackendType> {
     const { data, error } = await supabaseClient
         .from("clients")
         .select("*")

@@ -39,7 +39,7 @@ export type LoginResponseType = {
     profile_pic: string;
 };
 
-export type ClientProfileOwnDataFromBackendType = {
+export type ClientProfileOwnFromBackendType = {
     id: string;
     username: string;
     email: string;
@@ -49,7 +49,7 @@ export type ClientProfileOwnDataFromBackendType = {
     created_at: string;
 };
 
-export type FreelancerProfileOwnDataFromBackendType = {
+export type FreelancerProfileOwnFromBackendType = {
     id: string;
     username: string;
     description: string;
@@ -103,7 +103,7 @@ export type ProjectDetailsByIdFromBackendType = {
     };
 };
 
-export type FreelancerDataFromBackendType = {
+export type FreelancerFromBackendType = {
     id: string;
     username: string;
     description: string;
@@ -114,7 +114,7 @@ export type FreelancerDataFromBackendType = {
     skills: string[];
 };
 
-export type InvitationsDataFromBackendType = {
+export type InvitationsForProjectFromBackendType = {
     id: string;
     created_at: string;
     project: string;
@@ -125,5 +125,26 @@ export type InvitationsDataFromBackendType = {
         role: string;
         email: string;
         domains: string[];
+    };
+};
+
+export type InvitationsForFreelancerFromBackendType = {
+    id: string;
+    created_at: string;
+    client: {
+        id: string;
+        username: string;
+        email: string;
+        profile_pic: string;
+        role: string;
+    };
+    project: {
+        id: string;
+        title: string;
+        description: string;
+        created_at: string;
+        domains: string[];
+        skills: string[];
+        budget: number;
     };
 };

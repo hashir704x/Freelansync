@@ -1,13 +1,13 @@
 import { supabaseClient } from "@/supabase-client";
 import type {
-    FreelancerDataFromBackendType,
-    FreelancerProfileOwnDataFromBackendType,
+    FreelancerFromBackendType,
+    FreelancerProfileOwnFromBackendType,
 } from "@/Types";
 import { errorMessageMaker } from "./error-message-maker";
 
 export async function getFreelancerProfileOwnDataById(
     freelancerId: string
-): Promise<FreelancerProfileOwnDataFromBackendType> {
+): Promise<FreelancerProfileOwnFromBackendType> {
     const { data, error } = await supabaseClient
         .from("freelancers")
         .select("*")
@@ -17,7 +17,6 @@ export async function getFreelancerProfileOwnDataById(
         console.error(error.message);
         throw new Error();
     }
-    console.log(data);
     return data;
 }
 
@@ -64,7 +63,7 @@ export async function updateFreelancerProfileImage({
     return imageData.publicUrl;
 }
 
-export async function getAllFreelancers(): Promise<FreelancerDataFromBackendType[]> {
+export async function getAllFreelancers(): Promise<FreelancerFromBackendType[]> {
     const { data, error } = await supabaseClient
         .from("freelancers")
         .select("id, username, description, email, profile_pic, role, skills, domains");

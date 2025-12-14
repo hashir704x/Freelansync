@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Folder } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const AllProjectsPage = () => {
+const ClientAllProjectsPage = () => {
     const user = userStore((state) => state.user) as UserType;
     const { data, isError, isLoading } = useQuery({
         queryFn: () => getAllProjectsForClient(user.id),
@@ -60,4 +60,4 @@ const AllProjectsPage = () => {
     );
 };
 
-export default AllProjectsPage;
+export default ClientAllProjectsPage;
