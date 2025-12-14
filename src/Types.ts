@@ -113,3 +113,17 @@ export type FreelancerDataFromBackendType = {
     domains: string[];
     skills: string[];
 };
+
+export type InvitationsDataFromBackendType = {
+    id: string;
+    created_at: string;
+    project: string;
+    freelancer: {
+        id: string;
+        username: string;
+        profile_pic: string;
+        role: string;
+        email: string;
+        domains: string[];
+    };
+};

@@ -6,6 +6,7 @@ import { Spinner } from "./ui/spinner";
 import FreelancerCard from "./freelancer-card";
 import type { FreelancerDataFromBackendType, UserType } from "@/Types";
 import { Button } from "./ui/button";
+import InvitedFreelancersSidebar from "./invited-freelancers-sidebar";
 
 const ProjectDetailsAddFreelancersComponent = ({ user }: { user: UserType }) => {
     const { data, isError, isLoading } = useQuery({
@@ -48,9 +49,7 @@ const ProjectDetailsAddFreelancersComponent = ({ user }: { user: UserType }) => 
                     </button>
                 </div>
 
-                <Button variant="custom" className="w-[150px] mt-3 sm:mt-0 h-10">
-                    View Invitations
-                </Button>
+              <InvitedFreelancersSidebar />
             </div>
 
             <div className="mt-4">

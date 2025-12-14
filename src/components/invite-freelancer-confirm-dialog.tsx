@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Spinner } from "./ui/spinner";
 import { Button } from "./ui/button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createInvitation } from "@/api-functions/invitation-functions";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
@@ -21,6 +21,7 @@ const InviteFreelancerConfirmDialog = (props: {
     freelancerId: string;
 }) => {
     const { projectId } = useParams();
+    const queryClient = useQueryClient();
     const { isPending, mutate } = useMutation({
         mutationFn: createInvitation,
         onError(error) {
@@ -30,6 +31,9 @@ const InviteFreelancerConfirmDialog = (props: {
         },
         onSuccess() {
             toast.success("Invitation send successfully!");
+            queryClient.invalidateQueries({
+                queryKey: ["get-invited-freelancers-for-project", projectId],
+            });
         },
     });
     return (
