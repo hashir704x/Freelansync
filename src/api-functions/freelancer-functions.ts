@@ -72,6 +72,30 @@ export async function getAllFreelancers(): Promise<FreelancerFromBackendType[]> 
         console.error(error.message);
         throw new Error();
     }
-
     return data;
+}
+
+export async function getFreelancersToRecommend(
+    projectId: string
+): Promise<FreelancerFromBackendType[]> {
+    console.log("getFreelancersToRecommend called", projectId);
+
+    const { data: allFreelancers, error } = await supabaseClient
+        .from("freelancers")
+        .select("id, username, description, email, profile_pic, role, skills, domains");
+    if (error) throw new Error(error.message);
+
+    const { data: memberFreelancers, error: freelancerError } = await supabaseClient
+        .from("project_and_freelancer_link")
+        .select("freelancer")
+        .eq("project", projectId);
+
+    if (freelancerError) throw new Error(freelancerError.message);
+
+    const memberFreelancersIds = memberFreelancers.map((f) => f.freelancer);
+    const recommendedFreelancers = allFreelancers.filter(
+        (freelancer) => !memberFreelancersIds.includes(freelancer.id)
+    );
+
+    return recommendedFreelancers;
 }

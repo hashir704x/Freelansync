@@ -1,16 +1,22 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { getAllFreelancers } from "@/api-functions/freelancer-functions";
+import { getFreelancersToRecommend } from "@/api-functions/freelancer-functions";
 import { Spinner } from "./ui/spinner";
 import FreelancerCard from "./freelancer-card";
 import type { FreelancerFromBackendType, UserType } from "@/Types";
 import InvitedFreelancersSidebar from "./invited-freelancers-sidebar";
 
-const ProjectDetailsAddFreelancersComponent = ({ user }: { user: UserType }) => {
+const ProjectDetailsAddFreelancersComponent = ({
+    user,
+    projectId,
+}: {
+    user: UserType;
+    projectId: string;
+}) => {
     const { data, isError, isLoading } = useQuery({
-        queryFn: getAllFreelancers,
-        queryKey: ["get-all-freelancers"],
+        queryFn: () => getFreelancersToRecommend(projectId),
+        queryKey: ["get-recommended-freelancers", projectId],
     });
     const [findBy, setFindBy] = useState<"ai_matchmaking" | "manually">("manually");
     const [search, setSearch] = useState("");
@@ -48,7 +54,7 @@ const ProjectDetailsAddFreelancersComponent = ({ user }: { user: UserType }) => 
                     </button>
                 </div>
 
-              <InvitedFreelancersSidebar />
+                <InvitedFreelancersSidebar />
             </div>
 
             <div className="mt-4">
