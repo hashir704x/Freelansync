@@ -4,8 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllFreelancers } from "@/api-functions/freelancer-functions";
 import { Spinner } from "./ui/spinner";
 import FreelancerCard from "./freelancer-card";
-import type { FreelancerDataFromBackendType, UserType } from "@/Types";
-import { Button } from "./ui/button";
+import type { FreelancerFromBackendType, UserType } from "@/Types";
 import InvitedFreelancersSidebar from "./invited-freelancers-sidebar";
 
 const ProjectDetailsAddFreelancersComponent = ({ user }: { user: UserType }) => {
@@ -16,7 +15,7 @@ const ProjectDetailsAddFreelancersComponent = ({ user }: { user: UserType }) => 
     const [findBy, setFindBy] = useState<"ai_matchmaking" | "manually">("manually");
     const [search, setSearch] = useState("");
 
-    let filteredFreelancers: FreelancerDataFromBackendType[] = data || [];
+    let filteredFreelancers: FreelancerFromBackendType[] = data || [];
     const s = search.trim().toLocaleLowerCase();
     if (data && s !== "") {
         filteredFreelancers = data.filter(

@@ -6,7 +6,7 @@ import ClientSidebar from "@/components/client-sidebar";
 const ClientLayout = () => {
     const user = userStore((state) => state.user);
     if (!user) return <Navigate to="/login" />;
-    else if (user && user.role === "freelancer") <Navigate to="/freelancer" />;
+    else if (user && user.role === "freelancer") return <Navigate to="/freelancer" />;
     return (
         <div>
             <SidebarProvider>

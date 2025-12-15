@@ -56,20 +56,20 @@ const ProjectDetailsInfoComponent = ({ data, user }: Props) => {
                 </h2>
                 <div className="bg-white rounded-xl border border-gray-100 p-5 flex flex-col items-center text-center w-[300px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                     <img
-                        src={data.clients.profile_pic}
+                        src={data.client.profile_pic}
                         alt="profile-pic"
                         className="w-24 h-24 rounded-full object-cover border-4 border-(--my-blue) shadow-sm"
                     />
 
                     <h3 className="text-xl font-semibold text-gray-800 mt-4">
-                        {data.clients.username}
+                        {data.client.username}
                     </h3>
 
                     <p className="text-sm text-gray-500 mt-1">Client</p>
 
                     <div className="w-full h-px bg-gray-100 my-4" />
 
-                    {user.role === "client" && user.id === data.clients.id ? (
+                    {user.role === "client" && user.id === data.client.id ? (
                         <Link to={`/client/client-profile-own`}>
                             <Button variant="custom">View my profile</Button>
                         </Link>

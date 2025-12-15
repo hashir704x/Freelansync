@@ -1,10 +1,10 @@
-import type { FreelancerDataFromBackendType, UserType } from "@/Types";
+import type { FreelancerFromBackendType, UserType } from "@/Types";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import InviteFreelancerConfirmDialog from "./invite-freelancer-confirm-dialog";
 
 type PropsType = {
-    data: FreelancerDataFromBackendType;
+    data: FreelancerFromBackendType;
     showInviteButton: boolean;
     user: UserType;
 };
@@ -13,7 +13,7 @@ const FreelancerCard = (props: PropsType) => {
     return (
         <div
             className={`bg-white rounded-2xl transition-all duration-200 border border-gray-200 p-4 flex flex-col w-[340px] justify-between shadow-[0_3px_10px_rgb(0,0,0,0.2)] ${
-                props.showInviteButton ? "h-[450px]" : "h-[340px]"
+                props.showInviteButton ? "h-[450px]" : "h-[420px]"
             } `}
         >
             <div className="flex items-center gap-4">

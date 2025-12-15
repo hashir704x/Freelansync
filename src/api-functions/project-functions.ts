@@ -3,6 +3,7 @@ import type {
     ProjectFromBackendType,
     CreateProjectParamsType,
     ProjectDetailsByIdFromBackendType,
+    AllProjectsForFreelancerFromBackendType,
 } from "@/Types";
 import { errorMessageMaker } from "./error-message-maker";
 
@@ -49,13 +50,28 @@ export async function getProjectDetailsById(
 ): Promise<ProjectDetailsByIdFromBackendType> {
     const { data, error } = await supabaseClient
         .from("projects")
-        .select("*, clients(id, username, email, profile_pic, role)")
+        .select(
+            "*, client(id, username, email, profile_pic, role), project_and_freelancer_link(freelancer(id, username, description, email, profile_pic, role, skills, domains))"
+        )
         .eq("id", projectId)
         .single();
     if (error) {
         console.error(error.message);
         throw new Error();
     }
-
     return data;
+}
+
+export async function getAllProjectsForFreelancer(
+    freelancerId: string
+): Promise<AllProjectsForFreelancerFromBackendType[]> {
+    const { error, data } = await supabaseClient
+        .from("project_and_freelancer_link")
+        .select("project(*)")
+        .eq("freelancer", freelancerId);
+    if (error) {
+        console.error(error.message);
+        throw new Error();
+    }
+    return data as unknown as AllProjectsForFreelancerFromBackendType[];
 }

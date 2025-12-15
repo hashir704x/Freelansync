@@ -115,7 +115,7 @@ const ProjectDetialsClientPage = () => {
                     )}
 
                     {activeOption === "freelancers" && (
-                        <ProjectDetailsFreelancersComponent />
+                        <ProjectDetailsFreelancersComponent data={data} user={user} />
                     )}
 
                     {activeOption === "add_freelancer" && (

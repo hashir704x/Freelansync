@@ -52,7 +52,7 @@ const ClientAllProjectsPage = () => {
             {data && data.length >= 1 && (
                 <div className="flex p-6 gap-6 flex-wrap justify-center md:justify-start">
                     {data.map((item) => (
-                        <ProjectCard key={item.id} {...item} />
+                        <ProjectCard key={item.id} projectData={item} />
                     ))}
                 </div>
             )}

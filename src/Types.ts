@@ -92,15 +92,27 @@ export type ProjectDetailsByIdFromBackendType = {
     skills: string[];
     status: "DRAFT";
     budget: number;
-    client: string;
 
-    clients: {
+    client: {
         id: string;
         username: string;
         email: string;
         profile_pic: string;
         role: string;
     };
+
+    project_and_freelancer_link: {
+        freelancer: {
+            id: string;
+            username: string;
+            description: string;
+            profile_pic: string;
+            role: string;
+            email: string;
+            domains: string[];
+            skills: string[];
+        };
+    }[];
 };
 
 export type FreelancerFromBackendType = {
@@ -147,4 +159,8 @@ export type InvitationsForFreelancerFromBackendType = {
         skills: string[];
         budget: number;
     };
+};
+
+export type AllProjectsForFreelancerFromBackendType = {
+    project: ProjectFromBackendType;
 };
