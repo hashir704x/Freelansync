@@ -120,3 +120,21 @@ export async function getFreelancerDetailsForClient(
 
     return data;
 }
+
+export async function getFreelancerDetails(
+    freelancerId: string
+): Promise<FreelancerFromBackendType> {
+    const { data, error } = await supabaseClient
+        .from("freelancers")
+        .select(
+            "id, username, description, email, profile_pic, role, skills, domains, created_at"
+        )
+        .eq("id", freelancerId)
+        .single();
+
+    if (error) {
+        console.error(error.message);
+        throw new Error();
+    }
+    return data;
+}

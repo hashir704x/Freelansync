@@ -1,4 +1,12 @@
-import { CircleX, Inbox, LogOut, User, FilePlus, FolderKanban } from "lucide-react";
+import {
+    CircleX,
+    Inbox,
+    LogOut,
+    User,
+    FilePlus,
+    FolderKanban,
+    HardHat,
+} from "lucide-react";
 import { userStore } from "@/stores/user-store";
 import { supabaseClient } from "@/supabase-client";
 import { Link } from "react-router-dom";
@@ -38,6 +46,11 @@ const items = [
         title: "My Profile",
         url: "/client/client-profile-own",
         icon: User,
+    },
+    {
+        title: "View Freelancers",
+        url: "/client/all-freelancers",
+        icon: HardHat,
     },
 ];
 

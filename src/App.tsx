@@ -16,7 +16,7 @@ import ClientProfileOwnPage from "./pages/client-pages/Client-profile-own-page";
 import CreateProjectPage from "./pages/client-pages/Create-project-page";
 import ProjectDetialsClientPage from "./pages/client-pages/Project-details-client-page";
 import ClientAllProjectsPage from "./pages/client-pages/Client-all-projects-page";
-import FreelancerDetailsClientPage from "./pages/client-pages/Freelancer-details-client-page";
+import AllFreelancersClientPage from "./pages/client-pages/All-freelancers-client-page";
 
 // freelancer pages
 import FreelancerDashboard from "./pages/freelancer-pages/Freelancer-dashboard";
@@ -25,6 +25,7 @@ import FreelancerInvitationsPage from "./pages/freelancer-pages/Freelancer-invit
 import FreelancerAllProjectsPage from "./pages/freelancer-pages/Freelancer-all-projects-page";
 import ProjectDetailsFreelancerPage from "./pages/freelancer-pages/Project-details-freelancer-page";
 import ClientDetailsFreelancerPage from "./pages/freelancer-pages/Client-details-freelancer-page";
+import FreelancerOpenViewPage from "./pages/freelancer-pages/Freelancer-open-view-page";
 
 const router = createBrowserRouter([
     {
@@ -62,7 +63,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "freelancer-details/:freelancerId",
-                element: <FreelancerDetailsClientPage />,
+                element: <FreelancerOpenViewPage />,
+            },
+            {
+                path: "all-freelancers",
+                element: <AllFreelancersClientPage />,
             },
         ],
     },
@@ -87,6 +92,10 @@ const router = createBrowserRouter([
             {
                 path: "client-details/:clientId",
                 element: <ClientDetailsFreelancerPage />,
+            },
+            {
+                path: "freelancer-details/:freelancerId",
+                element: <FreelancerOpenViewPage />,
             },
         ],
     },

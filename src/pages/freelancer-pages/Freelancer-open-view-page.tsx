@@ -1,13 +1,13 @@
-import { getFreelancerDetailsForClient } from "@/api-functions/freelancer-functions";
+import { getFreelancerDetails } from "@/api-functions/freelancer-functions";
 import { Spinner } from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
-const FreelancerDetailsClientPage = () => {
+const FreelancerOpenViewPage = () => {
     const { freelancerId } = useParams();
     const { data, isError, isLoading } = useQuery({
-        queryFn: () => getFreelancerDetailsForClient(freelancerId as string),
-        queryKey: ["get-freelancer-details-for-client", freelancerId],
+        queryFn: () => getFreelancerDetails(freelancerId as string),
+        queryKey: ["get-freelancer-details", freelancerId],
     });
 
     return (
@@ -116,4 +116,4 @@ const FreelancerDetailsClientPage = () => {
     );
 };
 
-export default FreelancerDetailsClientPage;
+export default FreelancerOpenViewPage;

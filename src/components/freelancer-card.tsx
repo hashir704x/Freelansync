@@ -65,7 +65,7 @@ const FreelancerCard = (props: PropsType) => {
                 </div>
             </div>
 
-            {props.user.role === "freelancer" && props.user.id === props.data.id ? (
+            {props.user.id === props.data.id ? (
                 <Link to="/freelancer/freelancer-profile-own">
                     <Button
                         variant="outline"
