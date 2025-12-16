@@ -38,6 +38,9 @@ const FreelancerConfirmInvitationDialog = (props: PropsType) => {
             queryClient.invalidateQueries({
                 queryKey: ["get-invitattions-for-freelancer"],
             });
+            queryClient.invalidateQueries({
+                queryKey: ["get-all-projects-for-freelancer"],
+            });
         },
         onError(error) {
             toast.error(`Something went wrong: ${error.message}`);

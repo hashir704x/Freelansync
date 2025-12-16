@@ -51,7 +51,7 @@ export async function getProjectDetailsById(
     const { data, error } = await supabaseClient
         .from("projects")
         .select(
-            "*, client(id, username, email, profile_pic, role), project_and_freelancer_link(freelancer(id, username, description, email, profile_pic, role, skills, domains))"
+            "*, client(id, username, email, profile_pic, role), project_and_freelancer_link(freelancer(id, username, description, email, profile_pic, role, skills, domains, created_at))"
         )
         .eq("id", projectId)
         .single();

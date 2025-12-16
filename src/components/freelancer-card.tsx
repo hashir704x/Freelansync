@@ -20,7 +20,7 @@ const FreelancerCard = (props: PropsType) => {
                 <img
                     src={props.data.profile_pic}
                     alt="profile-pic"
-                    className="w-32 h-32 rounded-full object-cover border-2 border-(--my-blue)"
+                    className="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-2 border-(--my-blue)"
                 />
 
                 <div className="flex flex-col items-center font-semibold">
@@ -66,7 +66,7 @@ const FreelancerCard = (props: PropsType) => {
             </div>
 
             {props.user.role === "freelancer" && props.user.id === props.data.id ? (
-                <Link to="/freelancer/freelancer-profile">
+                <Link to="/freelancer/freelancer-profile-own">
                     <Button
                         variant="outline"
                         className="mt-3 w-full hover:bg-gray-100 cursor-pointer"

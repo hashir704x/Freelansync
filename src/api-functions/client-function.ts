@@ -1,5 +1,8 @@
 import { supabaseClient } from "@/supabase-client";
-import type { ClientProfileOwnFromBackendType } from "@/Types";
+import type {
+    ClientDetailsForFreelancerFromBackendType,
+    ClientProfileOwnFromBackendType,
+} from "@/Types";
 import { errorMessageMaker } from "./error-message-maker";
 
 export async function getClientProfileOwnDataById(
@@ -59,4 +62,21 @@ export async function updateClientProfileImage({
     }
 
     return imageData.publicUrl;
+}
+
+export async function getClientDetailsForFreelancer(
+    clientId: string
+): Promise<ClientDetailsForFreelancerFromBackendType> {
+    const { data, error } = await supabaseClient
+        .from("clients")
+        .select("id, username, email, profile_pic, role, created_at")
+        .eq("id", clientId)
+        .single();
+
+    if (error) {
+        console.error(error.message);
+        throw new Error();
+    }
+
+    return data;
 }

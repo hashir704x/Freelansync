@@ -111,6 +111,7 @@ export type ProjectDetailsByIdFromBackendType = {
             email: string;
             domains: string[];
             skills: string[];
+            created_at: string;
         };
     }[];
 };
@@ -124,6 +125,16 @@ export type FreelancerFromBackendType = {
     email: string;
     domains: string[];
     skills: string[];
+    created_at: string;
+};
+
+export type ClientDetailsForFreelancerFromBackendType = {
+    id: string;
+    username: string;
+    email: string;
+    role: string;
+    profile_pic: string;
+    created_at: string;
 };
 
 export type InvitationsForProjectFromBackendType = {

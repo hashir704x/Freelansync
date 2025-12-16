@@ -14,9 +14,7 @@ const ProjectDetailsInfoComponent = ({ data, user }: Props) => {
                 <h2 className="text-2xl font-semibold text-gray-900 mb-3">
                     Project Description
                 </h2>
-                <p className="text-gray-700 leading-relaxed">
-                    {data.description}
-                </p>
+                <p className="text-gray-700 leading-relaxed">{data.description}</p>
             </div>
 
             <div className="mb-8">
@@ -74,7 +72,7 @@ const ProjectDetailsInfoComponent = ({ data, user }: Props) => {
                             <Button variant="custom">View my profile</Button>
                         </Link>
                     ) : (
-                        <Link to={"#"}>
+                        <Link to={`/freelancer/client-details/${data.client.id}`}>
                             <Button variant="custom">View Profile</Button>
                         </Link>
                     )}

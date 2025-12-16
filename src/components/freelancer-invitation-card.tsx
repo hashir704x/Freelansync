@@ -9,7 +9,7 @@ const FreelancerInvitationCard = ({
     invitationData: InvitationsForFreelancerFromBackendType;
 }) => {
     return (
-        <div className="border border-gray-200 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center md:items-start gap-5 w-full max-w-3xl">
+        <div className="border border-gray-200 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center md:items-start gap-5 w-full max-w-3xl shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]">
             <div className="flex-1 text-center md:text-left space-y-3">
                 <h2 className="text-lg sm:text-xl font-semibold text-gray-800 wrap-break-word">
                     {invitationData.project.title}
