@@ -1,8 +1,3 @@
-type PropsType = {
-    projectData: { id: string; title: string; domains: string[]; budget: number };
-    userId: string;
-};
-
 import {
     AlertDialog,
     AlertDialogAction,
@@ -20,6 +15,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createInvitation } from "@/api-functions/invitation-functions";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
+
+type PropsType = {
+    projectData: { id: string; title: string; domains: string[]; budget: number };
+    userId: string;
+};
 
 const SendInviteConfirmDialog = (props: { projectId: string; userId: string }) => {
     const { freelancerId } = useParams();
@@ -41,7 +41,11 @@ const SendInviteConfirmDialog = (props: { projectId: string; userId: string }) =
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="outline" disabled={isPending} className="mt-3 text-(--my-blue) hover:bg-(--my-blue) hover:text-white">
+                <Button
+                    variant="outline"
+                    disabled={isPending}
+                    className="mt-3 text-(--my-blue) hover:bg-(--my-blue) hover:text-white"
+                >
                     {isPending && <Spinner />}
                     Invite Freelancer
                 </Button>

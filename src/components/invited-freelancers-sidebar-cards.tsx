@@ -1,4 +1,4 @@
-import type { InvitationsDataFromBackendType } from "@/Types";
+import type { InvitationsForProjectFromBackendType } from "@/Types";
 import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -6,7 +6,7 @@ import { deleteInvitation } from "@/api-functions/invitation-functions";
 import { toast } from "sonner";
 
 type PropsType = {
-    invitationData: InvitationsDataFromBackendType;
+    invitationData: InvitationsForProjectFromBackendType;
 };
 
 const InvitedFreelancersSidebarCards = ({ invitationData }: PropsType) => {

@@ -175,3 +175,13 @@ export type InvitationsForFreelancerFromBackendType = {
 export type AllProjectsForFreelancerFromBackendType = {
     project: ProjectFromBackendType;
 };
+
+export type NotificationsFromBackendType = {
+    id: number;
+    read: boolean;
+    title: string;
+    content: string;
+    to_user_id: string;
+    created_at: string;
+    type: "Milestone" | "Invitation";
+};
