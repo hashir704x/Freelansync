@@ -93,3 +93,4 @@ export async function acceptInviteAndAddFreelancerToProject({
         throw new Error(errorMessageMaker(secondError.message));
     }
 }
+

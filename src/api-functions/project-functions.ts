@@ -75,3 +75,50 @@ export async function getAllProjectsForFreelancer(
     }
     return data as unknown as AllProjectsForFreelancerFromBackendType[];
 }
+
+export async function recommendProjectsForInvitationForFreelancer({
+    clientId,
+    freelancerId,
+}: {
+    clientId: string;
+    freelancerId: string;
+}): Promise<{ id: string; title: string; domains: string[]; budget: number }[]> {
+    const { data: links, error: linkError } = await supabaseClient
+        .from("project_and_freelancer_link")
+        .select("project")
+        .eq("freelancer", freelancerId)
+        .eq("client", clientId);
+
+    if (linkError) {
+        console.error(linkError);
+        throw new Error();
+    }
+
+    const linkedProjectIds = links.map((l) => l.project);
+
+    if (linkedProjectIds.length > 0) {
+        const { data, error } = await supabaseClient
+            .from("projects")
+            .select("id, title, domains, budget")
+            .eq("client", clientId)
+            .not("id", "in", `(${linkedProjectIds.join(",")})`);
+
+        if (error) {
+            console.error(error);
+            throw new Error();
+        }
+
+        return data;
+    } else {
+        const { data, error } = await supabaseClient
+            .from("projects")
+            .select("id, title, domains, budget")
+            .eq("client", clientId);
+
+        if (error) {
+            console.error(error);
+            throw new Error();
+        }
+        return data;
+    }
+}

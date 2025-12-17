@@ -10,8 +10,8 @@ const userStore = create(
             setUser: (user) => set({ user: user, userExists: true }),
             resetUser: () => set({ user: null, userExists: false }),
         }),
-        { name: "user-store", storage: createJSONStorage(() => localStorage) }
-    )
+        { name: "user-store", storage: createJSONStorage(() => localStorage) },
+    ),
 );
 
 export { userStore };

@@ -1,9 +1,14 @@
 import { getFreelancerDetails } from "@/api-functions/freelancer-functions";
 import { Spinner } from "@/components/ui/spinner";
+import { userStore } from "@/stores/user-store";
+import type { UserType } from "@/Types";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import InviteFreelancerIntoProjectSidebar from "@/components/invite-freelancer-into-project-sidebar";
 
 const FreelancerOpenViewPage = () => {
+    const user = userStore((state) => state.user) as UserType;
+
     const { freelancerId } = useParams();
     const { data, isError, isLoading } = useQuery({
         queryFn: () => getFreelancerDetails(freelancerId as string),
@@ -41,9 +46,17 @@ const FreelancerOpenViewPage = () => {
 
                         {/* Bottom Section — Freelancer Info */}
                         <div className="w-full space-y-6 text-gray-700">
-                            <h2 className="text-2xl font-semibold text-(--my-blue) border-b pb-2">
-                                Freelancer Profile
-                            </h2>
+                            <div className="flex justify-between border-b pb-2">
+                                <h2 className="text-xl sm:text-2xl font-semibold text-(--my-blue)">
+                                    Freelancer Profile
+                                </h2>
+                                {user.role === "client" && (
+                                    <InviteFreelancerIntoProjectSidebar
+                                        userId={user.id}
+                                        freelancerId={freelancerId as string}
+                                    />
+                                )}
+                            </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                 <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm">
