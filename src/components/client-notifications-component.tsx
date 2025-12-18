@@ -1,4 +1,8 @@
-import { getAllNotificationsForUser } from "@/api-functions/notifications-functions";
+import {
+    deleteAllNotifications,
+    getAllNotificationsForUser,
+    setAllNotificationsToRead,
+} from "@/api-functions/notifications-functions";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,25 +13,78 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { userStore } from "@/stores/user-store";
 import type { UserType } from "@/Types";
-import { useQuery } from "@tanstack/react-query";
-import { Bell, Dot } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Bell } from "lucide-react";
+import { toast } from "sonner";
+import { Spinner } from "./ui/spinner";
+import { useEffect } from "react";
+import { supabaseClient } from "@/supabase-client";
 
 const ClientNotificationsComponent = () => {
+    const queryClient = useQueryClient();
     const user = userStore((state) => state.user) as UserType;
-
     const { data, isLoading } = useQuery({
         queryFn: () => getAllNotificationsForUser(user.id),
-        queryKey: ["notifications", user.id],
+        queryKey: ["get-all-notifications-for-client"],
     });
 
     const unreadCount = data?.filter((n) => !n.read).length;
 
+    useEffect(() => {
+        const channel = supabaseClient
+            .channel(`notifications-${user.id}`)
+            .on(
+                "postgres_changes",
+                {
+                    event: "INSERT",
+                    schema: "public",
+                    table: "notifications",
+                    filter: `to_user_id=eq.${user.id}`,
+                },
+                (payload) => {
+                    console.log("payload", payload);
+                    queryClient.invalidateQueries({
+                        queryKey: ["get-all-notifications-for-client"],
+                    });
+                }
+            )
+            .subscribe();
+
+        return function () {
+            console.log("Channel dismounting");
+            supabaseClient.removeChannel(channel);
+        };
+    }, []);
+
+    const { isPending, mutate } = useMutation({
+        mutationFn: setAllNotificationsToRead,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: ["get-all-notifications-for-client"],
+            });
+        },
+        onError(error) {
+            toast.error(`Failed to update notifications: ${error.message}`);
+        },
+    });
+
+    const { isPending: deletePending, mutate: deleteMutation } = useMutation({
+        mutationFn: deleteAllNotifications,
+        onSuccess() {
+            queryClient.invalidateQueries({
+                queryKey: ["get-all-notifications-for-client"],
+            });
+        },
+        onError(error) {
+            toast.error(`Failed to delete notifications: ${error.message}`);
+        },
+    });
+
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger className="relative outline-none">
+            <DropdownMenuTrigger>
                 <Bell size={22} className="cursor-pointer text-[--my-blue]" />
-
-                {unreadCount && unreadCount > 0 && (
+                {data && (unreadCount as number) > 0 && (
                     <span className="absolute -top-2 -right-2 min-w-[18px] rounded-full bg-red-500 px-1 text-center text-xs font-semibold text-white">
                         {unreadCount}
                     </span>
@@ -53,16 +110,16 @@ const ClientNotificationsComponent = () => {
                 )}
 
                 {data && data.length > 0 && (
-                    <div className="max-h-[360px] overflow-y-auto">
+                    <div className="max-h-[380px] overflow-y-auto">
                         {data.map((item) => (
                             <DropdownMenuItem
                                 key={item.id}
                                 className={`flex cursor-pointer items-start gap-3 px-4 py-3 transition hover:bg-gray-100 ${
-                                    !item.read ? "bg-gray-50" : ""
+                                    !item.read ? "bg-gray-100" : ""
                                 }`}
                             >
                                 {!item.read && (
-                                    <Dot className="mt-1 h-6 w-6 text-blue-500" />
+                                    <div className="mt-4 min-w-2 min-h-2 rounded-full bg-blue-800" />
                                 )}
 
                                 <div className="flex flex-col gap-1">
@@ -75,19 +132,25 @@ const ClientNotificationsComponent = () => {
                                 </div>
                             </DropdownMenuItem>
                         ))}
+
+                        <div className="flex items-center justify-between px-4 py-3">
+                            <button
+                                onClick={() => mutate(user.id)}
+                                disabled={isPending}
+                                className="cursor-pointer text-sm text-gray-500 hover:text-gray-700 flex gap-2 items-center"
+                            >
+                                {isPending && <Spinner />} Mark all as read
+                            </button>
+                            <button
+                                disabled={deletePending}
+                                onClick={() => deleteMutation(user.id)}
+                                className="flex gap-2 items-center cursor-pointer text-sm text-red-500 hover:text-red-600"
+                            >
+                                {deletePending && <Spinner />} Clear all
+                            </button>
+                        </div>
                     </div>
                 )}
-
-                <DropdownMenuSeparator />
-
-                <div className="flex items-center justify-between px-4 py-3">
-                    <button className="text-sm text-gray-500 hover:text-gray-700">
-                        Mark all as read
-                    </button>
-                    <button className="text-sm text-red-500 hover:text-red-600">
-                        Clear all
-                    </button>
-                </div>
             </DropdownMenuContent>
         </DropdownMenu>
     );
