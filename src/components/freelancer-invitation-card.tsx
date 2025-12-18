@@ -76,6 +76,7 @@ const FreelancerInvitationCard = ({
                         clientId={invitationData.client.id}
                         projectId={invitationData.project.id}
                         invitationId={invitationData.id}
+                        projectTitle={invitationData.project.title}
                     />
                     <FreelancerConfirmInvitationDialog
                         key={"1"}
@@ -83,6 +84,7 @@ const FreelancerInvitationCard = ({
                         clientId={invitationData.client.id}
                         projectId={invitationData.project.id}
                         invitationId={invitationData.id}
+                        projectTitle={invitationData.project.title}
                     />
                 </div>
             </div>

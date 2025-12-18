@@ -70,11 +70,15 @@ export async function acceptInviteAndAddFreelancerToProject({
     clientId,
     freelancerId,
     projectId,
+    freelancerUsername,
+    projectTitle,
 }: {
     invitationId: string;
     clientId: string;
     freelancerId: string;
     projectId: string;
+    freelancerUsername: string;
+    projectTitle: string;
 }): Promise<void> {
     const { error } = await supabaseClient
         .from("project_and_freelancer_link")
@@ -92,5 +96,17 @@ export async function acceptInviteAndAddFreelancerToProject({
         console.error(secondError);
         throw new Error(errorMessageMaker(secondError.message));
     }
-}
 
+    const { error: invitationError } = await supabaseClient.from("notifications").insert([
+        {
+            to_user_id: clientId,
+            title: "Invitation Accepted",
+            content: `Freelancer ${freelancerUsername} has accepted your invitation for ${projectTitle} project`,
+            type: "Invitation",
+        },
+    ]);
+    if (invitationError) {
+        console.error(invitationError);
+        throw new Error(errorMessageMaker(invitationError.message));
+    }
+}

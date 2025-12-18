@@ -17,8 +17,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell } from "lucide-react";
 import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
-import { useEffect } from "react";
-import { supabaseClient } from "@/supabase-client";
 
 const ClientNotificationsComponent = () => {
     const queryClient = useQueryClient();
@@ -26,35 +24,10 @@ const ClientNotificationsComponent = () => {
     const { data, isLoading } = useQuery({
         queryFn: () => getAllNotificationsForUser(user.id),
         queryKey: ["get-all-notifications-for-client"],
+        refetchInterval: 60 * 1000,
     });
 
     const unreadCount = data?.filter((n) => !n.read).length;
-
-    useEffect(() => {
-        const channel = supabaseClient
-            .channel(`notifications-${user.id}`)
-            .on(
-                "postgres_changes",
-                {
-                    event: "INSERT",
-                    schema: "public",
-                    table: "notifications",
-                    filter: `to_user_id=eq.${user.id}`,
-                },
-                (payload) => {
-                    console.log("payload", payload);
-                    queryClient.invalidateQueries({
-                        queryKey: ["get-all-notifications-for-client"],
-                    });
-                }
-            )
-            .subscribe();
-
-        return function () {
-            console.log("Channel dismounting");
-            supabaseClient.removeChannel(channel);
-        };
-    }, []);
 
     const { isPending, mutate } = useMutation({
         mutationFn: setAllNotificationsToRead,

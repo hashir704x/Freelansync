@@ -25,6 +25,7 @@ type PropsType = {
     projectId: string;
     clientId: string;
     invitationId: string;
+    projectTitle: string;
 };
 
 const FreelancerConfirmInvitationDialog = (props: PropsType) => {
@@ -108,6 +109,8 @@ const FreelancerConfirmInvitationDialog = (props: PropsType) => {
                                     freelancerId: user.id,
                                     invitationId: props.invitationId,
                                     projectId: props.projectId,
+                                    freelancerUsername: user.username,
+                                    projectTitle: props.projectTitle,
                                 });
                             else rejectMutation(props.invitationId);
                         }}
