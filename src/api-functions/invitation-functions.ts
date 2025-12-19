@@ -38,7 +38,19 @@ export async function getAllInvitationsForProject(
     return data;
 }
 
-export async function deleteInvitation(invitationId: string): Promise<void> {
+export async function deleteInvitation({
+    invitationId,
+    freelancerUsername,
+    projectTitle,
+    clientId,
+    projectId,
+}: {
+    invitationId: string;
+    freelancerUsername: string;
+    projectTitle: string;
+    clientId: string;
+    projectId: string;
+}): Promise<void> {
     const { error } = await supabaseClient
         .from("invitations")
         .delete()
@@ -46,6 +58,22 @@ export async function deleteInvitation(invitationId: string): Promise<void> {
     if (error) {
         console.error(error);
         throw new Error(errorMessageMaker(error.message));
+    }
+
+    const { error: notificationError } = await supabaseClient
+        .from("notifications")
+        .insert([
+            {
+                to_user_id: clientId,
+                title: "Invitation Rejected",
+                content: `Freelancer ${freelancerUsername} has rejected your invitation for ${projectTitle} project`,
+                type: "Invitation",
+                project_id: projectId,
+            },
+        ]);
+    if (notificationError) {
+        console.error(notificationError);
+        throw new Error(errorMessageMaker(notificationError.message));
     }
 }
 
@@ -97,16 +125,19 @@ export async function acceptInviteAndAddFreelancerToProject({
         throw new Error(errorMessageMaker(secondError.message));
     }
 
-    const { error: invitationError } = await supabaseClient.from("notifications").insert([
-        {
-            to_user_id: clientId,
-            title: "Invitation Accepted",
-            content: `Freelancer ${freelancerUsername} has accepted your invitation for ${projectTitle} project`,
-            type: "Invitation",
-        },
-    ]);
-    if (invitationError) {
-        console.error(invitationError);
-        throw new Error(errorMessageMaker(invitationError.message));
+    const { error: notificationError } = await supabaseClient
+        .from("notifications")
+        .insert([
+            {
+                to_user_id: clientId,
+                title: "Invitation Accepted",
+                content: `Freelancer ${freelancerUsername} has accepted your invitation for ${projectTitle} project`,
+                type: "Invitation_Accepted",
+                project_id: projectId,
+            },
+        ]);
+    if (notificationError) {
+        console.error(notificationError);
+        throw new Error(errorMessageMaker(notificationError.message));
     }
 }

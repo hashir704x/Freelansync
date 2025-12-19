@@ -183,5 +183,6 @@ export type NotificationsFromBackendType = {
     content: string;
     to_user_id: string;
     created_at: string;
-    type: "Milestone" | "Invitation";
+    project_id?: string;
+    type: "Invitation_Accepted";
 };

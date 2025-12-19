@@ -17,14 +17,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bell } from "lucide-react";
 import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
+import { useNavigate } from "react-router-dom";
 
-const ClientNotificationsComponent = () => {
+const UserNotificationsComponent = () => {
     const queryClient = useQueryClient();
     const user = userStore((state) => state.user) as UserType;
+    const navigate = useNavigate();
+
     const { data, isLoading } = useQuery({
         queryFn: () => getAllNotificationsForUser(user.id),
-        queryKey: ["get-all-notifications-for-client"],
+        queryKey: ["get-all-notifications-for-user"],
         refetchInterval: 60 * 1000,
+        refetchIntervalInBackground: true,
     });
 
     const unreadCount = data?.filter((n) => !n.read).length;
@@ -33,7 +37,7 @@ const ClientNotificationsComponent = () => {
         mutationFn: setAllNotificationsToRead,
         onSuccess() {
             queryClient.invalidateQueries({
-                queryKey: ["get-all-notifications-for-client"],
+                queryKey: ["get-all-notifications-for-user"],
             });
         },
         onError(error) {
@@ -45,7 +49,7 @@ const ClientNotificationsComponent = () => {
         mutationFn: deleteAllNotifications,
         onSuccess() {
             queryClient.invalidateQueries({
-                queryKey: ["get-all-notifications-for-client"],
+                queryKey: ["get-all-notifications-for-user"],
             });
         },
         onError(error) {
@@ -87,7 +91,7 @@ const ClientNotificationsComponent = () => {
                         {data.map((item) => (
                             <DropdownMenuItem
                                 key={item.id}
-                                className={`flex cursor-pointer items-start gap-3 px-4 py-3 transition hover:bg-gray-100 ${
+                                className={`flex items-start gap-3 px-4 py-3 transition hover:bg-gray-100 ${
                                     !item.read ? "bg-gray-100" : ""
                                 }`}
                             >
@@ -102,6 +106,31 @@ const ClientNotificationsComponent = () => {
                                     <span className="text-xs text-gray-500">
                                         {item.content}
                                     </span>
+                                    <button
+                                        onClick={() => {
+                                            
+                                            if (user.role === "client") {
+                                                if (
+                                                    item.type === "Invitation_Accepted" &&
+                                                    item.project_id
+                                                ) {
+                                                    queryClient.invalidateQueries({
+                                                        queryKey: [
+                                                            "get-project-details",
+                                                            item.project_id,
+                                                        ],
+                                                    });
+                                                    navigate(
+                                                        `/client/project-details/${item.project_id}`
+                                                    );
+                                                }
+                                            } else {
+                                            }
+                                        }}
+                                        className="bg-(--my-blue) py-1 w-[100px] rounded-md mt-2 text-white cursor-pointer"
+                                    >
+                                        Show me
+                                    </button>
                                 </div>
                             </DropdownMenuItem>
                         ))}
@@ -129,4 +158,4 @@ const ClientNotificationsComponent = () => {
     );
 };
 
-export default ClientNotificationsComponent;
+export default UserNotificationsComponent;

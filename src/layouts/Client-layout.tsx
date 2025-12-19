@@ -2,7 +2,7 @@ import { Outlet, Navigate } from "react-router-dom";
 import { userStore } from "@/stores/user-store";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import ClientSidebar from "@/components/client-sidebar";
-import ClientNotificationsComponent from "@/components/client-notifications-component";
+import UserNotificationsComponent from "@/components/user-notifications-component";
 
 const ClientLayout = () => {
     const user = userStore((state) => state.user);
@@ -17,7 +17,7 @@ const ClientLayout = () => {
                     <Outlet />
 
                     <div className="absolute top-6 right-8">
-                        <ClientNotificationsComponent />
+                        <UserNotificationsComponent />
                     </div>
                 </div>
             </SidebarProvider>

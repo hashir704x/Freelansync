@@ -112,7 +112,14 @@ const FreelancerConfirmInvitationDialog = (props: PropsType) => {
                                     freelancerUsername: user.username,
                                     projectTitle: props.projectTitle,
                                 });
-                            else rejectMutation(props.invitationId);
+                        else
+                                rejectMutation({
+                                    invitationId: props.invitationId,
+                                    freelancerUsername: user.username,
+                                    projectTitle: props.projectTitle,
+                                    clientId: props.clientId,
+                                    projectId: props.projectId,
+                                });
                         }}
                         className={`${
                             props.action === "accept"
