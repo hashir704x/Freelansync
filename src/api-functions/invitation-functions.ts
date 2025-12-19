@@ -9,6 +9,7 @@ export async function createInvitation(params: {
     clientId: string;
     freelancerId: string;
     projectId: string;
+    clientUsername: string;
 }): Promise<void> {
     const { error } = await supabaseClient.from("invitations").insert([
         {
@@ -20,6 +21,21 @@ export async function createInvitation(params: {
     if (error) {
         console.error(error);
         throw new Error(errorMessageMaker(error.message));
+    }
+
+    const { error: notificationError } = await supabaseClient
+        .from("notifications")
+        .insert([
+            {
+                to_user_id: params.freelancerId,
+                title: "New Invitation",
+                content: `Client ${params.clientUsername} has invited you in their project.`,
+                type: "Invitation_Recieved",
+            },
+        ]);
+    if (notificationError) {
+        console.error(notificationError);
+        throw new Error(errorMessageMaker(notificationError.message));
     }
 }
 
@@ -38,7 +54,7 @@ export async function getAllInvitationsForProject(
     return data;
 }
 
-export async function deleteInvitation({
+export async function rejectInvitation({
     invitationId,
     freelancerUsername,
     projectTitle,
@@ -67,7 +83,7 @@ export async function deleteInvitation({
                 to_user_id: clientId,
                 title: "Invitation Rejected",
                 content: `Freelancer ${freelancerUsername} has rejected your invitation for ${projectTitle} project`,
-                type: "Invitation",
+                type: "Invitation_Rejected",
                 project_id: projectId,
             },
         ]);
@@ -91,6 +107,17 @@ export async function getAllInvitationsForFreelancer(): Promise<
         throw new Error();
     }
     return data;
+}
+
+export async function deleteInvitation(invitationId: string) {
+    const { error: secondError } = await supabaseClient
+        .from("invitations")
+        .delete()
+        .eq("id", invitationId);
+    if (secondError) {
+        console.error(secondError);
+        throw new Error(errorMessageMaker(secondError.message));
+    }
 }
 
 export async function acceptInviteAndAddFreelancerToProject({

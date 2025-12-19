@@ -94,6 +94,8 @@ const FreelancerCard = (props: PropsType) => {
                 <InviteFreelancerConfirmDialog
                     clientId={props.user.id}
                     freelancerId={props.data.id}
+                    clientUsername={props.user.username}
+                    
                 />
             )}
         </div>

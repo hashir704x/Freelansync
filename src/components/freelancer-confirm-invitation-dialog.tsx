@@ -14,7 +14,7 @@ import { Spinner } from "./ui/spinner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     acceptInviteAndAddFreelancerToProject,
-    deleteInvitation,
+    rejectInvitation,
 } from "@/api-functions/invitation-functions";
 import { toast } from "sonner";
 import { userStore } from "@/stores/user-store";
@@ -49,7 +49,7 @@ const FreelancerConfirmInvitationDialog = (props: PropsType) => {
     });
 
     const { mutate: rejectMutation, isPending: rejectionPending } = useMutation({
-        mutationFn: deleteInvitation,
+        mutationFn: rejectInvitation,
         onSuccess() {
             toast.success("Invitation rejected successfully");
             queryClient.invalidateQueries({
@@ -112,7 +112,7 @@ const FreelancerConfirmInvitationDialog = (props: PropsType) => {
                                     freelancerUsername: user.username,
                                     projectTitle: props.projectTitle,
                                 });
-                        else
+                            else
                                 rejectMutation({
                                     invitationId: props.invitationId,
                                     freelancerUsername: user.username,

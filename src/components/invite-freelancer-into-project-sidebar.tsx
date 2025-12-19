@@ -16,16 +16,18 @@ import { useQuery } from "@tanstack/react-query";
 import InviteFreelancerIntoProjectSidebarCard from "./invite-freelancer-into-project-sidebar-cards";
 
 const InviteFreelancerIntoProjectSidebar = ({
-    userId,
+    clientId,
     freelancerId,
+    clientUsername,
 }: {
-    userId: string;
+    clientId: string;
     freelancerId: string;
+    clientUsername: string;
 }) => {
     const { data, isLoading, isError } = useQuery({
         queryFn: () =>
             recommendProjectsForInvitationForFreelancer({
-                clientId: userId,
+                clientId: clientId,
                 freelancerId: freelancerId,
             }),
         queryKey: [
@@ -81,7 +83,8 @@ const InviteFreelancerIntoProjectSidebar = ({
                                 <InviteFreelancerIntoProjectSidebarCard
                                     key={item.id}
                                     projectData={item}
-                                    userId={userId}
+                                    clientId={clientId}
+                                    clientUsername={clientUsername}
                                 />
                             ))}
                         </div>

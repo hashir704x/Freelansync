@@ -19,6 +19,7 @@ import { useParams } from "react-router-dom";
 const InviteFreelancerConfirmDialog = (props: {
     clientId: string;
     freelancerId: string;
+    clientUsername: string;
 }) => {
     const { projectId } = useParams();
     const queryClient = useQueryClient();
@@ -61,6 +62,7 @@ const InviteFreelancerConfirmDialog = (props: {
                                 clientId: props.clientId,
                                 freelancerId: props.freelancerId,
                                 projectId: projectId as string,
+                                clientUsername: props.clientUsername,
                             })
                         }
                         className="bg-(--my-blue) hover:bg-(--my-blue-light) cursor-pointer"

@@ -18,10 +18,15 @@ import { useParams } from "react-router-dom";
 
 type PropsType = {
     projectData: { id: string; title: string; domains: string[]; budget: number };
-    userId: string;
+    clientId: string;
+    clientUsername: string;
 };
 
-const SendInviteConfirmDialog = (props: { projectId: string; userId: string }) => {
+const SendInviteConfirmDialog = (props: {
+    projectId: string;
+    clientId: string;
+    clientUsername: string;
+}) => {
     const { freelancerId } = useParams();
     const queryClient = useQueryClient();
     const { isPending, mutate } = useMutation({
@@ -63,9 +68,10 @@ const SendInviteConfirmDialog = (props: { projectId: string; userId: string }) =
                     <AlertDialogAction
                         onClick={() =>
                             mutate({
-                                clientId: props.userId,
+                                clientId: props.clientId,
                                 freelancerId: freelancerId as string,
                                 projectId: props.projectId,
+                                clientUsername: props.clientUsername,
                             })
                         }
                         className="bg-(--my-blue) hover:bg-(--my-blue-light) cursor-pointer"
@@ -78,7 +84,11 @@ const SendInviteConfirmDialog = (props: { projectId: string; userId: string }) =
     );
 };
 
-const InviteFreelancerIntoProjectSidebarCard = ({ projectData, userId }: PropsType) => {
+const InviteFreelancerIntoProjectSidebarCard = ({
+    projectData,
+    clientId,
+    clientUsername,
+}: PropsType) => {
     return (
         <div className="border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-xl transition-all duration-300  flex flex-col justify-between">
             <h2 className="text-lg font-semibold text-gray-800 truncate">
@@ -105,7 +115,11 @@ const InviteFreelancerIntoProjectSidebarCard = ({ projectData, userId }: PropsTy
                 )}
             </div>
 
-            <SendInviteConfirmDialog projectId={projectData.id} userId={userId} />
+            <SendInviteConfirmDialog
+                projectId={projectData.id}
+                clientId={clientId}
+                clientUsername={clientUsername}
+            />
         </div>
     );
 };

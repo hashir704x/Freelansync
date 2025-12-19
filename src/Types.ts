@@ -184,5 +184,5 @@ export type NotificationsFromBackendType = {
     to_user_id: string;
     created_at: string;
     project_id?: string;
-    type: "Invitation_Accepted";
+    type: "Invitation_Accepted" | "Invitation_Rejected" | "Invitation_Recieved";
 };

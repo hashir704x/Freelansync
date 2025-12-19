@@ -52,8 +52,9 @@ const FreelancerOpenViewPage = () => {
                                 </h2>
                                 {user.role === "client" && (
                                     <InviteFreelancerIntoProjectSidebar
-                                        userId={user.id}
+                                        clientId={user.id}
                                         freelancerId={freelancerId as string}
+                                        clientUsername={user.username}
                                     />
                                 )}
                             </div>

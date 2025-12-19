@@ -106,31 +106,46 @@ const UserNotificationsComponent = () => {
                                     <span className="text-xs text-gray-500">
                                         {item.content}
                                     </span>
-                                    <button
-                                        onClick={() => {
-                                            
-                                            if (user.role === "client") {
-                                                if (
-                                                    item.type === "Invitation_Accepted" &&
-                                                    item.project_id
-                                                ) {
-                                                    queryClient.invalidateQueries({
-                                                        queryKey: [
-                                                            "get-project-details",
-                                                            item.project_id,
-                                                        ],
-                                                    });
-                                                    navigate(
-                                                        `/client/project-details/${item.project_id}`
-                                                    );
+                                    {item.type !== "Invitation_Rejected" && (
+                                        <button
+                                            onClick={() => {
+                                                if (user.role === "client") {
+                                                    if (
+                                                        item.type ===
+                                                            "Invitation_Accepted" &&
+                                                        item.project_id
+                                                    ) {
+                                                        queryClient.invalidateQueries({
+                                                            queryKey: [
+                                                                "get-project-details",
+                                                                item.project_id,
+                                                            ],
+                                                        });
+                                                        navigate(
+                                                            `/client/project-details/${item.project_id}`
+                                                        );
+                                                    }
+                                                } else {
+                                                    if (
+                                                        item.type ===
+                                                        "Invitation_Recieved"
+                                                    ) {
+                                                        queryClient.invalidateQueries({
+                                                            queryKey: [
+                                                                "get-invitattions-for-freelancer",
+                                                            ],
+                                                        });
+                                                        navigate(
+                                                            `/freelancer/freelancer-invitations`
+                                                        );
+                                                    }
                                                 }
-                                            } else {
-                                            }
-                                        }}
-                                        className="bg-(--my-blue) py-1 w-[100px] rounded-md mt-2 text-white cursor-pointer"
-                                    >
-                                        Show me
-                                    </button>
+                                            }}
+                                            className="bg-(--my-blue) py-1 w-[100px] rounded-md mt-2 text-white cursor-pointer"
+                                        >
+                                            Show me
+                                        </button>
+                                    )}
                                 </div>
                             </DropdownMenuItem>
                         ))}
