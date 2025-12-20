@@ -34,6 +34,9 @@ const ProjectDetailsAddFreelancersComponent = ({
     }
     return (
         <div>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-3">
+                Add New Freelancers
+            </h2>
             <div className="flex flex-col sm:flex-row justify-between sm:items-center">
                 <div className="flex gap-2 border-2 border-(--my-blue) rounded-md w-fit text-xs sm:text-sm">
                     <button

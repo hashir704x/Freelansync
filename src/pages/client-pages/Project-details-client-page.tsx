@@ -2,6 +2,7 @@ import { getProjectDetailsById } from "@/api-functions/project-functions";
 import ProjectDetailsAddFreelancersComponent from "@/components/project-details-add-freelancers-component";
 import ProjectDetailsFreelancersComponent from "@/components/project-details-freelancers-component";
 import ProjectDetailsInfoComponent from "@/components/project-details-info-components";
+import ProjectDetialsMilestonesComponent from "@/components/project-details-milestones-component";
 import { Spinner } from "@/components/ui/spinner";
 import { userStore } from "@/stores/user-store";
 import type { UserType } from "@/Types";
@@ -123,6 +124,10 @@ const ProjectDetialsClientPage = () => {
                             user={user}
                             projectId={projectId as string}
                         />
+                    )}
+
+                    {activeOption === "milestones" && (
+                        <ProjectDetialsMilestonesComponent />
                     )}
                 </div>
             )}
