@@ -184,7 +184,11 @@ export type NotificationsFromBackendType = {
     to_user_id: string;
     created_at: string;
     project_id?: string;
-    type: "Invitation_Accepted" | "Invitation_Rejected" | "Invitation_Recieved";
+    type:
+        | "Invitation_Accepted"
+        | "Invitation_Rejected"
+        | "Invitation_Recieved"
+        | "Milestone_Assigned";
 };
 
 export type MilestonesFromBackendType = {

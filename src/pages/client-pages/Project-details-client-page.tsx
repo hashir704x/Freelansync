@@ -131,6 +131,7 @@ const ProjectDetialsClientPage = () => {
                             freelancersData={data.project_and_freelancer_link}
                             user={user}
                             projectId={projectId as string}
+                            projectTitle={data.title}
                         />
                     )}
                 </div>

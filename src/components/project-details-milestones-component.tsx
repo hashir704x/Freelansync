@@ -7,11 +7,12 @@ import { Flag } from "lucide-react";
 import MilestoneCard from "./milestone-card";
 
 type PropsType = {
-    freelancersData: {
+    freelancersData?: {
         freelancer: FreelancerFromBackendType;
     }[];
     user: UserType;
     projectId: string;
+    projectTitle: string;
 };
 
 const ProjectDetialsMilestonesComponent = (props: PropsType) => {
@@ -26,12 +27,15 @@ const ProjectDetialsMilestonesComponent = (props: PropsType) => {
                 <h2 className="text-2xl font-semibold text-gray-900 mb-3">
                     Project Milestones
                 </h2>
-
-                <CreateMilestoneDialog
-                    clientId={props.user.id}
-                    freelancersData={props.freelancersData}
-                    projectId={props.projectId}
-                />
+                {props.freelancersData && props.user.role === "client" && (
+                    <CreateMilestoneDialog
+                        clientUsername={props.user.username}
+                        clientId={props.user.id}
+                        freelancersData={props.freelancersData}
+                        projectId={props.projectId}
+                        projectTitle={props.projectTitle}
+                    />
+                )}
             </div>
 
             {isLoading && (
@@ -59,13 +63,9 @@ const ProjectDetialsMilestonesComponent = (props: PropsType) => {
                 </div>
             )}
             {data && data.length >= 1 && (
-                <div className="mt-8 flex gap-8 flex-wrap">
+                <div className="mt-5 flex gap-8 flex-wrap">
                     {data.map((item) => (
-                        <MilestoneCard
-                            key={item.id}
-                            milestoneData={item}
-                            user={props.user}
-                        />
+                        <MilestoneCard key={item.id} milestoneData={item} />
                     ))}
                 </div>
             )}

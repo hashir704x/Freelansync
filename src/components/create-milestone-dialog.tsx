@@ -20,7 +20,7 @@ import {
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import type { FreelancerFromBackendType } from "@/Types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createMilestone } from "@/api-functions/milestone-functions";
 import { Spinner } from "./ui/spinner";
 
@@ -29,10 +29,13 @@ type PropsType = {
         freelancer: FreelancerFromBackendType;
     }[];
     clientId: string;
+    clientUsername: string;
     projectId: string;
+    projectTitle: string;
 };
 
 const CreateMilestoneDialog = (props: PropsType) => {
+    const queryClient = useQueryClient();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState<number>(0);
@@ -43,11 +46,14 @@ const CreateMilestoneDialog = (props: PropsType) => {
         mutationFn: createMilestone,
         onSuccess() {
             toast.success("Milestone created successfully");
-            setOpen(false);
             setAmount(0);
             setDescription("");
             setFreelancerId("");
             setTitle("");
+            queryClient.invalidateQueries({
+                queryKey: ["get-all-milestones-for-project", props.projectId],
+            });
+            setOpen(false);
         },
         onError(error) {
             toast.error(`Failed to created milestone: ${error.message}`);
@@ -73,6 +79,8 @@ const CreateMilestoneDialog = (props: PropsType) => {
             description: description,
             freelancerId: freelancerId,
             projectId: props.projectId,
+            clientUsername: props.clientUsername,
+            projectTitle: props.projectTitle,
         });
     }
 

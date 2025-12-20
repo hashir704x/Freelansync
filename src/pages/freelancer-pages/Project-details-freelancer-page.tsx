@@ -7,6 +7,7 @@ import type { UserType } from "@/Types";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import ProjectDetialsMilestonesComponent from "@/components/project-details-milestones-component";
 
 const ProjectDetailsFreelancerPage = () => {
     const { projectId } = useParams();
@@ -107,6 +108,14 @@ const ProjectDetailsFreelancerPage = () => {
 
                     {activeOption === "freelancers" && (
                         <ProjectDetailsFreelancersComponent data={data} user={user} />
+                    )}
+
+                    {activeOption === "milestones" && (
+                        <ProjectDetialsMilestonesComponent
+                            user={user}
+                            projectId={projectId as string}
+                            projectTitle={data.title}
+                        />
                     )}
                 </div>
             )}

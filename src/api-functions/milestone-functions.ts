@@ -9,6 +9,8 @@ export async function createMilestone({
     description,
     freelancerId,
     projectId,
+    clientUsername,
+    projectTitle,
 }: {
     projectId: string;
     clientId: string;
@@ -16,6 +18,8 @@ export async function createMilestone({
     title: string;
     description: string;
     amount: number;
+    clientUsername: string;
+    projectTitle: string;
 }): Promise<void> {
     const { error } = await supabaseClient.from("milestones").insert([
         {
@@ -31,6 +35,22 @@ export async function createMilestone({
     if (error) {
         console.error(error.message);
         throw new Error(errorMessageMaker(error.message));
+    }
+
+    const { error: notificationError } = await supabaseClient
+        .from("notifications")
+        .insert([
+            {
+                to_user_id: freelancerId,
+                title: "New Invitation",
+                content: `Client ${clientUsername} has assigned a milestone to you in their ${projectTitle} project.`,
+                type: "Milestone_Assigned",
+                project_id: projectId,
+            },
+        ]);
+    if (notificationError) {
+        console.error(notificationError);
+        throw new Error(errorMessageMaker(notificationError.message));
     }
 }
 

@@ -1,12 +1,11 @@
-import type { MilestonesFromBackendType, UserType } from "@/Types";
+import type { MilestonesFromBackendType } from "@/Types";
 import { Button } from "./ui/button";
 
 type PropsType = {
     milestoneData: MilestonesFromBackendType;
-    user: UserType;
 };
 
-const MilestoneCard = ({ milestoneData, user }: PropsType) => {
+const MilestoneCard = ({ milestoneData }: PropsType) => {
     return (
         <div className="group relative w-[340px] rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
             {/* STATUS BADGE */}
@@ -23,8 +22,10 @@ const MilestoneCard = ({ milestoneData, user }: PropsType) => {
             </span>
 
             {/* TITLE */}
-            <h2 className="max-w-[85%] truncate text-base font-semibold text-gray-900">
-                {milestoneData.title}
+            <h2 className=" max-w-[85%] truncate text-base font-semibold text-gray-900">
+                {milestoneData.title.length > 20
+                    ? `${milestoneData.title.slice(0, 20)}...`
+                    : `${milestoneData.title}`}
             </h2>
 
             {/* DESCRIPTION */}
@@ -60,11 +61,10 @@ const MilestoneCard = ({ milestoneData, user }: PropsType) => {
             <p className="mt-4 text-[11px] text-gray-400">
                 Created on {new Date(milestoneData.created_at).toLocaleDateString()}
             </p>
-            {user.role === "freelancer" && user.id === milestoneData.freelancer.id && (
-                <Button variant="custom" className="mt-2 w-full">
-                    Open
-                </Button>
-            )}
+
+            <Button variant="custom" className="mt-2 w-full">
+                Open
+            </Button>
         </div>
     );
 };
