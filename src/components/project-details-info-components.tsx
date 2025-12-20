@@ -52,7 +52,7 @@ const ProjectDetailsInfoComponent = ({ data, user }: Props) => {
                 <h2 className="text-2xl font-semibold text-gray-900 mb-3">
                     Project Client
                 </h2>
-                <div className="bg-white rounded-xl border border-gray-100 p-5 flex flex-col items-center text-center w-[300px] shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+                <div className="bg-white rounded-xl border border-gray-100 p-5 flex flex-col items-center text-center w-[300px] shadow-[0_3px_10px_rgb(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                     <img
                         src={data.client.profile_pic}
                         alt="profile-pic"

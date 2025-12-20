@@ -12,7 +12,7 @@ type PropsType = {
 const FreelancerCard = (props: PropsType) => {
     return (
         <div
-            className={`bg-white rounded-2xl transition-all duration-200 border border-gray-200 p-4 flex flex-col w-[340px] justify-between shadow-[0_3px_10px_rgb(0,0,0,0.2)] ${
+            className={`bg-white rounded-2xl transition-all duration-300 border border-gray-200 p-4 flex flex-col w-[340px] justify-between shadow-[0_3px_10px_rgb(0,0,0,0.2)] hover:-translate-y-1 hover:shadow-lg ${
                 props.showInviteButton ? "h-[450px]" : "h-[420px]"
             } `}
         >
@@ -95,7 +95,6 @@ const FreelancerCard = (props: PropsType) => {
                     clientId={props.user.id}
                     freelancerId={props.data.id}
                     clientUsername={props.user.username}
-                    
                 />
             )}
         </div>

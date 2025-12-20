@@ -127,7 +127,11 @@ const ProjectDetialsClientPage = () => {
                     )}
 
                     {activeOption === "milestones" && (
-                        <ProjectDetialsMilestonesComponent />
+                        <ProjectDetialsMilestonesComponent
+                            freelancersData={data.project_and_freelancer_link}
+                            user={user}
+                            projectId={projectId as string}
+                        />
                     )}
                 </div>
             )}

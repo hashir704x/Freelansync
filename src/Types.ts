@@ -186,3 +186,20 @@ export type NotificationsFromBackendType = {
     project_id?: string;
     type: "Invitation_Accepted" | "Invitation_Rejected" | "Invitation_Recieved";
 };
+
+export type MilestonesFromBackendType = {
+    id: string;
+    title: string;
+    description: string;
+    amount: number;
+    project: string;
+    client: string;
+    created_at: string;
+    file: string | null;
+    freelancer: {
+        id: string;
+        profile_pic: string;
+        username: string;
+    };
+    status: "LOCKED" | "IN_PROGRESS";
+};

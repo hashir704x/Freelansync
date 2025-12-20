@@ -1,6 +1,5 @@
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -20,13 +19,40 @@ import {
 } from "./ui/select";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
+import type { FreelancerFromBackendType } from "@/Types";
+import { useMutation } from "@tanstack/react-query";
+import { createMilestone } from "@/api-functions/milestone-functions";
+import { Spinner } from "./ui/spinner";
 
-const CreateMilestoneDialog = () => {
+type PropsType = {
+    freelancersData: {
+        freelancer: FreelancerFromBackendType;
+    }[];
+    clientId: string;
+    projectId: string;
+};
+
+const CreateMilestoneDialog = (props: PropsType) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [amount, setAmount] = useState<number>(0);
     const [freelancerId, setFreelancerId] = useState("");
     const [open, setOpen] = useState(false);
+
+    const { isPending, mutate } = useMutation({
+        mutationFn: createMilestone,
+        onSuccess() {
+            toast.success("Milestone created successfully");
+            setOpen(false);
+            setAmount(0);
+            setDescription("");
+            setFreelancerId("");
+            setTitle("");
+        },
+        onError(error) {
+            toast.error(`Failed to created milestone: ${error.message}`);
+        },
+    });
 
     function handleCreateMilestone(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -40,9 +66,14 @@ const CreateMilestoneDialog = () => {
             return;
         }
 
-        
-
-        // setOpen(false);
+        mutate({
+            title: title,
+            amount: amount,
+            clientId: props.clientId,
+            description: description,
+            freelancerId: freelancerId,
+            projectId: props.projectId,
+        });
     }
 
     return (
@@ -105,16 +136,14 @@ const CreateMilestoneDialog = () => {
                                 <SelectValue placeholder="Pick Freelancer from project" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="Hashir Mahmood">
-                                    Hashir Mahmood
-                                </SelectItem>
-                                <SelectItem value="Junaid Nadeem">
-                                    Junaid Nadeem
-                                </SelectItem>
-                                <SelectItem value="Muhammad Ahsaan">
-                                    Muhammad Ahsaan
-                                </SelectItem>
-                                <SelectItem value="Abdul Mannan">Abdul Mannan</SelectItem>
+                                {props.freelancersData.map((item) => (
+                                    <SelectItem
+                                        key={item.freelancer.id}
+                                        value={item.freelancer.id}
+                                    >
+                                        <span> {item.freelancer.username}</span>
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
@@ -134,13 +163,14 @@ const CreateMilestoneDialog = () => {
                     </div>
 
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
                         <Button
+                            disabled={isPending}
                             variant="custom"
                             type="submit"
                             className="bg-(--my-blue) hover:bg-(--my-blue-light) cursor-pointer"
                         >
-                            Create
+                            {isPending && <Spinner />} Create
                         </Button>
                     </AlertDialogFooter>
                 </form>

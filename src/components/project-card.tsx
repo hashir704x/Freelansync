@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const ProjectCard = ({ projectData }: { projectData: ProjectFromBackendType }) => {
     const user = userStore((state) => state.user) as UserType;
     return (
-        <div className="border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-xl transition-all duration-300 w-[340px] flex flex-col justify-between">
+        <div className="border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-xl transition-all duration-300 w-[340px] flex flex-col justify-between hover:-translate-y-1">
             <h2 className="text-lg font-semibold text-gray-800 truncate">
                 {projectData.title}
             </h2>
@@ -32,7 +32,6 @@ const ProjectCard = ({ projectData }: { projectData: ProjectFromBackendType }) =
                 </span>
             </div>
 
-            {/* Required Skills */}
             <div className="flex flex-wrap gap-2 mt-3 items-center">
                 {projectData.domains.slice(0, 3).map((domain) => (
                     <span
@@ -49,7 +48,6 @@ const ProjectCard = ({ projectData }: { projectData: ProjectFromBackendType }) =
                 )}
             </div>
 
-            {/* Created at */}
             <p className="text-gray-400 text-xs mt-3">
                 Created: {new Date(projectData.created_at).toLocaleDateString()}
             </p>
