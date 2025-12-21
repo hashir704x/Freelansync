@@ -1,6 +1,9 @@
 import { supabaseClient } from "@/supabase-client";
 import { errorMessageMaker } from "./error-message-maker";
-import type { MilestonesFromBackendType } from "@/Types";
+import type {
+    MilestoneDetailesFromBackendType,
+    MilestonesFromBackendType,
+} from "@/Types";
 
 export async function createMilestone({
     title,
@@ -65,5 +68,23 @@ export async function getAllMilestonesForProject(
         console.error(error.message);
         throw new Error();
     }
+    return data;
+}
+
+export async function getMilestoneDetailsById(
+    milestoneId: string
+): Promise<MilestoneDetailesFromBackendType> {
+    const { data, error } = await supabaseClient
+        .from("milestones")
+        .select(
+            "*, freelancer(id, username, profile_pic, domains, email), client(id, username, email, profile_pic), project(id, title, description, budget, domains, status)"
+        )
+        .eq("id", milestoneId)
+        .single();
+    if (error) {
+        console.error(error.message);
+        throw new Error();
+    }
+    console.log(data);
     return data;
 }

@@ -27,6 +27,9 @@ import ProjectDetailsFreelancerPage from "./pages/freelancer-pages/Project-detai
 import ClientDetailsFreelancerPage from "./pages/freelancer-pages/Client-details-freelancer-page";
 import FreelancerOpenViewPage from "./pages/freelancer-pages/Freelancer-open-view-page";
 
+// common pages
+import MilestoneDetailsPage from "./pages/common-pages/Milestone-details-page";
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -69,6 +72,10 @@ const router = createBrowserRouter([
                 path: "all-freelancers",
                 element: <AllFreelancersClientPage />,
             },
+            {
+                path: "milestone-details/:milestoneId",
+                element: <MilestoneDetailsPage />,
+            },
         ],
     },
     {
@@ -96,6 +103,10 @@ const router = createBrowserRouter([
             {
                 path: "freelancer-details/:freelancerId",
                 element: <FreelancerOpenViewPage />,
+            },
+            {
+                path: "milestone-details/:milestoneId",
+                element: <MilestoneDetailsPage />,
             },
         ],
     },

@@ -65,7 +65,11 @@ const ProjectDetialsMilestonesComponent = (props: PropsType) => {
             {data && data.length >= 1 && (
                 <div className="mt-5 flex gap-8 flex-wrap">
                     {data.map((item) => (
-                        <MilestoneCard key={item.id} milestoneData={item} />
+                        <MilestoneCard
+                            key={item.id}
+                            milestoneData={item}
+                            userRole={props.user.role}
+                        />
                     ))}
                 </div>
             )}

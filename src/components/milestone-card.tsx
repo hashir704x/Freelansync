@@ -1,13 +1,15 @@
 import type { MilestonesFromBackendType } from "@/Types";
 import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
 
 type PropsType = {
     milestoneData: MilestonesFromBackendType;
+    userRole: "client" | "freelancer";
 };
 
-const MilestoneCard = ({ milestoneData }: PropsType) => {
+const MilestoneCard = ({ milestoneData, userRole }: PropsType) => {
     return (
-        <div className="group relative w-[340px] rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+        <div className="group relative w-[340px] rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col justify-between">
             {/* STATUS BADGE */}
             <span
                 className={`absolute right-4 top-4 rounded-full px-3 py-1 text-[11px] font-semibold tracking-wide ${
@@ -61,10 +63,15 @@ const MilestoneCard = ({ milestoneData }: PropsType) => {
             <p className="mt-4 text-[11px] text-gray-400">
                 Created on {new Date(milestoneData.created_at).toLocaleDateString()}
             </p>
-
-            <Button variant="custom" className="mt-2 w-full">
-                Open
-            </Button>
+            <Link
+                to={`${
+                    userRole === "client" ? "/client" : "/freelancer"
+                }/milestone-details/${milestoneData.id}`}
+            >
+                <Button variant="custom" className="mt-2 w-full">
+                    Open
+                </Button>
+            </Link>
         </div>
     );
 };

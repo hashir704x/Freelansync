@@ -205,5 +205,36 @@ export type MilestonesFromBackendType = {
         profile_pic: string;
         username: string;
     };
-    status: "LOCKED" | "IN_PROGRESS";
+    status: "LOCKED" | "IN_PROGRESS" | "SUBMITTED";
+};
+
+export type MilestoneDetailesFromBackendType = {
+    id: string;
+    title: string;
+    description: string;
+    amount: number;
+    client: {
+        id: string;
+        username: string;
+        profile_pic: string;
+        email: string;
+    };
+    created_at: string;
+    file: string | null;
+    freelancer: {
+        id: string;
+        profile_pic: string;
+        username: string;
+        domains: string[];
+        email: string;
+    };
+    project: {
+        id: string;
+        title: string;
+        description: string;
+        budget: string;
+        domains: string[];
+        status: "DRAFT";
+    };
+    status: "LOCKED" | "IN_PROGRESS" | "SUBMITTED";
 };

@@ -48,7 +48,6 @@ export async function getAllProjectsForClient(
 export async function getProjectDetailsById(
     projectId: string
 ): Promise<ProjectDetailsByIdFromBackendType> {
-    console.log("get project details called");
     const { data, error } = await supabaseClient
         .from("projects")
         .select(
