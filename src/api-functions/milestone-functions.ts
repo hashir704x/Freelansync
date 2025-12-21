@@ -3,6 +3,7 @@ import { errorMessageMaker } from "./error-message-maker";
 import type {
     MilestoneDetailesFromBackendType,
     MilestonesFromBackendType,
+    MilestoneStatusType,
 } from "@/Types";
 
 export async function createMilestone({
@@ -85,6 +86,22 @@ export async function getMilestoneDetailsById(
         console.error(error.message);
         throw new Error();
     }
-    console.log(data);
     return data;
+}
+
+export async function updateMilestoneStatus({
+    milestoneId,
+    status,
+}: {
+    milestoneId: string;
+    status: MilestoneStatusType;
+}): Promise<void> {
+    const { error } = await supabaseClient
+        .from("milestones")
+        .update({ status: status })
+        .eq("id", milestoneId);
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
+    }
 }

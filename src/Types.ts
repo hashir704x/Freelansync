@@ -191,6 +191,8 @@ export type NotificationsFromBackendType = {
         | "Milestone_Assigned";
 };
 
+export type MilestoneStatusType = "LOCKED" | "IN_PROGRESS" | "COMPLETED" | "SUBMITTED";
+
 export type MilestonesFromBackendType = {
     id: string;
     title: string;
@@ -205,7 +207,7 @@ export type MilestonesFromBackendType = {
         profile_pic: string;
         username: string;
     };
-    status: "LOCKED" | "IN_PROGRESS" | "SUBMITTED";
+    status: MilestoneStatusType;
 };
 
 export type MilestoneDetailesFromBackendType = {
@@ -236,5 +238,5 @@ export type MilestoneDetailesFromBackendType = {
         domains: string[];
         status: "DRAFT";
     };
-    status: "LOCKED" | "IN_PROGRESS" | "SUBMITTED";
+    status: MilestoneStatusType;
 };

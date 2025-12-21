@@ -6,6 +6,7 @@ import type { UserType } from "@/Types";
 import { useQuery } from "@tanstack/react-query";
 import { FileText, Lock } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import UpadateMilestoneStatusDialog from "@/components/update-milestone-status-dialog";
 
 const MilestoneDetailsPage = () => {
     const user = userStore((state) => state.user) as UserType;
@@ -43,7 +44,7 @@ const MilestoneDetailsPage = () => {
                             {data.description ||
                                 "No description provided for this milestone."}
                         </p>
-                        <div className="flex flex-wrap gap-6 text-sm">
+                        <div className="flex flex-wrap gap-6 text-sm items-center">
                             <span className="px-4 py-1.5 font-medium text-white bg-(--my-blue) rounded-full shadow">
                                 💰 Rs {data.amount.toLocaleString()}
                             </span>
@@ -62,6 +63,12 @@ const MilestoneDetailsPage = () => {
                                 {data.status.replace("_", " ")}
                             </span>
                         </div>
+                        {user.role === "client" && user.id === data.client.id && (
+                            <UpadateMilestoneStatusDialog
+                                milestoneStatus={data.status}
+                                milestoneId={milestoneId as string}
+                            />
+                        )}
                     </div>
 
                     {/* Project Details */}
@@ -151,9 +158,17 @@ const MilestoneDetailsPage = () => {
                                 Milestone Submission
                             </h2>
 
-                            {data.status === "IN_PROGRESS" ? (
+                            {data.status === "LOCKED" && (
+                                <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col items-center justify-center text-center mt-4">
+                                    <Lock className="h-12 w-12 text-(--my-blue) mb-3" />
+                                    <p className="text-gray-500 font-medium text-sm">
+                                        Milestone is Locked
+                                    </p>
+                                </div>
+                            )}
+
+                            {data.status === "IN_PROGRESS" && (
                                 <div>
-                                    {" "}
                                     <div className="mb-4">
                                         <label className="text-gray-700 font-medium mb-1 block">
                                             Submission Description
@@ -178,14 +193,10 @@ const MilestoneDetailsPage = () => {
                                         Submit Milestone
                                     </button>
                                 </div>
-                            ) : (
-                                <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col items-center justify-center text-center mt-4">
-                                    <Lock className="h-12 w-12 text-(--my-blue) mb-3" />
-                                    <p className="text-gray-500 font-medium text-sm">
-                                        Milestone is Locked
-                                    </p>
-                                </div>
                             )}
+
+                            {data.status === "SUBMITTED" ||
+                                (data.status === "COMPLETED" && <div>Submissions</div>)}
                         </div>
                     )}
 
@@ -194,9 +205,17 @@ const MilestoneDetailsPage = () => {
                             <h2 className="text-2xl font-semibold text-(--my-blue) mb-4">
                                 Milestone Submission Overview
                             </h2>
-                            {data.status === "SUBMITTED" ? (
-                                <div></div>
-                            ) : (
+
+                            {data.status === "LOCKED" && (
+                                <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col items-center justify-center text-center mt-4">
+                                    <Lock className="h-12 w-12 text-(--my-blue) mb-3" />
+                                    <p className="text-gray-500 font-medium text-sm">
+                                        Milestone is Locked
+                                    </p>
+                                </div>
+                            )}
+
+                            {data.status === "IN_PROGRESS" && (
                                 <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col items-center justify-center text-center mt-4">
                                     <FileText className="h-12 w-12 text-(--my-blue) mb-3" />
                                     <p className="text-gray-500 font-medium text-sm">
@@ -204,6 +223,9 @@ const MilestoneDetailsPage = () => {
                                     </p>
                                 </div>
                             )}
+
+                            {data.status === "SUBMITTED" ||
+                                (data.status === "COMPLETED" && <div>Submissions</div>)}
                         </div>
                     )}
                 </div>
