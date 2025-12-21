@@ -42,7 +42,7 @@ export async function createMilestone({
         .insert([
             {
                 to_user_id: freelancerId,
-                title: "New Invitation",
+                title: "Milestone Assigned",
                 content: `Client ${clientUsername} has assigned a milestone to you in their ${projectTitle} project.`,
                 type: "Milestone_Assigned",
                 project_id: projectId,

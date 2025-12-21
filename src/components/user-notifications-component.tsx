@@ -143,7 +143,7 @@ const UserNotificationsComponent = () => {
                                                     ) {
                                                         queryClient.invalidateQueries({
                                                             queryKey: [
-                                                                "get-project-details",
+                                                                "get-all-milestones-for-project",
                                                                 item.project_id,
                                                             ],
                                                         });
