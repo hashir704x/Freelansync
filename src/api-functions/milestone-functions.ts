@@ -190,3 +190,14 @@ export async function submitMilestone({
         throw new Error(errorMessageMaker(notificationError.message));
     }
 }
+
+export async function deleteMilestoneSubmission(milestoneId: string) {
+    const { error } = await supabaseClient
+        .from("milestones")
+        .update({ status: "IN_PROGRESS", submission_description: null, file: null })
+        .eq("id", milestoneId);
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
+    }
+}

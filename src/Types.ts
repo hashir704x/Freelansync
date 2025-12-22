@@ -225,6 +225,7 @@ export type MilestoneDetailesFromBackendType = {
     };
     created_at: string;
     file: string | null;
+    submission_description: string;
     freelancer: {
         id: string;
         profile_pic: string;

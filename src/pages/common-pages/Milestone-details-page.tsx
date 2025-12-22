@@ -10,6 +10,7 @@ import UpadateMilestoneStatusDialog from "@/components/update-milestone-status-d
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import SubmitMilestoneDialog from "@/components/submit-milestone-dialog";
+import DeleteMilestoneSubmissionDialog from "@/components/delete-milestone-submission-dialog";
 
 const MilestoneDetailsPage = () => {
     const user = userStore((state) => state.user) as UserType;
@@ -279,8 +280,54 @@ const MilestoneDetailsPage = () => {
                                 </div>
                             )}
 
-                            {data.status === "SUBMITTED" ||
-                                (data.status === "COMPLETED" && <div>Submissions</div>)}
+                            {(data.status === "SUBMITTED" ||
+                                data.status === "COMPLETED") && (
+                                <div className="bg-white rounded-lg border border-gray-100 p-6 space-y-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+                                    <div className="flex justify-between items-center">
+                                        <h2 className="text-xl font-semibold text-gray-900">
+                                            Your Submission
+                                        </h2>
+                                        <DeleteMilestoneSubmissionDialog
+                                            milestoneId={milestoneId as string}
+                                            setSelectedFile={setSelectedFile}
+                                            setSubmissionDescription={
+                                                setSubmissionDescription
+                                            }
+                                        />
+                                    </div>
+
+                                    {/* Submission Description */}
+                                    {data.submission_description && (
+                                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                            <p className="text-gray-700 whitespace-pre-wrap">
+                                                {data.submission_description}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {/* Submitted File */}
+                                    {data.file && (
+                                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                            <div className="flex items-center gap-2">
+                                                <FileText className="h-5 w-5 text-(--my-blue)" />
+                                                <span className="text-gray-700 max-w-[200px] truncate">
+                                                    {data.file.split("/").pop()}
+                                                </span>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <Button variant="custom">Download</Button>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* If no submission exists */}
+                                    {!data.submission_description && !data.file && (
+                                        <p className="text-gray-500 text-sm">
+                                            No submission yet.
+                                        </p>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
 
