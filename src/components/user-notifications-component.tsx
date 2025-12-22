@@ -124,6 +124,28 @@ const UserNotificationsComponent = () => {
                                                         navigate(
                                                             `/client/project-details/${item.project_id}`
                                                         );
+                                                    } else if (
+                                                        item.type ===
+                                                            "Milestone_Submitted" &&
+                                                        item.milestone_id
+                                                    ) {
+                                                        queryClient.invalidateQueries({
+                                                            queryKey: [
+                                                                "get-all-milestones-for-project",
+                                                                item.project_id,
+                                                            ],
+                                                        });
+
+                                                        queryClient.invalidateQueries({
+                                                            queryKey: [
+                                                                "get-milestone-details-by-id",
+                                                                item.milestone_id,
+                                                            ],
+                                                        });
+
+                                                        navigate(
+                                                            `/client/project-details/${item.project_id}`
+                                                        );
                                                     }
                                                 } else {
                                                     if (

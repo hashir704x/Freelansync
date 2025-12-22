@@ -105,3 +105,88 @@ export async function updateMilestoneStatus({
         throw new Error(errorMessageMaker(error.message));
     }
 }
+
+export async function submitMilestone({
+    milestoneId,
+    description,
+    file,
+    clientId,
+    projectTitle,
+    projectId,
+    freelancerUsername,
+}: {
+    milestoneId: string;
+    description: string;
+    file: File | null;
+    clientId: string;
+    projectTitle: string;
+    projectId: string;
+    freelancerUsername: string;
+}): Promise<void> {
+    if (file) {
+        const fileName = `${Date.now()}-${file.name}`;
+        const { error: uploadError } = await supabaseClient.storage
+            .from("freelansync-media")
+            .upload(`milestones-media/${fileName}`, file, {
+                upsert: false,
+                cacheControl: "3600",
+                contentType: file.type,
+            });
+        if (uploadError) {
+            console.error(uploadError.message);
+            throw new Error(errorMessageMaker(uploadError.message));
+        }
+
+        const { data: fileData } = supabaseClient.storage
+            .from("freelansync-media")
+            .getPublicUrl(`milestones-media/${fileName}`);
+        if (!fileData.publicUrl) {
+            console.error("Error! Failed to get file  public url");
+            throw new Error(
+                errorMessageMaker("Failed to upload file, Failed to get public url")
+            );
+        }
+
+        const { error: updateError } = await supabaseClient
+            .from("milestones")
+            .update({
+                submission_description: description,
+                file: fileData.publicUrl,
+                status: "SUBMITTED",
+            })
+            .eq("id", milestoneId);
+        if (updateError) {
+            console.error(updateError.message);
+            throw new Error(errorMessageMaker(updateError.message));
+        }
+    } else {
+        const { error: updateError } = await supabaseClient
+            .from("milestones")
+            .update({
+                submission_description: description,
+                status: "SUBMITTED",
+            })
+            .eq("id", milestoneId);
+        if (updateError) {
+            console.error(updateError.message);
+            throw new Error(errorMessageMaker(updateError.message));
+        }
+    }
+
+    const { error: notificationError } = await supabaseClient
+        .from("notifications")
+        .insert([
+            {
+                to_user_id: clientId,
+                title: "Milestone Submitted",
+                content: `Freelancer ${freelancerUsername} has submitted a milestone in your ${projectTitle} project.`,
+                type: "Milestone_Submitted",
+                project_id: projectId,
+                milestone_id: milestoneId,
+            },
+        ]);
+    if (notificationError) {
+        console.error(notificationError);
+        throw new Error(errorMessageMaker(notificationError.message));
+    }
+}

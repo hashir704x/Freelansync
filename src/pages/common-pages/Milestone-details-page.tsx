@@ -4,17 +4,42 @@ import { Spinner } from "@/components/ui/spinner";
 import { userStore } from "@/stores/user-store";
 import type { UserType } from "@/Types";
 import { useQuery } from "@tanstack/react-query";
-import { FileText, Lock } from "lucide-react";
+import { FileText, Lock, Upload, X } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import UpadateMilestoneStatusDialog from "@/components/update-milestone-status-dialog";
+import { useState, type FormEvent } from "react";
+import { toast } from "sonner";
+import SubmitMilestoneDialog from "@/components/submit-milestone-dialog";
 
 const MilestoneDetailsPage = () => {
     const user = userStore((state) => state.user) as UserType;
     const { milestoneId } = useParams();
+
     const { data, isLoading, isError } = useQuery({
         queryFn: () => getMilestoneDetailsById(milestoneId as string),
         queryKey: ["get-milestone-details-by-id", milestoneId],
     });
+
+    const [submissionDescription, setSubmissionDescription] = useState("");
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [openDialog, setOpenDialog] = useState(false);
+
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setSelectedFile(file);
+        e.target.value = "";
+    }
+
+    function handleSubmission(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        if (!submissionDescription) {
+            toast.error("Submission description is required");
+            return;
+        }
+        setOpenDialog(true);
+    }
+
     return (
         <div>
             <h1 className="text-2xl font-semibold h-[60px] border-b flex justify-center items-center shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
@@ -152,6 +177,7 @@ const MilestoneDetailsPage = () => {
                         </div>
                     </div>
 
+                    {/* freelancer view */}
                     {user.role === "freelancer" && user.id === data.freelancer.id && (
                         <div className="mb-8">
                             <h2 className="text-2xl font-semibold text-gray-900 mb-3">
@@ -169,29 +195,87 @@ const MilestoneDetailsPage = () => {
 
                             {data.status === "IN_PROGRESS" && (
                                 <div>
-                                    <div className="mb-4">
-                                        <label className="text-gray-700 font-medium mb-1 block">
-                                            Submission Description
-                                        </label>
-                                        <textarea
-                                            rows={4}
-                                            placeholder="Explain what you have completed for this milestone..."
-                                            className="w-full rounded-xl border border-gray-300 p-3 text-sm outline-none focus:ring-2 focus:ring-(--my-blue)"
-                                        />
-                                    </div>
-                                    <div className="mb-4">
-                                        <label className="text-gray-700 font-medium mb-1 block">
-                                            Upload Files
-                                        </label>
-                                        <input
-                                            type="file"
-                                            multiple
-                                            className="w-full rounded-xl border border-dashed border-gray-300 p-4 text-sm text-gray-500 cursor-pointer"
-                                        />
-                                    </div>
-                                    <button className="px-6 py-2 rounded-xl bg-(--my-blue) text-white font-medium hover:bg-(--my-blue-light) transition">
-                                        Submit Milestone
-                                    </button>
+                                    <form onSubmit={handleSubmission}>
+                                        <div className="mb-4">
+                                            <label className="text-gray-700 font-medium mb-1 block">
+                                                Submission Description
+                                            </label>
+                                            <textarea
+                                                value={submissionDescription}
+                                                onChange={(e) =>
+                                                    setSubmissionDescription(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                rows={4}
+                                                placeholder="Explain what you have completed for this milestone..."
+                                                className="w-full rounded-xl border border-gray-300 p-3 text-sm outline-none focus:ring-2 focus:ring-(--my-blue)"
+                                            />
+                                        </div>
+                                        <div className="mb-6">
+                                            <label className="text-gray-800 font-semibold mb-2 block">
+                                                Upload File{" "}
+                                                <span className="text-gray-400 text-sm">
+                                                    (optional)
+                                                </span>
+                                            </label>
+
+                                            <div>
+                                                {!selectedFile ? (
+                                                    <div className="flex items-center gap-4">
+                                                        <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-300 bg-white text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-50 transition">
+                                                            <Upload className="h-4 w-4 text-(--my-blue)" />
+                                                            Choose file
+                                                            <input
+                                                                type="file"
+                                                                onChange={
+                                                                    handleFileChange
+                                                                }
+                                                                className="hidden"
+                                                            />
+                                                        </label>
+
+                                                        <span className="text-xs text-gray-400">
+                                                            PDF, ZIP, JPG • Max 3MB
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center gap-3 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50">
+                                                        <FileText className="h-4 w-4 text-(--my-blue)" />
+
+                                                        <span className="text-sm text-gray-700 max-w-[220px] truncate">
+                                                            {selectedFile.name}
+                                                        </span>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setSelectedFile(null)
+                                                            }
+                                                            className="text-gray-400 hover:text-red-500 transition"
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <Button type="submit" variant="custom">
+                                            Submit Milestone
+                                        </Button>
+                                    </form>
+
+                                    <SubmitMilestoneDialog
+                                        openDialog={openDialog}
+                                        setOpenDialog={setOpenDialog}
+                                        selectedFile={selectedFile}
+                                        submissionDescription={submissionDescription}
+                                        projectId={data.project.id}
+                                        clientId={data.client.id}
+                                        freelancerUsername={user.username}
+                                        projectTitle={data.project.title}
+                                    />
                                 </div>
                             )}
 
@@ -200,6 +284,7 @@ const MilestoneDetailsPage = () => {
                         </div>
                     )}
 
+                    {/* client view */}
                     {user.role === "client" && user.id === data.client.id && (
                         <div className="mb-8">
                             <h2 className="text-2xl font-semibold text-(--my-blue) mb-4">

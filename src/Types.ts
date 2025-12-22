@@ -184,11 +184,13 @@ export type NotificationsFromBackendType = {
     to_user_id: string;
     created_at: string;
     project_id?: string;
+    milestone_id?: string;
     type:
         | "Invitation_Accepted"
         | "Invitation_Rejected"
         | "Invitation_Recieved"
-        | "Milestone_Assigned";
+        | "Milestone_Assigned"
+        | "Milestone_Submitted";
 };
 
 export type MilestoneStatusType = "LOCKED" | "IN_PROGRESS" | "COMPLETED" | "SUBMITTED";
