@@ -283,7 +283,7 @@ const MilestoneDetailsPage = () => {
                             {(data.status === "SUBMITTED" ||
                                 data.status === "COMPLETED") && (
                                 <div className="bg-white rounded-lg border border-gray-100 p-6 space-y-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-                                    <div className="flex justify-between items-center">
+                                    <div className="flex justify-between items-center flex-wrap gap-3">
                                         <h2 className="text-xl font-semibold text-gray-900">
                                             Your Submission
                                         </h2>
@@ -307,7 +307,7 @@ const MilestoneDetailsPage = () => {
 
                                     {/* Submitted File */}
                                     {data.file && (
-                                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                        <div className="flex items-center justify-between p-4 gap-4 flex-wrap bg-gray-50 rounded-lg border border-gray-200">
                                             <div className="flex items-center gap-2">
                                                 <FileText className="h-5 w-5 text-(--my-blue)" />
                                                 <span className="text-gray-700 max-w-[200px] truncate">
@@ -318,13 +318,6 @@ const MilestoneDetailsPage = () => {
                                                 <Button variant="custom">Download</Button>
                                             </div>
                                         </div>
-                                    )}
-
-                                    {/* If no submission exists */}
-                                    {!data.submission_description && !data.file && (
-                                        <p className="text-gray-500 text-sm">
-                                            No submission yet.
-                                        </p>
                                     )}
                                 </div>
                             )}
@@ -356,8 +349,38 @@ const MilestoneDetailsPage = () => {
                                 </div>
                             )}
 
-                            {data.status === "SUBMITTED" ||
-                                (data.status === "COMPLETED" && <div>Submissions</div>)}
+                            {(data.status === "SUBMITTED" ||
+                                data.status === "COMPLETED") && (
+                                <div className="bg-white rounded-lg border border-gray-100 p-6 space-y-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+                                    <h2 className="text-xl font-semibold text-gray-900">
+                                        Milestone Submission
+                                    </h2>
+
+                                    {/* Submission Description */}
+                                    {data.submission_description && (
+                                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                            <p className="text-gray-700 whitespace-pre-wrap">
+                                                {data.submission_description}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {/* Submitted File */}
+                                    {data.file && (
+                                        <div className="flex items-center justify-between flex-wrap gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                            <div className="flex items-center gap-2">
+                                                <FileText className="h-5 w-5 text-(--my-blue)" />
+                                                <span className="text-gray-700 max-w-[200px] truncate">
+                                                    {data.file.split("/").pop()}
+                                                </span>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <Button variant="custom">Download</Button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
