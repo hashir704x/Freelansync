@@ -83,18 +83,22 @@ const MilestoneDetailsPage = () => {
                                         ? "bg-red-100 text-red-700"
                                         : data.status === "IN_PROGRESS"
                                         ? "bg-blue-100 text-blue-700"
-                                        : "bg-green-100 text-green-700"
+                                        : data.status === "SUBMITTED"
+                                        ? "bg-green-100 text-green-700"
+                                        : "bg-gray-200 text-gray-700"
                                 }`}
                             >
                                 {data.status.replace("_", " ")}
                             </span>
                         </div>
-                        {user.role === "client" && user.id === data.client.id && (
-                            <UpadateMilestoneStatusDialog
-                                milestoneStatus={data.status}
-                                milestoneId={milestoneId as string}
-                            />
-                        )}
+                        {user.role === "client" &&
+                            user.id === data.client.id &&
+                            data.status !== "COMPLETED" && (
+                                <UpadateMilestoneStatusDialog
+                                    milestoneStatus={data.status}
+                                    milestoneId={milestoneId as string}
+                                />
+                            )}
                     </div>
 
                     {/* Project Details */}
@@ -287,13 +291,16 @@ const MilestoneDetailsPage = () => {
                                         <h2 className="text-xl font-semibold text-gray-900">
                                             Your Submission
                                         </h2>
-                                        <DeleteMilestoneSubmissionDialog
-                                            milestoneId={milestoneId as string}
-                                            setSelectedFile={setSelectedFile}
-                                            setSubmissionDescription={
-                                                setSubmissionDescription
-                                            }
-                                        />
+                                        {data.status === "SUBMITTED" && (
+                                            <DeleteMilestoneSubmissionDialog
+                                                projectId={data.project.id}
+                                                milestoneId={milestoneId as string}
+                                                setSelectedFile={setSelectedFile}
+                                                setSubmissionDescription={
+                                                    setSubmissionDescription
+                                                }
+                                            />
+                                        )}
                                     </div>
 
                                     {/* Submission Description */}

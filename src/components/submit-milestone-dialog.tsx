@@ -44,6 +44,10 @@ const SubmitMilestoneDialog = ({
             queryClient.invalidateQueries({
                 queryKey: ["get-milestone-details-by-id", milestoneId],
             });
+            queryClient.invalidateQueries({
+                queryKey: ["get-all-milestones-for-project", projectId],
+            });
+
             setOpenDialog(false);
         },
         onError(error) {

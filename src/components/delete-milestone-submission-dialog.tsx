@@ -19,10 +19,12 @@ const DeleteMilestoneSubmissionDialog = ({
     milestoneId,
     setSelectedFile,
     setSubmissionDescription,
+    projectId,
 }: {
     milestoneId: string;
     setSelectedFile: Dispatch<SetStateAction<File | null>>;
     setSubmissionDescription: Dispatch<SetStateAction<string>>;
+    projectId: string;
 }) => {
     const queryClient = useQueryClient();
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -34,6 +36,10 @@ const DeleteMilestoneSubmissionDialog = ({
             setSubmissionDescription("");
             queryClient.invalidateQueries({
                 queryKey: ["get-milestone-details-by-id", milestoneId],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["get-all-milestones-for-project", projectId],
             });
             setOpenDeleteDialog(false);
         },

@@ -51,6 +51,7 @@ const UpadateMilestoneStatusDialog = ({
             toast.error(`Failed to update status: ${error.message}`);
         },
     });
+
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogTrigger asChild className="mt-5">
@@ -71,7 +72,7 @@ const UpadateMilestoneStatusDialog = ({
                 </AlertDialogHeader>
 
                 <div className="flex-1">
-                    <p className="mb-1 text-sm">Update Choice</p>
+                    <p className="mb-1 text-sm">Update Options</p>
                     <Select
                         value={selectedChoice}
                         onValueChange={(value) =>
@@ -84,7 +85,7 @@ const UpadateMilestoneStatusDialog = ({
                         <SelectContent>
                             {StatusChoices.map((item) => (
                                 <SelectItem key={item} value={item}>
-                                    <span> {item}</span>
+                                    <span>{item}</span>
                                 </SelectItem>
                             ))}
                         </SelectContent>
