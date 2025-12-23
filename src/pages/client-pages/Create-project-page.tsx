@@ -4,7 +4,7 @@ import DomainPicker from "@/components/domain-picker";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProject } from "@/api-functions/project-functions";
 import { userStore } from "@/stores/user-store";
 import type { UserType } from "@/Types";
@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 const CreateProjectPage = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     // zustand states
     const user = userStore((state) => state.user) as UserType;
@@ -27,6 +28,9 @@ const CreateProjectPage = () => {
         mutationFn: createProject,
         onSuccess(projectId) {
             navigate(`/client/project-details/${projectId}`);
+            queryClient.invalidateQueries({
+                queryKey: ["get-all-projects-for-client"],
+            });
         },
         onError(error) {
             toast.error(`Failed to create project, ${error.message}`);

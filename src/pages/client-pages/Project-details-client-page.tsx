@@ -108,6 +108,17 @@ const ProjectDetialsClientPage = () => {
                                 <span className="text-gray-400">🧠</span>
                                 {data.skills.length} skills required
                             </span>
+                            <span
+                                className={`text-sm font-semibold px-3 py-2 rounded-full ${
+                                    data.status === "DRAFT"
+                                        ? "bg-yellow-100 text-yellow-800"
+                                        : data.status === "ACTIVE"
+                                        ? "bg-blue-100 text-blue-800"
+                                        : "bg-green-100 text-green-800"
+                                }`}
+                            >
+                                {data.status.replace("_", " ")}
+                            </span>
                         </div>
                     </div>
 

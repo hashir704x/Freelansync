@@ -23,7 +23,7 @@ const ProjectCard = ({ projectData }: { projectData: ProjectFromBackendType }) =
                     className={`text-xs font-semibold px-2 py-1 rounded-full ${
                         projectData.status === "DRAFT"
                             ? "bg-yellow-100 text-yellow-800"
-                            : projectData.status === "IN_PROGRESS"
+                            : projectData.status === "ACTIVE"
                             ? "bg-blue-100 text-blue-800"
                             : "bg-green-100 text-green-800"
                     }`}

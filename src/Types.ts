@@ -79,7 +79,7 @@ export type ProjectFromBackendType = {
     skills: string[];
     domains: string[];
     clientId: string;
-    status: "DRAFT";
+    status: "DRAFT" | "COMPLETED" | "DISPUTED" | "ACTIVE";
     created_at: string;
 };
 
@@ -90,7 +90,7 @@ export type ProjectDetailsByIdFromBackendType = {
     created_at: string;
     domains: string[];
     skills: string[];
-    status: "DRAFT";
+    status: "DRAFT" | "COMPLETED" | "DISPUTED" | "ACTIVE";
     budget: number;
 
     client: {
