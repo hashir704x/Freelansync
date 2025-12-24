@@ -254,10 +254,20 @@ export type ChatFromBackendType = {
         id: string;
         username: string;
         profile_pic: string;
-    }
+    };
     client?: {
         id: string;
         username: string;
         profile_pic: string;
-    }
+    };
+};
+
+export type MessageFromBackendType = {
+    chat_id: string;
+    created_at: string;
+    file_type: string | null;
+    id: number;
+    message_text: string;
+    sender_id: string;
+    sender_role: "client" | "freelancer";
 };

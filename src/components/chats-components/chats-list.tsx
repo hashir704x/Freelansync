@@ -1,14 +1,21 @@
 import type { ChatFromBackendType } from "@/Types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import type { Dispatch, SetStateAction } from "react";
 
-const ChatsList = ({ chatsData }: { chatsData: ChatFromBackendType[] }) => {
+type PropsType = {
+    activeChat: ChatFromBackendType | null;
+    setActiveChat: Dispatch<SetStateAction<ChatFromBackendType | null>>;
+    chatsData: ChatFromBackendType[];
+};
+
+const ChatsList = ({ chatsData, setActiveChat, activeChat }: PropsType) => {
     return (
         <div className="w-full h-full border-2 flex flex-col">
             <ScrollArea className="flex-1">
                 <div className="flex flex-col">
                     {chatsData.map((item) => {
-                        const isActive = false,
+                        const isActive = item.id === activeChat?.id,
                             isUnread = false;
                         const profilePic =
                             item.client?.profile_pic ||
@@ -21,6 +28,7 @@ const ChatsList = ({ chatsData }: { chatsData: ChatFromBackendType[] }) => {
                         return (
                             <div
                                 key={item.id}
+                                onClick={() => setActiveChat(item)}
                                 className={`flex items-center gap-3 px-4 py-3 cursor-pointer  transition-colors border-b
                                 ${
                                     isActive
@@ -63,6 +71,11 @@ const ChatsList = ({ chatsData }: { chatsData: ChatFromBackendType[] }) => {
                                             : `Click to chat with ${username}`}
                                     </div>
                                 </div>
+                                {isUnread && (
+                                    <div className="flex justify-center items-center">
+                                        <div className="w-2.5 h-2.5 bg-blue-600 rounded-full" />
+                                    </div>
+                                )}
                             </div>
                         );
                     })}

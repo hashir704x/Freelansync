@@ -12,7 +12,7 @@ import { Textarea } from "../ui/textarea";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNewChatByClient } from "@/api-functions/chats-functions";
 import { toast } from "sonner";
 
@@ -25,12 +25,16 @@ type PropsType = {
 };
 
 const ClientCreateChatDialog = (props: PropsType) => {
+    const queryClient = useQueryClient();
     const [message, setMessage] = useState("");
 
     const { mutate, isPending } = useMutation({
         mutationFn: createNewChatByClient,
         onSuccess() {
             props.setOpenCreateChatDialog(false);
+            queryClient.invalidateQueries({
+                queryKey: ["get-all-chats-for-user"],
+            });
             toast.success("Message sent successfully, you can view chat in chats page");
         },
         onError(error) {

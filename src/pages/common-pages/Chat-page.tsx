@@ -2,13 +2,16 @@ import { getAllChatsForUser } from "@/api-functions/chats-functions";
 import { Spinner } from "@/components/ui/spinner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { userStore } from "@/stores/user-store";
-import type { UserType } from "@/Types";
+import type { ChatFromBackendType, UserType } from "@/Types";
 import { useQuery } from "@tanstack/react-query";
-import { MessageCircleMore } from "lucide-react";
+import { MessageCircleMore, MessageSquare } from "lucide-react";
 import ChatsList from "@/components/chats-components/chats-list";
+import { useState } from "react";
+import ChatWindow from "@/components/chats-components/chat-window";
 
 const ChatPage = () => {
     const isMobile = useIsMobile();
+    const [activeChat, setActiveChat] = useState<ChatFromBackendType | null>(null);
     const user = userStore((state) => state.user) as UserType;
     const { data, isLoading, isError } = useQuery({
         queryFn: () => getAllChatsForUser({ userRole: user.role }),
@@ -48,8 +51,41 @@ const ChatPage = () => {
                     {isMobile ? (
                         <div>Mobile view</div>
                     ) : (
-                        <div>
-                            <ChatsList chatsData={data} />
+                        <div className="h-[calc(100vh-70px)] flex">
+                            <div className="min-w-72 h-full">
+                                <ChatsList
+                                    chatsData={data}
+                                    activeChat={activeChat}
+                                    setActiveChat={setActiveChat}
+                                />
+                            </div>
+
+                            {activeChat ? (
+                                <ChatWindow
+                                    activeChat={activeChat}
+                                    key={activeChat.id}
+                                    user={user}
+                                />
+                            ) : (
+                                <div className="flex-1 flex flex-col items-center justify-center text-center bg-gray-50">
+                                    <div className="flex flex-col items-center space-y-4 max-w-sm px-6">
+                                        <div className="p-6 bg-blue-100 rounded-full">
+                                            <MessageSquare className="w-10 h-10 text-blue-600" />
+                                        </div>
+
+                                        <h2 className="text-2xl font-semibold text-gray-700">
+                                            No chat selected
+                                        </h2>
+
+                                        <p className="text-gray-500 text-sm leading-relaxed">
+                                            Select a chat from the list to start
+                                            messaging.
+                                            <br />
+                                            Your conversations will appear here.
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

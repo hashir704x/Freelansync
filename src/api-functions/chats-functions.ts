@@ -1,6 +1,6 @@
 import { supabaseClient } from "@/supabase-client";
 import { errorMessageMaker } from "./error-message-maker";
-import type { ChatFromBackendType } from "@/Types";
+import type { ChatFromBackendType, MessageFromBackendType } from "@/Types";
 
 export async function checkChatExistance({ freelancerId }: { freelancerId: string }) {
     const { data, error } = await supabaseClient
@@ -18,21 +18,38 @@ export async function checkChatExistance({ freelancerId }: { freelancerId: strin
 export async function createNewChatByClient({
     clientId,
     freelancerId,
-}: // message,
-{
+    message,
+}: {
     clientId: string;
     freelancerId: string;
     message: string;
 }): Promise<void> {
-    const { error } = await supabaseClient.from("chats").insert([
-        {
-            client: clientId,
-            freelancer: freelancerId,
-        },
-    ]);
+    const { error, data } = await supabaseClient
+        .from("chats")
+        .insert([
+            {
+                client: clientId,
+                freelancer: freelancerId,
+            },
+        ])
+        .select("id")
+        .single();
     if (error) {
         console.error(error.message);
         throw new Error(errorMessageMaker(error.message));
+    }
+
+    const { error: messageError } = await supabaseClient.from("messages").insert([
+        {
+            chat_id: data.id,
+            sender_role: "client",
+            sender_id: clientId,
+            message_text: message,
+        },
+    ]);
+    if (messageError) {
+        console.error(messageError.message);
+        throw new Error(errorMessageMaker(messageError.message));
     }
 }
 
@@ -61,5 +78,50 @@ export async function getAllChatsForUser({
             throw new Error();
         }
         return data as unknown as ChatFromBackendType[];
+    }
+}
+
+export async function getMessagesForChat(
+    chatId: string
+): Promise<MessageFromBackendType[]> {
+    const { data, error } = await supabaseClient
+        .from("messages")
+        .select("*")
+        .eq("chat_id", chatId)
+        .order("created_at", { ascending: true });
+    if (error) {
+        console.error(error.message);
+        throw new Error();
+    }
+    return data;
+}
+
+export async function sendMessage({
+    chatId,
+    messageText,
+    senderId,
+    senderRole,
+}: {
+    chatId: string;
+    senderId: string;
+    senderRole: "client" | "freelancer";
+    messageText: string;
+}): Promise<void> {
+    console.log("send message called");
+    const { error } = await supabaseClient
+        .from("messages")
+        .insert([
+            {
+                chat_id: chatId,
+                sender_id: senderId,
+                sender_role: senderRole,
+                message_text: messageText,
+            },
+        ])
+        .select("id")
+        .single();
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
     }
 }
