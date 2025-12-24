@@ -246,3 +246,18 @@ export type MilestoneDetailesFromBackendType = {
     };
     status: MilestoneStatusType;
 };
+
+export type ChatFromBackendType = {
+    id: string;
+    created_at: string;
+    freelancer?: {
+        id: string;
+        username: string;
+        profile_pic: string;
+    }
+    client?: {
+        id: string;
+        username: string;
+        profile_pic: string;
+    }
+};
