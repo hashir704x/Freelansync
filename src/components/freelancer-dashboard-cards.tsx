@@ -1,16 +1,22 @@
 import { ArrowUp, Check, XCircle, Clock } from "lucide-react";
-import type { ProjectFromBackendType } from "@/Types";
+import type { AllProjectsForFreelancerFromBackendType } from "@/Types";
 
 type Props = {
-    projectsData: ProjectFromBackendType[];
+    projectsData: AllProjectsForFreelancerFromBackendType[];
 };
 
-export default function ClientDashboardCards({ projectsData }: Props) {
+export default function FreeLancerDashboardCards({ projectsData }: Props) {
     // Compute stats
     const totalProjects = projectsData.length;
-    const activeProjects = projectsData.filter((p) => p.status === "ACTIVE").length;
-    const completedProjects = projectsData.filter((p) => p.status === "COMPLETED").length;
-    const disputedProjects = projectsData.filter((p) => p.status === "DISPUTED").length;
+    const activeProjects = projectsData.filter(
+        (p) => p.project.status === "ACTIVE"
+    ).length;
+    const completedProjects = projectsData.filter(
+        (p) => p.project.status === "COMPLETED"
+    ).length;
+    const disputedProjects = projectsData.filter(
+        (p) => p.project.status === "DISPUTED"
+    ).length;
 
     const cards = [
         {

@@ -7,6 +7,8 @@ import type { UserType } from "@/Types";
 import { useQuery } from "@tanstack/react-query";
 import ClientDashboardCards from "@/components/client-dashboard-cards";
 import ProjectCard from "@/components/project-card";
+import DashboardUserCard from "@/components/dashboard-user-card";
+import DashboardMilestonesSection from "@/components/dashboard-milestones-section";
 
 const ClientDashboard = () => {
     const user = userStore((state) => state.user) as UserType;
@@ -37,6 +39,7 @@ const ClientDashboard = () => {
                     <div className="flex gap-4 flex-col justify-center lg:justify-start lg:flex-row">
                         <ClientDashboardPieChart projectsData={data} />
                         <ClientDashboardBarChart projectsData={data} />
+                        <DashboardUserCard user={user} />
                     </div>
 
                     <ClientDashboardCards projectsData={data} />
@@ -49,6 +52,8 @@ const ClientDashboard = () => {
                             ))}
                         </div>
                     </div>
+
+                    <DashboardMilestonesSection userData={user} />
                 </div>
             )}
         </div>

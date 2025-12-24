@@ -4,6 +4,7 @@ export type UserType = {
     email: string;
     role: "client" | "freelancer";
     profile_pic: string;
+    wallet_amount: number;
 };
 
 export type UserStoreType = {
@@ -29,6 +30,7 @@ export type SignupResponseType = {
     email: string;
     role: "freelancer" | "client";
     profile_pic: string;
+    wallet_amount: number;
 };
 
 export type LoginResponseType = {
@@ -37,6 +39,7 @@ export type LoginResponseType = {
     email: string;
     role: "freelancer" | "client";
     profile_pic: string;
+    wallet_amount: number;
 };
 
 export type ClientProfileOwnFromBackendType = {

@@ -45,6 +45,10 @@ const UpadateMilestoneStatusDialog = ({
             queryClient.invalidateQueries({
                 queryKey: ["get-milestone-details-by-id", milestoneId],
             });
+            queryClient.invalidateQueries({
+                queryKey: ["get-recent-milestones-for-user"],
+            });
+
             setOpen(false);
         },
         onError(error) {

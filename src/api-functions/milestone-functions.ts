@@ -201,3 +201,23 @@ export async function deleteMilestoneSubmission(milestoneId: string) {
         throw new Error(errorMessageMaker(error.message));
     }
 }
+
+export async function getRecentMilestonesForUser({
+    userId,
+    userRole,
+}: {
+    userId: string;
+    userRole: "client" | "freelancer";
+}): Promise<MilestonesFromBackendType[]> {
+    const { data, error } = await supabaseClient
+        .from("milestones")
+        .select("*, freelancer(id, username, profile_pic)")
+        .eq(userRole, userId)
+        .order("created_at", { ascending: false })
+        .limit(3);
+    if (error) {
+        console.error(error.message);
+        throw new Error();
+    }
+    return data;
+}

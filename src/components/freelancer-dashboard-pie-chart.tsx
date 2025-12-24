@@ -14,7 +14,7 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from "@/components/ui/chart";
-import type { ProjectFromBackendType } from "@/Types";
+import type { AllProjectsForFreelancerFromBackendType } from "@/Types";
 
 const chartConfig = {
     projects: {
@@ -39,10 +39,10 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 type Props = {
-    projectsData: ProjectFromBackendType[];
+    projectsData: AllProjectsForFreelancerFromBackendType[];
 };
 
-export default function ClientDashboardPieChart({ projectsData }: Props) {
+export default function FreelancerDashboardPieChart({ projectsData }: Props) {
     // Map backend data to chart-friendly format
     const chartData = React.useMemo(() => {
         const counts = {
@@ -53,7 +53,7 @@ export default function ClientDashboardPieChart({ projectsData }: Props) {
         };
 
         projectsData.forEach((project) => {
-            counts[project.status]++;
+            counts[project.project.status]++;
         });
 
         return [
@@ -70,7 +70,7 @@ export default function ClientDashboardPieChart({ projectsData }: Props) {
     );
 
     return (
-        <Card className="flex flex-col w-full flex-1">
+        <Card className="flex flex-col w-full ">
             <CardHeader className="items-center pb-0">
                 <CardTitle>Project Status Overview</CardTitle>
                 <CardDescription>
@@ -90,7 +90,8 @@ export default function ClientDashboardPieChart({ projectsData }: Props) {
                 <CardContent className="flex-1 pb-0 flex flex-col items-center">
                     <ChartContainer
                         config={chartConfig}
-                        className="w-full aspect-square h-[220px]"
+                        className="w-full aspect-square h-[260px]"
+                        // className="mx-auto aspect-square w-[280px] sm:w-[480px] h-[250px]"
                     >
                         <PieChart>
                             <ChartTooltip

@@ -1,5 +1,3 @@
-"use client";
-
 import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
@@ -17,7 +15,7 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from "@/components/ui/chart";
-import type { ProjectFromBackendType } from "@/Types";
+import type { AllProjectsForFreelancerFromBackendType } from "@/Types";
 
 export const description = "Projects budget distribution";
 
@@ -29,11 +27,11 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 type Props = {
-    projectsData: ProjectFromBackendType[];
+    projectsData: AllProjectsForFreelancerFromBackendType[];
 };
 
 // Map projects to new budget ranges
-function mapProjectsToBudgetRanges(projects: ProjectFromBackendType[]) {
+function mapProjectsToBudgetRanges(projects: AllProjectsForFreelancerFromBackendType[]) {
     const bins: Record<string, number> = {
         "0-5k": 0,
         "5k-20k": 0,
@@ -43,7 +41,7 @@ function mapProjectsToBudgetRanges(projects: ProjectFromBackendType[]) {
     };
 
     projects.forEach((p) => {
-        const budget = p.budget;
+        const budget = p.project.budget;
         if (budget <= 5000) bins["0-5k"]++;
         else if (budget <= 20000) bins["5k-20k"]++;
         else if (budget <= 50000) bins["20k-50k"]++;
@@ -57,12 +55,12 @@ function mapProjectsToBudgetRanges(projects: ProjectFromBackendType[]) {
     }));
 }
 
-export default function ClientDashboardBarChart({ projectsData }: Props) {
+export default function FreelancerDashboardBarChart({ projectsData }: Props) {
     const chartData = mapProjectsToBudgetRanges(projectsData);
     const totalProjects = chartData.reduce((acc, item) => acc + item.projects, 0);
 
     return (
-        <Card className="w-full flex-[1.5]">
+        <Card className="w-full">
             <CardHeader>
                 <CardTitle>Projects Budget Distribution</CardTitle>
                 <CardDescription>
@@ -80,9 +78,9 @@ export default function ClientDashboardBarChart({ projectsData }: Props) {
                 </div>
             ) : (
                 <div>
-                    <CardContent className="p-0">
-                        <ChartContainer config={chartConfig} className="">
-                            <BarChart data={chartData} margin={{ left: 4, right: 4 }}>
+                    <CardContent>
+                        <ChartContainer config={chartConfig}>
+                            <BarChart data={chartData} margin={{ left: 12, right: 12 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                 <XAxis
                                     dataKey="range"
@@ -104,13 +102,12 @@ export default function ClientDashboardBarChart({ projectsData }: Props) {
                         </ChartContainer>
                     </CardContent>
                     <CardFooter className="flex-col items-start gap-2 text-sm">
-                        <div className="flex gap-2 leading-none font-medium mt-4">
+                        <div className="flex gap-2 leading-none font-medium">
                             Total projects: {totalProjects}{" "}
                             <TrendingUp className="h-4 w-4" />
                         </div>
-                        <div className="text-muted-foreground">
-                            Showing how projects are distributed across different budget
-                            ranges
+                        <div className="text-muted-foreground leading-none">
+                            Showing how projects are distributed by budget ranges
                         </div>
                     </CardFooter>
                 </div>

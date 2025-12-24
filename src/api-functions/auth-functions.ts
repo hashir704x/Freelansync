@@ -1,14 +1,8 @@
 import { supabaseClient } from "@/supabase-client";
-import type {
-    SignupParamsType,
-    SignupResponseType,
-    LoginResponseType,
-} from "@/Types";
+import type { SignupParamsType, SignupResponseType, LoginResponseType } from "@/Types";
 import { errorMessageMaker } from "./error-message-maker";
 
-export async function signup(
-    params: SignupParamsType,
-): Promise<SignupResponseType> {
+export async function signup(params: SignupParamsType): Promise<SignupResponseType> {
     const authResponse = await supabaseClient.auth.signUp({
         email: params.email,
         password: params.password,
@@ -21,9 +15,7 @@ export async function signup(
     const userId = authResponse.data.user?.id;
     if (!userId) {
         console.error("User id not found");
-        throw new Error(
-            errorMessageMaker("Something went wrong, User id not found"),
-        );
+        throw new Error(errorMessageMaker("Something went wrong, User id not found"));
     }
 
     const rolesTableResponse = await supabaseClient
@@ -37,10 +29,8 @@ export async function signup(
     if (params.role === "client") {
         const clientResponse = await supabaseClient
             .from("clients")
-            .insert([
-                { id: userId, username: params.username, email: params.email },
-            ])
-            .select("id, email, username, role, profile_pic")
+            .insert([{ id: userId, username: params.username, email: params.email }])
+            .select("id, email, username, role, profile_pic, wallet_amount")
             .single();
         if (clientResponse.error) {
             console.error(clientResponse.error.message);
@@ -61,13 +51,11 @@ export async function signup(
                     skills: params.skills,
                 },
             ])
-            .select("id, email, username, role, profile_pic")
+            .select("id, email, username, role, profile_pic, wallet_amount")
             .single();
         if (freelancerResponse.error) {
             console.error(freelancerResponse.error.message);
-            throw new Error(
-                errorMessageMaker(freelancerResponse.error.message),
-            );
+            throw new Error(errorMessageMaker(freelancerResponse.error.message));
         }
 
         return freelancerResponse.data;
@@ -98,20 +86,17 @@ export async function login(params: {
 
     const userId = rolesTableResponse.data.id;
     let targetTable: "clients" | "freelancers" = "clients";
-    if (rolesTableResponse.data.role === "freelancer")
-        targetTable = "freelancers";
+    if (rolesTableResponse.data.role === "freelancer") targetTable = "freelancers";
 
     const targetRoleTableResponse = await supabaseClient
         .from(targetTable)
-        .select("id, email, username, role, profile_pic")
+        .select("id, email, username, role, profile_pic, wallet_amount")
         .eq("id", userId)
         .single();
 
     if (targetRoleTableResponse.error) {
         console.error(targetRoleTableResponse.error.message);
-        throw new Error(
-            errorMessageMaker(targetRoleTableResponse.error.message),
-        );
+        throw new Error(errorMessageMaker(targetRoleTableResponse.error.message));
     }
 
     return targetRoleTableResponse.data;

@@ -35,6 +35,7 @@ const LoginPage = () => {
                 profile_pic: data.profile_pic,
                 role: data.role,
                 username: data.username,
+                wallet_amount: data.wallet_amount,
             });
             navigate(`/${data.role}`);
         },
