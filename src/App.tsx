@@ -29,6 +29,7 @@ import FreelancerOpenViewPage from "./pages/freelancer-pages/Freelancer-open-vie
 
 // common pages
 import MilestoneDetailsPage from "./pages/common-pages/Milestone-details-page";
+import ChatPage from "./pages/common-pages/Chat-page";
 
 const router = createBrowserRouter([
     {
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
                 path: "milestone-details/:milestoneId",
                 element: <MilestoneDetailsPage />,
             },
+            {
+                path: "chats",
+                element: <ChatPage />,
+            },
         ],
     },
     {
@@ -107,6 +112,10 @@ const router = createBrowserRouter([
             {
                 path: "milestone-details/:milestoneId",
                 element: <MilestoneDetailsPage />,
+            },
+            {
+                path: "chats",
+                element: <ChatPage />,
             },
         ],
     },

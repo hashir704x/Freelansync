@@ -6,6 +6,7 @@ import {
     FilePlus,
     FolderKanban,
     HardHat,
+    MessageCircleMore,
 } from "lucide-react";
 import { userStore } from "@/stores/user-store";
 import { supabaseClient } from "@/supabase-client";
@@ -51,6 +52,11 @@ const items = [
         title: "View Freelancers",
         url: "/client/all-freelancers",
         icon: HardHat,
+    },
+    {
+        title: "Chats",
+        url: "/client/chats",
+        icon: MessageCircleMore,
     },
 ];
 
