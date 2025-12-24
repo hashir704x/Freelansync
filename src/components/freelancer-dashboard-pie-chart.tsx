@@ -70,7 +70,7 @@ export default function FreelancerDashboardPieChart({ projectsData }: Props) {
     );
 
     return (
-        <Card className="flex flex-col w-full ">
+        <Card className="flex flex-col w-full flex-1">
             <CardHeader className="items-center pb-0">
                 <CardTitle>Project Status Overview</CardTitle>
                 <CardDescription>

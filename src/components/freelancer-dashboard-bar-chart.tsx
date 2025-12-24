@@ -60,7 +60,7 @@ export default function FreelancerDashboardBarChart({ projectsData }: Props) {
     const totalProjects = chartData.reduce((acc, item) => acc + item.projects, 0);
 
     return (
-        <Card className="w-full">
+        <Card className="w-full flex-[1.5]">
             <CardHeader>
                 <CardTitle>Projects Budget Distribution</CardTitle>
                 <CardDescription>
@@ -71,16 +71,16 @@ export default function FreelancerDashboardBarChart({ projectsData }: Props) {
             {projectsData.length === 0 ? (
                 <div className="flex flex-col items-center justify-center">
                     <h2 className="text-xl font-medium mt-12">No Projects Yet</h2>
-                    <p className="w-[320px] text-center mt-2 text-gray-500 font-medium">
+                    <p className="text-center mt-2 text-gray-500 font-medium">
                         You haven't created any projects yet. Get started by creating your
                         first project.
                     </p>
                 </div>
             ) : (
                 <div>
-                    <CardContent>
+                    <CardContent className="p-0">
                         <ChartContainer config={chartConfig}>
-                            <BarChart data={chartData} margin={{ left: 12, right: 12 }}>
+                            <BarChart data={chartData} margin={{ left: 6, right: 6 }}>
                                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                 <XAxis
                                     dataKey="range"
@@ -102,12 +102,13 @@ export default function FreelancerDashboardBarChart({ projectsData }: Props) {
                         </ChartContainer>
                     </CardContent>
                     <CardFooter className="flex-col items-start gap-2 text-sm">
-                        <div className="flex gap-2 leading-none font-medium">
+                        <div className="flex gap-2 leading-none font-medium mt-6">
                             Total projects: {totalProjects}{" "}
                             <TrendingUp className="h-4 w-4" />
                         </div>
-                        <div className="text-muted-foreground leading-none">
-                            Showing how projects are distributed by budget ranges
+                        <div className="text-muted-foreground">
+                            Showing how projects are distributed across different budget
+                            ranges
                         </div>
                     </CardFooter>
                 </div>

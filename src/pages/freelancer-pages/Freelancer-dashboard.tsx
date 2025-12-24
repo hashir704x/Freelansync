@@ -1,14 +1,14 @@
 import { getAllProjectsForFreelancer } from "@/api-functions/project-functions";
-import ClientDashboardBarChart from "@/components/client-dashboard-bar-chart";
 import { Spinner } from "@/components/ui/spinner";
 import { userStore } from "@/stores/user-store";
 import type { UserType } from "@/Types";
 import { useQuery } from "@tanstack/react-query";
-import ClientDashboardCards from "@/components/client-dashboard-cards";
 import ProjectCard from "@/components/project-card";
 import FreelancerDashboardPieChart from "@/components/freelancer-dashboard-pie-chart";
 import FreelancerDashboardBarChart from "@/components/freelancer-dashboard-bar-chart";
 import FreeLancerDashboardCards from "@/components/freelancer-dashboard-cards";
+import DashboardUserCard from "@/components/dashboard-user-card";
+import DashboardMilestonesSection from "@/components/dashboard-milestones-section";
 
 const FreeLancerDashboard = () => {
     const user = userStore((state) => state.user) as UserType;
@@ -39,6 +39,7 @@ const FreeLancerDashboard = () => {
                     <div className="flex gap-4 flex-col justify-center lg:justify-start lg:flex-row">
                         <FreelancerDashboardPieChart projectsData={data} />
                         <FreelancerDashboardBarChart projectsData={data} />
+                        <DashboardUserCard user={user} />
                     </div>
 
                     <FreeLancerDashboardCards projectsData={data} />
@@ -54,6 +55,8 @@ const FreeLancerDashboard = () => {
                             ))}
                         </div>
                     </div>
+
+                    <DashboardMilestonesSection userData={user} />
                 </div>
             )}
         </div>
