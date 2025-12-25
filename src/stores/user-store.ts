@@ -9,9 +9,11 @@ const userStore = create(
             userExists: true,
             setUser: (user) => set({ user: user, userExists: true }),
             resetUser: () => set({ user: null, userExists: false }),
+            activeChat: null,
+            setActiveChat: (chat) => set({ activeChat: chat }),
         }),
-        { name: "user-store", storage: createJSONStorage(() => localStorage) },
-    ),
+        { name: "user-store", storage: createJSONStorage(() => localStorage) }
+    )
 );
 
 export { userStore };

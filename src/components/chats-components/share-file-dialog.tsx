@@ -31,6 +31,7 @@ const ShareFileDialog = (props: PropsType) => {
             props.setTargetFile(null);
             props.setOpenShareFileDialog(false);
             toast.success("File shared successfully!");
+            
         },
         onError(error) {
             toast.error(`Failed to share file: ${error.message}`);

@@ -80,6 +80,7 @@ export async function getAllChatsForUser({
 }: {
     userRole: "client" | "freelancer";
 }): Promise<ChatFromBackendType[]> {
+    console.log("Getting chats");
     if (userRole === "client") {
         const { data, error } = await supabaseClient
             .from("chats")
@@ -204,17 +205,63 @@ export async function uploadChatMedia({
     }
     const ext = file.name.split(".").pop()?.toLowerCase() || "file";
 
-    const { error: messageError } = await supabaseClient.from("messages").insert([
-        {
-            chat_id: chatId,
-            sender_id: senderId,
-            sender_role: senderRole,
-            message_text: fileData.publicUrl,
-            file_type: ext,
-        },
-    ]);
+    const { error: messageError, data } = await supabaseClient
+        .from("messages")
+        .insert([
+            {
+                chat_id: chatId,
+                sender_id: senderId,
+                sender_role: senderRole,
+                message_text: fileData.publicUrl,
+                file_type: ext,
+            },
+        ])
+        .select("id")
+        .single();
     if (messageError) {
         console.error(messageError.message);
         throw new Error(errorMessageMaker(messageError.message));
+    }
+
+    let targetCol = "message_id_read_by_client";
+    if (senderRole === "freelancer") targetCol = "message_id_read_by_freelancer";
+
+    const { error: chatUpdateError } = await supabaseClient
+        .from("chats")
+        .update({
+            latest_message_id: data.id,
+            last_updated_by: senderId,
+            [targetCol]: data.id,
+        })
+        .eq("id", chatId);
+
+    if (chatUpdateError) {
+        console.error(chatUpdateError.message);
+        throw new Error(errorMessageMaker(chatUpdateError.message));
+    }
+}
+
+export async function updateLastReadMessageCol({
+    chatId,
+    latestMessageId,
+    userRole,
+}: {
+    chatId: string;
+    userRole: "client" | "freelancer";
+    latestMessageId: number;
+}): Promise<void> {
+    console.log("Update last read");
+    const column =
+        userRole === "client"
+            ? "message_id_read_by_client"
+            : "message_id_read_by_freelancer";
+
+    const { error } = await supabaseClient
+        .from("chats")
+        .update({ [column]: latestMessageId })
+        .eq("id", chatId);
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
     }
 }

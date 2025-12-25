@@ -11,7 +11,7 @@ import {
 import { userStore } from "@/stores/user-store";
 import { supabaseClient } from "@/supabase-client";
 import { Link } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
     Sidebar,
@@ -27,6 +27,8 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { getAllChatsForUser } from "@/api-functions/chats-functions";
+import type { UserType } from "@/Types";
 
 const items = [
     {
@@ -58,8 +60,18 @@ const items = [
 
 export default function FreelancerSidebar() {
     const isMobile = useIsMobile();
+    const user = userStore((state) => state.user) as UserType;
+    const activeChat = userStore((state) => state.activeChat);
+
     const { toggleSidebar } = useSidebar();
     const queryClient = useQueryClient();
+
+    const { data } = useQuery({
+        queryFn: () => getAllChatsForUser({ userRole: "freelancer" }),
+        queryKey: ["get-all-chats-for-user"],
+        refetchInterval: 60 * 1000,
+        refetchIntervalInBackground: true,
+    });
 
     // zustand states
     const resetUser = userStore((state) => state.resetUser);
@@ -68,6 +80,20 @@ export default function FreelancerSidebar() {
         resetUser();
         await supabaseClient.auth.signOut();
         queryClient.clear();
+    }
+
+    let showUnreadBadge = false;
+    if (data) {
+        data.forEach((item) => {
+            if (
+                !item.message_id_read_by_freelancer ||
+                (item.last_updated_by !== user.id &&
+                    item.id !== activeChat?.id &&
+                    item.latest_message_id > item.message_id_read_by_freelancer)
+            ) {
+                showUnreadBadge = true;
+            }
+        });
     }
 
     return (
@@ -93,7 +119,16 @@ export default function FreelancerSidebar() {
                                                     if (isMobile) toggleSidebar();
                                                 }}
                                             >
-                                                <item.icon /> <span>{item.title}</span>
+                                                <item.icon />{" "}
+                                                <div className="flex items-center gap-2">
+                                                    {item.title}{" "}
+                                                    {item.title === "Chats" &&
+                                                        showUnreadBadge && (
+                                                            <span className="text-[10px] bg-(--my-blue) py-1 px-2 rounded-full text-white">
+                                                                New messages
+                                                            </span>
+                                                        )}
+                                                </div>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>

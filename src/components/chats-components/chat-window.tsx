@@ -1,4 +1,8 @@
-import { getMessagesForChat, sendMessage } from "@/api-functions/chats-functions";
+import {
+    getMessagesForChat,
+    sendMessage,
+    updateLastReadMessageCol,
+} from "@/api-functions/chats-functions";
 import type { ChatFromBackendType, MessageFromBackendType, UserType } from "@/Types";
 import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -8,6 +12,7 @@ import { toast } from "sonner";
 import { supabaseClient } from "@/supabase-client";
 import ShareFileDialog from "./share-file-dialog";
 import ImageViewPopup from "./image-view-popup";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ChatWindow = ({
     activeChat,
@@ -16,6 +21,7 @@ const ChatWindow = ({
     activeChat: ChatFromBackendType;
     user: UserType;
 }) => {
+    const queryClient = useQueryClient();
     const [messages, setMessages] = useState<MessageFromBackendType[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -30,6 +36,7 @@ const ChatWindow = ({
     const [imageViewUrl, setImageViewUrl] = useState<null | string>(null);
 
     const bottomRef = useRef<HTMLDivElement | null>(null);
+    const messagesRef = useRef<null | number>(null);
 
     useEffect(() => {
         (async function () {
@@ -63,11 +70,31 @@ const ChatWindow = ({
 
         return function () {
             if (channel) supabaseClient.removeChannel(channel);
+
+            (async function () {
+                try {
+                    if (messagesRef.current) {
+                        await updateLastReadMessageCol({
+                            chatId: activeChat.id,
+                            userRole: user.role,
+                            latestMessageId: messagesRef.current,
+                        });
+                        queryClient.invalidateQueries({
+                            queryKey: ["get-all-chats-for-user"],
+                        });
+                    }
+                } catch (error) {
+                    toast.error("Something went wrong in process");
+                }
+            })();
         };
     }, []);
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (messages.length > 0) {
+            messagesRef.current = messages[messages.length - 1].id;
+        }
     }, [messages]);
 
     async function handleSend() {

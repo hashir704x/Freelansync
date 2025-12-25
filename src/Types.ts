@@ -12,6 +12,8 @@ export type UserStoreType = {
     setUser: (user: UserType) => void;
     userExists: boolean;
     resetUser: () => void;
+    activeChat: ChatFromBackendType | null;
+    setActiveChat: (chat: ChatFromBackendType | null) => void;
 };
 
 export type SignupParamsType = {
@@ -275,4 +277,15 @@ export type MessageFromBackendType = {
     message_text: string;
     sender_id: string;
     sender_role: "client" | "freelancer";
+};
+
+export type ChatsStoreType = {
+    chatsDataArray: ChatFromBackendType[];
+    setChatsDataArray: (chats: ChatFromBackendType[]) => void;
+    activeChat: ChatFromBackendType | null;
+    setActiveChat: (chat: ChatFromBackendType | null) => void;
+    unreadChatsIds: string[];
+    addChatIdToUnreadChatsIds: (chatId: string) => void;
+    removeChatIdFromUnreadChatsIds: (chatId: string) => void;
+    clearUnreadChatsIds: () => void;
 };

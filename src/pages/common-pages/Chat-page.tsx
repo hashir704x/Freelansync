@@ -2,22 +2,32 @@ import { getAllChatsForUser } from "@/api-functions/chats-functions";
 import { Spinner } from "@/components/ui/spinner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { userStore } from "@/stores/user-store";
-import type { ChatFromBackendType, UserType } from "@/Types";
+import type { UserType } from "@/Types";
 import { useQuery } from "@tanstack/react-query";
 import { MessageCircleMore, MessageSquare } from "lucide-react";
 import ChatsList from "@/components/chats-components/chats-list";
-import { useState } from "react";
 import ChatWindow from "@/components/chats-components/chat-window";
+import { useEffect } from "react";
 
 const ChatPage = () => {
     const isMobile = useIsMobile();
-    const [activeChat, setActiveChat] = useState<ChatFromBackendType | null>(null);
+    // const [activeChat, setActiveChat] = useState<ChatFromBackendType | null>(null);
     const user = userStore((state) => state.user) as UserType;
+    const activeChat = userStore((state) => state.activeChat);
+    const setActiveChat = userStore((state) => state.setActiveChat);
 
     const { data, isLoading, isError } = useQuery({
         queryFn: () => getAllChatsForUser({ userRole: user.role }),
         queryKey: ["get-all-chats-for-user"],
+        refetchInterval: 60 * 1000,
+        refetchIntervalInBackground: true,
     });
+
+    useEffect(() => {
+        return function () {
+            setActiveChat(null);
+        };
+    }, []);
 
     return (
         <div>

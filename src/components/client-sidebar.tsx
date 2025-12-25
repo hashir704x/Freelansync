@@ -11,7 +11,7 @@ import {
 import { userStore } from "@/stores/user-store";
 import { supabaseClient } from "@/supabase-client";
 import { Link } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     Sidebar,
     SidebarContent,
@@ -26,6 +26,8 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { getAllChatsForUser } from "@/api-functions/chats-functions";
+import type { UserType } from "@/Types";
 
 const items = [
     {
@@ -67,6 +69,15 @@ export default function ClientSidebar() {
 
     // zustand states
     const resetUser = userStore((state) => state.resetUser);
+    const user = userStore((state) => state.user) as UserType;
+    const activeChat = userStore((state) => state.activeChat);
+
+    const { data } = useQuery({
+        queryFn: () => getAllChatsForUser({ userRole: "client" }),
+        queryKey: ["get-all-chats-for-user"],
+        refetchInterval: 60 * 1000,
+        refetchIntervalInBackground: true,
+    });
 
     async function handleLogout() {
         resetUser();
@@ -74,12 +85,24 @@ export default function ClientSidebar() {
         queryClient.clear();
     }
 
+    let showUnreadBadge = false;
+    if (data) {
+        data.forEach((item) => {
+            if (
+                item.id !== activeChat?.id &&
+                item.last_updated_by !== user.id &&
+                item.latest_message_id > item.message_id_read_by_client
+            ) {
+                showUnreadBadge = true;
+            }
+        });
+    }
     return (
         <div className="shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]">
             <Sidebar className="border">
                 <SidebarHeader>
                     <div className="flex justify-between items-center">
-                        <span className="font-semibold text-xl">Freelansync</span>{" "}
+                        <span className="font-semibold text-xl">Freelansync</span>
                         <CircleX className="md:hidden" onClick={toggleSidebar} />
                     </div>
                 </SidebarHeader>
@@ -97,7 +120,16 @@ export default function ClientSidebar() {
                                                     if (isMobile) toggleSidebar();
                                                 }}
                                             >
-                                                <item.icon /> <span>{item.title}</span>
+                                                <item.icon />{" "}
+                                                <span>
+                                                    {item.title}{" "}
+                                                    {item.title === "Chats" &&
+                                                        showUnreadBadge && (
+                                                            <span className="text-[10px] bg-(--my-blue) py-1 px-2 rounded-full text-white">
+                                                                New messages
+                                                            </span>
+                                                        )}
+                                                </span>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
