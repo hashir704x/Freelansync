@@ -5,6 +5,7 @@ import {
     User,
     MailQuestionMark,
     FolderKanban,
+    MessageCircleMore,
 } from "lucide-react";
 
 import { userStore } from "@/stores/user-store";
@@ -47,6 +48,11 @@ const items = [
         title: "Invitations",
         url: "/freelancer/freelancer-invitations",
         icon: MailQuestionMark,
+    },
+    {
+        title: "Chats",
+        url: "/freelancer/chats",
+        icon: MessageCircleMore,
     },
 ];
 

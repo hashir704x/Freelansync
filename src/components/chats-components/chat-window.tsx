@@ -6,6 +6,8 @@ import { Spinner } from "../ui/spinner";
 import { Download, FileText, Paperclip, Send } from "lucide-react";
 import { toast } from "sonner";
 import { supabaseClient } from "@/supabase-client";
+import ShareFileDialog from "./share-file-dialog";
+import ImageViewPopup from "./image-view-popup";
 
 const ChatWindow = ({
     activeChat,
@@ -20,6 +22,12 @@ const ChatWindow = ({
     const [inputValue, setInputValue] = useState("");
 
     const [sendingMessageLoading, setSendingMessageLoading] = useState(false);
+
+    const [openShareFileDialog, setOpenShareFileDialog] = useState(false);
+    const [targetFile, setTargetFile] = useState<null | File>(null);
+
+    const [showImageView, setShowImageView] = useState(false);
+    const [imageViewUrl, setImageViewUrl] = useState<null | string>(null);
 
     const bottomRef = useRef<HTMLDivElement | null>(null);
 
@@ -47,7 +55,6 @@ const ChatWindow = ({
                     filter: `chat_id=eq.${activeChat.id}`,
                 },
                 (payload) => {
-                    console.log("new message came");
                     const newMessage = payload.new as MessageFromBackendType;
                     setMessages((prev) => [...prev, newMessage]);
                 }
@@ -79,6 +86,14 @@ const ChatWindow = ({
         } finally {
             setSendingMessageLoading(false);
         }
+    }
+
+    function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+        if (!e.target.files || e.target.files.length === 0) return;
+
+        setTargetFile(e.target.files[0]);
+        setOpenShareFileDialog(true);
+        e.target.value = "";
     }
 
     return (
@@ -132,10 +147,10 @@ const ChatWindow = ({
                                                 src={item.message_text}
                                                 alt="shared file"
                                                 className={`rounded-xl border shadow-md w-[350px] cursor-pointer transition-transform hover:scale-105`}
-                                                // onClick={() => {
-                                                //     setImageViewUrl(item.message_text);
-                                                //     setShowImageView(true);
-                                                // }}
+                                                onClick={() => {
+                                                    setImageViewUrl(item.message_text);
+                                                    setShowImageView(true);
+                                                }}
                                             />
                                         ) : (
                                             <div
@@ -212,12 +227,14 @@ const ChatWindow = ({
 
             <div className="border-t border-gray-200 p-3 bg-gray-50">
                 <div className="flex items-center gap-2">
-                    {/* <ImageViewPopup
-                        imageViewUrl={imageViewUrl}
-                        setImageViewUrl={setImageViewUrl}
-                        setShowImageView={setShowImageView}
-                        showImageView={showImageView}
-                    /> */}
+                    {imageViewUrl && showImageView && (
+                        <ImageViewPopup
+                            imageViewUrl={imageViewUrl}
+                            setImageViewUrl={setImageViewUrl}
+                            setShowImageView={setShowImageView}
+                            showImageView={showImageView}
+                        />
+                    )}
                     <input
                         disabled={sendingMessageLoading}
                         type="text"
@@ -243,17 +260,18 @@ const ChatWindow = ({
                         />
                         <input
                             type="file"
-                            // onChange={handleFileSelect}
+                            onChange={handleFileSelect}
                             className="hidden"
                         />
-                        {/* {targetFile && (
+                        {targetFile && (
                             <ShareFileDialog
                                 openShareFileDialog={openShareFileDialog}
                                 setOpenShareFileDialog={setOpenShareFileDialog}
                                 targetFile={targetFile}
                                 setTargetFile={setTargetFile}
+                                activeChatId={activeChat.id}
                             />
-                        )} */}
+                        )}
                     </label>
                 </div>
             </div>

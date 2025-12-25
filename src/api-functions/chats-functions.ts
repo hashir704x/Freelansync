@@ -125,3 +125,54 @@ export async function sendMessage({
         throw new Error(errorMessageMaker(error.message));
     }
 }
+
+export async function uploadChatMedia({
+    file,
+    senderId,
+    senderRole,
+    chatId,
+}: {
+    file: File;
+    senderId: string;
+    senderRole: "client" | "freelancer";
+    chatId: string;
+}): Promise<void> {
+    const fileName = `${Date.now()}_${senderId}_${file.name}`;
+
+    const { error } = await supabaseClient.storage
+        .from("freelansync-media")
+        .upload(`chat-media/${fileName}`, file, {
+            upsert: false,
+            cacheControl: "3600",
+            contentType: file.type,
+        });
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
+    }
+
+    const { data: fileData } = supabaseClient.storage
+        .from("freelansync-media")
+        .getPublicUrl(`chat-media/${fileName}`);
+    if (!fileData.publicUrl) {
+        console.error("Error! Failed to get file public url");
+        throw new Error(
+            errorMessageMaker("Failed to upload file, Failed to get public url")
+        );
+    }
+    const ext = file.name.split(".").pop()?.toLowerCase() || "file";
+
+    const { error: messageError } = await supabaseClient.from("messages").insert([
+        {
+            chat_id: chatId,
+            sender_id: senderId,
+            sender_role: senderRole,
+            message_text: fileData.publicUrl,
+            file_type: ext,
+        },
+    ]);
+    if (messageError) {
+        console.error(messageError.message);
+        throw new Error(errorMessageMaker(messageError.message));
+    }
+}
