@@ -250,6 +250,11 @@ export type MilestoneDetailesFromBackendType = {
 export type ChatFromBackendType = {
     id: string;
     created_at: string;
+    last_updated_by: string;
+    latest_message_id: number;
+    message_id_read_by_client: number;
+    message_id_read_by_freelancer: number | null;
+
     freelancer?: {
         id: string;
         username: string;

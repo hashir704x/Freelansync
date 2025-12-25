@@ -13,6 +13,7 @@ const ChatPage = () => {
     const isMobile = useIsMobile();
     const [activeChat, setActiveChat] = useState<ChatFromBackendType | null>(null);
     const user = userStore((state) => state.user) as UserType;
+
     const { data, isLoading, isError } = useQuery({
         queryFn: () => getAllChatsForUser({ userRole: user.role }),
         queryKey: ["get-all-chats-for-user"],
@@ -57,6 +58,7 @@ const ChatPage = () => {
                                     chatsData={data}
                                     activeChat={activeChat}
                                     setActiveChat={setActiveChat}
+                                    user={user}
                                 />
                             </div>
 

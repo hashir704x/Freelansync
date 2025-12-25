@@ -32,6 +32,7 @@ const ClientCreateChatDialog = (props: PropsType) => {
         mutationFn: createNewChatByClient,
         onSuccess() {
             props.setOpenCreateChatDialog(false);
+            setMessage("");
             queryClient.invalidateQueries({
                 queryKey: ["get-all-chats-for-user"],
             });

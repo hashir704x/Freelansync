@@ -1,4 +1,4 @@
-import type { ChatFromBackendType } from "@/Types";
+import type { ChatFromBackendType, UserType } from "@/Types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import type { Dispatch, SetStateAction } from "react";
@@ -7,16 +7,35 @@ type PropsType = {
     activeChat: ChatFromBackendType | null;
     setActiveChat: Dispatch<SetStateAction<ChatFromBackendType | null>>;
     chatsData: ChatFromBackendType[];
+    user: UserType;
 };
 
-const ChatsList = ({ chatsData, setActiveChat, activeChat }: PropsType) => {
+const ChatsList = ({ chatsData, setActiveChat, activeChat, user }: PropsType) => {
     return (
         <div className="w-full h-full border-2 flex flex-col">
             <ScrollArea className="flex-1">
                 <div className="flex flex-col">
                     {chatsData.map((item) => {
-                        const isActive = item.id === activeChat?.id,
-                            isUnread = false;
+                        const isActive = item.id === activeChat?.id;
+                        let isUnread = false;
+                        if (
+                            !isActive &&
+                            user.role === "client" &&
+                            item.last_updated_by !== user.id &&
+                            item.latest_message_id > item.message_id_read_by_client
+                        ) {
+                            isUnread = true;
+                        } else if (
+                            (!isActive &&
+                                user.role === "freelancer" &&
+                                item.message_id_read_by_freelancer &&
+                                item.last_updated_by !== user.id &&
+                                item.latest_message_id >
+                                    item.message_id_read_by_freelancer) ||
+                            !item.message_id_read_by_freelancer
+                        ) {
+                            isUnread = true;
+                        }
                         const profilePic =
                             item.client?.profile_pic ||
                             item.freelancer?.profile_pic ||
