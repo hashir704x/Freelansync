@@ -12,19 +12,40 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { SendHorizonal, Star } from "lucide-react";
 import { Spinner } from "./ui/spinner";
+import { createReview } from "@/api-functions/reviews-functions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 type PropsType = {
     openCreateReviewDialog: boolean;
     setOpenCreateReviewDialog: React.Dispatch<React.SetStateAction<boolean>>;
     freelancerName: string;
     freelancerId: string;
+    clientId: string;
 };
 
 const array = [1, 2, 3, 4, 5];
 
 const ClientCreateReviewDialog = (props: PropsType) => {
+    const queryClient = useQueryClient();
     const [comment, setComment] = useState("");
     const [starsCount, setStarsCount] = useState(1);
+
+    const { isPending, mutate } = useMutation({
+        mutationFn: createReview,
+        onSuccess() {
+            toast.success("Review created successfully");
+            props.setOpenCreateReviewDialog(false);
+            setComment("");
+            setStarsCount(1);
+            // queryClient.invalidateQueries({
+            //     queryKey: []
+            // })
+        },
+        onError(error) {
+            toast.error(`Failed to create review: ${error.message}`);
+        },
+    });
 
     return (
         <AlertDialog
@@ -80,17 +101,18 @@ const ClientCreateReviewDialog = (props: PropsType) => {
                     </AlertDialogCancel>
 
                     <Button
-                        // onClick={() =>
-                        //     mutate({
-                        //         message: message,
-                        //         clientId: props.clientId,
-                        //         freelancerId: props.freelancerId,
-                        //     })
-                        // }
-                        disabled={false || !comment.trim()}
+                        onClick={() =>
+                            mutate({
+                                clientId: props.clientId,
+                                comment: comment,
+                                freelancerId: props.freelancerId,
+                                stars: starsCount,
+                            })
+                        }
+                        disabled={isPending || !comment.trim()}
                         className="flex items-center gap-2 bg-(--my-blue) hover:bg-(--my-blue-light) px-5 py-2 rounded-lg cursor-pointer"
                     >
-                        {false ? <Spinner /> : <SendHorizonal className="w-4 h-4" />}
+                        {isPending ? <Spinner /> : <SendHorizonal className="w-4 h-4" />}
                     </Button>
                 </AlertDialogFooter>
             </AlertDialogContent>

@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import ClientCreateChatDialog from "@/components/chats-components/client-create-chat-dialog";
 import { useState } from "react";
 import ClientCreateReviewDialog from "@/components/client-create-review-dialog";
+import FreelancerReviewsComponent from "@/components/freelancer-reviews-component";
 
 const FreelancerOpenViewPage = () => {
     const navigate = useNavigate();
@@ -58,140 +59,131 @@ const FreelancerOpenViewPage = () => {
             )}
 
             {data && (
-                <div>
-                    <div className="p-7 md:p-10 flex flex-col items-center gap-10">
-                        {/* Upper Section — Profile Picture */}
+                <div className="p-7 md:p-10 flex flex-col items-center gap-10">
+                    {/* Upper Section — Profile Picture */}
 
-                        <img
-                            src={data.profile_pic}
-                            alt="profile-img"
-                            className="w-48 h-48 rounded-full object-cover border border-gray-200"
-                        />
+                    <img
+                        src={data.profile_pic}
+                        alt="profile-img"
+                        className="w-48 h-48 rounded-full object-cover border border-gray-200"
+                    />
 
-                        {/* Bottom Section — Freelancer Info */}
-                        <div className="w-full space-y-6 text-gray-700">
-                            <div className="flex justify-between border-b pb-2">
-                                <h2 className="text-xl sm:text-2xl font-semibold text-(--my-blue)">
-                                    Freelancer Profile
-                                </h2>
-                                {user.role === "client" && (
-                                    <InviteFreelancerIntoProjectSidebar
-                                        clientId={user.id}
-                                        freelancerId={freelancerId as string}
-                                        clientUsername={user.username}
-                                    />
-                                )}
+                    {/* Bottom Section — Freelancer Info */}
+                    <div className="w-full space-y-6 text-gray-700">
+                        <div className="flex justify-between border-b pb-2">
+                            <h2 className="text-xl sm:text-2xl font-semibold text-(--my-blue)">
+                                Freelancer Profile
+                            </h2>
+                            {user.role === "client" && (
+                                <InviteFreelancerIntoProjectSidebar
+                                    clientId={user.id}
+                                    freelancerId={freelancerId as string}
+                                    clientUsername={user.username}
+                                />
+                            )}
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <div>
+                                <Button
+                                    disabled={isPending}
+                                    onClick={() => mutate({ freelancerId: data.id })}
+                                    variant="custom"
+                                >
+                                    <MessageCircleMore />
+                                    Send message
+                                </Button>
+
+                                <ClientCreateChatDialog
+                                    freelancerName={data.username}
+                                    openCreateChatDialog={openCreateChatDialog}
+                                    setOpenCreateChatDialog={setOpenCreateChatDialog}
+                                    clientId={user.id}
+                                    freelancerId={data.id}
+                                />
                             </div>
-
-                            <div className="flex items-center gap-3">
+                            {user.role === "client" && (
                                 <div>
                                     <Button
-                                        disabled={isPending}
-                                        onClick={() => mutate({ freelancerId: data.id })}
                                         variant="custom"
+                                        onClick={() => setOpenCreateReviewDialog(true)}
                                     >
-                                        <MessageCircleMore />
-                                        Send message
+                                        <UserStar /> Give Review
                                     </Button>
 
-                                    <ClientCreateChatDialog
-                                        freelancerName={data.username}
-                                        openCreateChatDialog={openCreateChatDialog}
-                                        setOpenCreateChatDialog={setOpenCreateChatDialog}
+                                    <ClientCreateReviewDialog
                                         clientId={user.id}
                                         freelancerId={data.id}
+                                        freelancerName={data.username}
+                                        openCreateReviewDialog={openCreateReviewDialog}
+                                        setOpenCreateReviewDialog={
+                                            setOpenCreateReviewDialog
+                                        }
                                     />
                                 </div>
-                                {user.role === "client" && (
-                                    <div>
-                                        <Button
-                                            variant="custom"
-                                            onClick={() =>
-                                                setOpenCreateReviewDialog(true)
-                                            }
-                                        >
-                                            <UserStar /> Give Review
-                                        </Button>
+                            )}
+                        </div>
 
-                                        <ClientCreateReviewDialog
-                                            freelancerId={data.id}
-                                            freelancerName={data.username}
-                                            openCreateReviewDialog={
-                                                openCreateReviewDialog
-                                            }
-                                            setOpenCreateReviewDialog={
-                                                setOpenCreateReviewDialog
-                                            }
-                                        />
-                                    </div>
-                                )}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm">
+                                <p className="text-sm text-gray-500">Username</p>
+                                <p className="text-lg font-semibold">{data.username}</p>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm">
-                                    <p className="text-sm text-gray-500">Username</p>
-                                    <p className="text-lg font-semibold">
-                                        {data.username}
-                                    </p>
+                            <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm">
+                                <p className="text-sm text-gray-500">Email</p>
+                                <p className="text-lg font-semibold break-all">
+                                    {data.email}
+                                </p>
+                            </div>
+
+                            <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm">
+                                <p className="text-sm text-gray-500">Role</p>
+                                <p className="text-lg font-semibold">{data.role}</p>
+                            </div>
+
+                            <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm">
+                                <p className="text-sm text-gray-500">
+                                    Account Created On
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    {new Date(data.created_at).toLocaleDateString()}
+                                </p>
+                            </div>
+
+                            <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm sm:col-span-2">
+                                <p className="text-sm text-gray-500 mb-3">Domains</p>
+
+                                <div className="flex flex-wrap gap-2">
+                                    {data.domains.map((domain: string, index: number) => (
+                                        <span
+                                            key={index}
+                                            className="px-3 py-1 bg-(--my-blue)/10 text-(--my-blue) font-medium rounded-full text-sm shadow-sm hover:bg-(--my-blue)/20 transition-colors"
+                                        >
+                                            {domain}
+                                        </span>
+                                    ))}
                                 </div>
+                            </div>
 
-                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm">
-                                    <p className="text-sm text-gray-500">Email</p>
-                                    <p className="text-lg font-semibold break-all">
-                                        {data.email}
-                                    </p>
-                                </div>
+                            <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm sm:col-span-2">
+                                <p className="text-sm text-gray-500 mb-3">Skillset</p>
 
-                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm">
-                                    <p className="text-sm text-gray-500">Role</p>
-                                    <p className="text-lg font-semibold">{data.role}</p>
-                                </div>
-
-                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm">
-                                    <p className="text-sm text-gray-500">
-                                        Account Created On
-                                    </p>
-                                    <p className="text-lg font-semibold">
-                                        {new Date(data.created_at).toLocaleDateString()}
-                                    </p>
-                                </div>
-
-                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm sm:col-span-2">
-                                    <p className="text-sm text-gray-500 mb-3">Domains</p>
-
-                                    <div className="flex flex-wrap gap-2">
-                                        {data.domains.map(
-                                            (domain: string, index: number) => (
-                                                <span
-                                                    key={index}
-                                                    className="px-3 py-1 bg-(--my-blue)/10 text-(--my-blue) font-medium rounded-full text-sm shadow-sm hover:bg-(--my-blue)/20 transition-colors"
-                                                >
-                                                    {domain}
-                                                </span>
-                                            )
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 shadow-sm sm:col-span-2">
-                                    <p className="text-sm text-gray-500 mb-3">Skillset</p>
-
-                                    <div className="flex flex-wrap gap-2">
-                                        {data.skills.map(
-                                            (skill: string, index: number) => (
-                                                <span
-                                                    key={index}
-                                                    className="px-3 py-1 bg-(--my-blue)/10 text-(--my-blue) font-medium rounded-full text-sm shadow-sm hover:bg-(--my-blue)/20 transition-colors"
-                                                >
-                                                    {skill}
-                                                </span>
-                                            )
-                                        )}
-                                    </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {data.skills.map((skill: string, index: number) => (
+                                        <span
+                                            key={index}
+                                            className="px-3 py-1 bg-(--my-blue)/10 text-(--my-blue) font-medium rounded-full text-sm shadow-sm hover:bg-(--my-blue)/20 transition-colors"
+                                        >
+                                            {skill}
+                                        </span>
+                                    ))}
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <FreelancerReviewsComponent freelancerId={data.id} />
                 </div>
             )}
         </div>

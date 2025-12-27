@@ -299,3 +299,15 @@ export type ProjectMessageFromBackendType = {
     sender: string;
     sender_username: string;
 };
+
+export type FreelancerReviewFromBackendType = {
+    id: string;
+    comment: string;
+    stars: number;
+    created_at: string;
+    client: {
+        id: string;
+        username: string;
+        profile_pic: string;
+    };
+};
