@@ -16,7 +16,6 @@ const ChatsList = ({ chatsData, setActiveChat, activeChat, user }: PropsType) =>
                 <div className="flex flex-col">
                     {chatsData.map((item) => {
                         const isActive = item.id === activeChat?.id;
-
                         let isUnread = false;
                         if (
                             !isActive &&

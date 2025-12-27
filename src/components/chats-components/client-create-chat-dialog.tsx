@@ -48,7 +48,7 @@ const ClientCreateChatDialog = (props: PropsType) => {
             open={props.openCreateChatDialog}
             onOpenChange={props.setOpenCreateChatDialog}
         >
-            <AlertDialogContent className="sm:max-w-md">
+            <AlertDialogContent className="sm:max-w-lg">
                 <AlertDialogHeader>
                     <AlertDialogTitle className="flex items-center gap-2 text-(--my-blue)">
                         <MessageCircle className="w-5 h-5" />

@@ -90,8 +90,7 @@ export default function FreelancerDashboardPieChart({ projectsData }: Props) {
                 <CardContent className="flex-1 pb-0 flex flex-col items-center">
                     <ChartContainer
                         config={chartConfig}
-                        className="w-full aspect-square h-[260px]"
-                        // className="mx-auto aspect-square w-[280px] sm:w-[480px] h-[250px]"
+                        className="w-full aspect-square h-[220px]"
                     >
                         <PieChart>
                             <ChartTooltip

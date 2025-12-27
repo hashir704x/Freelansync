@@ -30,6 +30,7 @@ import FreelancerOpenViewPage from "./pages/freelancer-pages/Freelancer-open-vie
 // common pages
 import MilestoneDetailsPage from "./pages/common-pages/Milestone-details-page";
 import ChatPage from "./pages/common-pages/Chat-page";
+import ProjectChatPage from "./pages/common-pages/Project-chat-page";
 
 const router = createBrowserRouter([
     {
@@ -81,6 +82,11 @@ const router = createBrowserRouter([
                 path: "chats",
                 element: <ChatPage />,
             },
+            {
+                path: "project-chat/:projectId",
+                element: <ProjectChatPage />,
+            },
+
         ],
     },
     {
@@ -116,6 +122,10 @@ const router = createBrowserRouter([
             {
                 path: "chats",
                 element: <ChatPage />,
+            },
+            {
+                path: "project-chat/:projectId",
+                element: <ProjectChatPage />,
             },
         ],
     },

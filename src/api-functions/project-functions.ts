@@ -4,6 +4,7 @@ import type {
     CreateProjectParamsType,
     ProjectDetailsByIdFromBackendType,
     AllProjectsForFreelancerFromBackendType,
+    ProjectMessageFromBackendType,
 } from "@/Types";
 import { errorMessageMaker } from "./error-message-maker";
 
@@ -122,3 +123,22 @@ export async function recommendProjectsForInvitationForFreelancer({
         return data;
     }
 }
+
+export async function getMessagesForProject({
+    projectId,
+}: {
+    projectId: string;
+}): Promise<ProjectMessageFromBackendType[]> {
+    const { error, data } = await supabaseClient
+        .from("project_messages")
+        .select("*")
+        .eq("project", projectId)
+        .order("created_at", { ascending: true });
+    if (error) {
+        console.error(error.message);
+        throw new Error();
+    }
+
+    return data;
+}
+

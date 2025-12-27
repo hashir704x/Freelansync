@@ -11,7 +11,6 @@ import { useEffect } from "react";
 
 const ChatPage = () => {
     const isMobile = useIsMobile();
-    // const [activeChat, setActiveChat] = useState<ChatFromBackendType | null>(null);
     const user = userStore((state) => state.user) as UserType;
     const activeChat = userStore((state) => state.activeChat);
     const setActiveChat = userStore((state) => state.setActiveChat);
@@ -19,7 +18,7 @@ const ChatPage = () => {
     const { data, isLoading, isError } = useQuery({
         queryFn: () => getAllChatsForUser({ userRole: user.role }),
         queryKey: ["get-all-chats-for-user"],
-        refetchInterval: 60 * 1000,
+        refetchInterval: 5 * 60 * 1000,
         refetchIntervalInBackground: true,
     });
 
@@ -60,7 +59,26 @@ const ChatPage = () => {
             {data && data.length >= 1 && (
                 <div>
                     {isMobile ? (
-                        <div>Mobile view</div>
+                        <div className="h-[calc(100vh-70px)]">
+                            {!activeChat ? (
+                                <div className="h-full ">
+                                    <ChatsList
+                                        chatsData={data}
+                                        activeChat={activeChat}
+                                        setActiveChat={setActiveChat}
+                                        user={user}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="h-full">
+                                    <ChatWindow
+                                        activeChat={activeChat}
+                                        key={activeChat.id}
+                                        user={user}
+                                    />
+                                </div>
+                            )}
+                        </div>
                     ) : (
                         <div className="h-[calc(100vh-70px)] flex">
                             <div className="min-w-72 h-full">

@@ -289,3 +289,13 @@ export type ChatsStoreType = {
     removeChatIdFromUnreadChatsIds: (chatId: string) => void;
     clearUnreadChatsIds: () => void;
 };
+
+export type ProjectMessageFromBackendType = {
+    id: number;
+    created_at: string;
+    file_type: string | null;
+    project: string;
+    message_text: string;
+    sender: string;
+    sender_username: string;
+};

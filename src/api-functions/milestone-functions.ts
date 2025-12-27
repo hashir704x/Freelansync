@@ -59,7 +59,7 @@ export async function createMilestone({
 }
 
 export async function getAllMilestonesForProject(
-    projectId: string
+    projectId: string,
 ): Promise<MilestonesFromBackendType[]> {
     const { error, data } = await supabaseClient
         .from("milestones")
@@ -73,12 +73,12 @@ export async function getAllMilestonesForProject(
 }
 
 export async function getMilestoneDetailsById(
-    milestoneId: string
+    milestoneId: string,
 ): Promise<MilestoneDetailesFromBackendType> {
     const { data, error } = await supabaseClient
         .from("milestones")
         .select(
-            "*, freelancer(id, username, profile_pic, domains, email), client(id, username, email, profile_pic), project(id, title, description, budget, domains, status)"
+            "*, freelancer(id, username, profile_pic, domains, email), client(id, username, email, profile_pic), project(id, title, description, budget, domains, status)",
         )
         .eq("id", milestoneId)
         .single();
@@ -143,7 +143,9 @@ export async function submitMilestone({
         if (!fileData.publicUrl) {
             console.error("Error! Failed to get file  public url");
             throw new Error(
-                errorMessageMaker("Failed to upload file, Failed to get public url")
+                errorMessageMaker(
+                    "Failed to upload file, Failed to get public url",
+                ),
             );
         }
 
@@ -194,7 +196,11 @@ export async function submitMilestone({
 export async function deleteMilestoneSubmission(milestoneId: string) {
     const { error } = await supabaseClient
         .from("milestones")
-        .update({ status: "IN_PROGRESS", submission_description: null, file: null })
+        .update({
+            status: "IN_PROGRESS",
+            submission_description: null,
+            file: null,
+        })
         .eq("id", milestoneId);
     if (error) {
         console.error(error.message);

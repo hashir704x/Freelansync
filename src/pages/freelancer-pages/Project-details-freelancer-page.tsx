@@ -6,8 +6,10 @@ import { userStore } from "@/stores/user-store";
 import type { UserType } from "@/Types";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ProjectDetialsMilestonesComponent from "@/components/project-details-milestones-component";
+import { MessageCircleMore } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const ProjectDetailsFreelancerPage = () => {
     const { projectId } = useParams();
@@ -99,6 +101,15 @@ const ProjectDetailsFreelancerPage = () => {
                                 <span className="text-gray-400">🧠</span>
                                 {data.skills.length} skills required
                             </span>
+                            <Link
+                                to={`/${
+                                    user.role === "client" ? "client" : "freelancer"
+                                }/project-chat/${projectId}`}
+                            >
+                                <Button variant="custom">
+                                    <MessageCircleMore /> Open Chat
+                                </Button>
+                            </Link>
                         </div>
                     </div>
 

@@ -3,12 +3,14 @@ import ProjectDetailsAddFreelancersComponent from "@/components/project-details-
 import ProjectDetailsFreelancersComponent from "@/components/project-details-freelancers-component";
 import ProjectDetailsInfoComponent from "@/components/project-details-info-components";
 import ProjectDetialsMilestonesComponent from "@/components/project-details-milestones-component";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { userStore } from "@/stores/user-store";
 import type { UserType } from "@/Types";
 import { useQuery } from "@tanstack/react-query";
+import { MessageCircleMore } from "lucide-react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const ProjectDetialsClientPage = () => {
     const { projectId } = useParams();
@@ -119,6 +121,16 @@ const ProjectDetialsClientPage = () => {
                             >
                                 {data.status.replace("_", " ")}
                             </span>
+
+                            <Link
+                                to={`/${
+                                    user.role === "client" ? "client" : "freelancer"
+                                }/project-chat/${projectId}`}
+                            >
+                                <Button variant="custom">
+                                    <MessageCircleMore /> Open Chat
+                                </Button>
+                            </Link>
                         </div>
                     </div>
 

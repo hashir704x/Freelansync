@@ -5,17 +5,19 @@ import type { UserType } from "@/Types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import InviteFreelancerIntoProjectSidebar from "@/components/invite-freelancer-into-project-sidebar";
-import { MessageCircleMore } from "lucide-react";
+import { MessageCircleMore, UserStar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { checkChatExistance } from "@/api-functions/chats-functions";
 import { toast } from "sonner";
 import ClientCreateChatDialog from "@/components/chats-components/client-create-chat-dialog";
 import { useState } from "react";
+import ClientCreateReviewDialog from "@/components/client-create-review-dialog";
 
 const FreelancerOpenViewPage = () => {
     const navigate = useNavigate();
     const user = userStore((state) => state.user) as UserType;
     const [openCreateChatDialog, setOpenCreateChatDialog] = useState(false);
+    const [openCreateReviewDialog, setOpenCreateReviewDialog] = useState(false);
 
     const { freelancerId } = useParams();
     const { data, isError, isLoading } = useQuery({
@@ -29,7 +31,7 @@ const FreelancerOpenViewPage = () => {
             if (data.length === 0) {
                 setOpenCreateChatDialog(true);
             } else {
-                navigate(`/client/chats`)
+                navigate(`/client/chats`);
             }
         },
         onError(error) {
@@ -81,23 +83,48 @@ const FreelancerOpenViewPage = () => {
                                 )}
                             </div>
 
-                            <div>
-                                <Button
-                                    disabled={isPending}
-                                    onClick={() => mutate({ freelancerId: data.id })}
-                                    variant="custom"
-                                >
-                                    <MessageCircleMore />
-                                    Send message
-                                </Button>
+                            <div className="flex items-center gap-3">
+                                <div>
+                                    <Button
+                                        disabled={isPending}
+                                        onClick={() => mutate({ freelancerId: data.id })}
+                                        variant="custom"
+                                    >
+                                        <MessageCircleMore />
+                                        Send message
+                                    </Button>
 
-                                <ClientCreateChatDialog
-                                    freelancerName={data.username}
-                                    openCreateChatDialog={openCreateChatDialog}
-                                    setOpenCreateChatDialog={setOpenCreateChatDialog}
-                                    clientId={user.id}
-                                    freelancerId={data.id}
-                                />
+                                    <ClientCreateChatDialog
+                                        freelancerName={data.username}
+                                        openCreateChatDialog={openCreateChatDialog}
+                                        setOpenCreateChatDialog={setOpenCreateChatDialog}
+                                        clientId={user.id}
+                                        freelancerId={data.id}
+                                    />
+                                </div>
+                                {user.role === "client" && (
+                                    <div>
+                                        <Button
+                                            variant="custom"
+                                            onClick={() =>
+                                                setOpenCreateReviewDialog(true)
+                                            }
+                                        >
+                                            <UserStar /> Give Review
+                                        </Button>
+
+                                        <ClientCreateReviewDialog
+                                            freelancerId={data.id}
+                                            freelancerName={data.username}
+                                            openCreateReviewDialog={
+                                                openCreateReviewDialog
+                                            }
+                                            setOpenCreateReviewDialog={
+                                                setOpenCreateReviewDialog
+                                            }
+                                        />
+                                    </div>
+                                )}
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

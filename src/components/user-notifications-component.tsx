@@ -27,7 +27,7 @@ const UserNotificationsComponent = () => {
     const { data, isLoading } = useQuery({
         queryFn: () => getAllNotificationsForUser(user.id),
         queryKey: ["get-all-notifications-for-user"],
-        refetchInterval: 2 * 60 * 1000,
+        refetchInterval: 5 * 60 * 1000,
         refetchIntervalInBackground: true,
     });
 

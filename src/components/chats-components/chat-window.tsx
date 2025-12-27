@@ -26,12 +26,9 @@ const ChatWindow = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [inputValue, setInputValue] = useState("");
-
     const [sendingMessageLoading, setSendingMessageLoading] = useState(false);
-
     const [openShareFileDialog, setOpenShareFileDialog] = useState(false);
     const [targetFile, setTargetFile] = useState<null | File>(null);
-
     const [showImageView, setShowImageView] = useState(false);
     const [imageViewUrl, setImageViewUrl] = useState<null | string>(null);
 
