@@ -29,9 +29,15 @@ const StatusChoices: MilestoneStatusType[] = ["LOCKED", "IN_PROGRESS", "COMPLETE
 const UpadateMilestoneStatusDialog = ({
     milestoneStatus,
     milestoneId,
+    projectId,
+    freelancerId,
+    milestoneAmount,
 }: {
     milestoneStatus: MilestoneStatusType;
     milestoneId: string;
+    projectId: string;
+    freelancerId: string;
+    milestoneAmount: number;
 }) => {
     const queryClient = useQueryClient();
     const [open, setOpen] = useState(false);
@@ -47,6 +53,9 @@ const UpadateMilestoneStatusDialog = ({
             });
             queryClient.invalidateQueries({
                 queryKey: ["get-recent-milestones-for-user"],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["get-all-milestones-for-project", projectId],
             });
 
             setOpen(false);
@@ -89,7 +98,11 @@ const UpadateMilestoneStatusDialog = ({
                         <SelectContent>
                             {StatusChoices.map((item) => (
                                 <SelectItem key={item} value={item}>
-                                    <span>{item}</span>
+                                    <span>
+                                        {item}{" "}
+                                        {item === "COMPLETED" &&
+                                            "(transfer funds to freelancer)"}
+                                    </span>
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -100,7 +113,12 @@ const UpadateMilestoneStatusDialog = ({
                     <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
                     <Button
                         onClick={() =>
-                            mutate({ milestoneId: milestoneId, status: selectedChoice })
+                            mutate({
+                                milestoneId: milestoneId,
+                                status: selectedChoice,
+                                freelancerId: freelancerId,
+                                milestoneAmount: milestoneAmount,
+                            })
                         }
                         disabled={isPending}
                         variant="custom"

@@ -58,8 +58,7 @@ const SignupPage = () => {
                 email: data.email,
                 profile_pic: data.profile_pic,
                 role: data.role,
-                username: data.username,
-                wallet_amount: data.wallet_amount,
+                username: data.username
             });
             navigate(`/${data.role}`);
         },

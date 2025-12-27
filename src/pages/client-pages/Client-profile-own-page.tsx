@@ -155,7 +155,7 @@ const ClientProfileOwnPage = () => {
                                         Wallet Balance
                                     </p>
                                     <p className="text-lg font-semibold text-green-600">
-                                        Rs. {user.wallet_amount.toLocaleString("en-US")}
+                                        Rs. {data.wallet_amount.toLocaleString("en-US")}
                                     </p>
                                 </div>
 

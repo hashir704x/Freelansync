@@ -1,6 +1,14 @@
+import { getUserWalletFunds } from "@/api-functions/client-function";
 import type { UserType } from "@/Types";
+import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "./ui/spinner";
 
 const DashboardUserCard = ({ user }: { user: UserType }) => {
+    const { isLoading, isError, data } = useQuery({
+        queryFn: () => getUserWalletFunds({ userId: user.id, userRole: user.role }),
+        queryKey: ["get-client-wallet-funds"],
+    });
+
     return (
         <div className="flex-1 rounded-2xl bg-linear-to-br from-(--my-blue) to-blue-600  shadow-lg flex flex-col items-center text-white justify-center">
             {/* Avatar */}
@@ -27,9 +35,17 @@ const DashboardUserCard = ({ user }: { user: UserType }) => {
                     Wallet Balance
                 </span>
 
-                <span className="text-2xl font-bold mb-4">
-                    Rs. {user.wallet_amount.toLocaleString("en-US")}
-                </span>
+                {isLoading && (
+                    <div>
+                        <Spinner />
+                    </div>
+                )}
+                {isError && <span>Failed to get wallet data</span>}
+                {data && (
+                    <span className="text-2xl font-bold mb-4">
+                        Rs. {data.wallet_amount.toLocaleString("en-US")}
+                    </span>
+                )}
             </div>
         </div>
     );

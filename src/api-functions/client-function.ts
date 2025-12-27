@@ -80,3 +80,23 @@ export async function getClientDetailsForFreelancer(
 
     return data;
 }
+
+export async function getUserWalletFunds({
+    userId,
+    userRole,
+}: {
+    userId: string;
+    userRole: "client" | "freelancer";
+}): Promise<{ wallet_amount: number }> {
+    const targetTable = userRole === "client" ? "clients" : "freelancers";
+    const { data, error } = await supabaseClient
+        .from(targetTable)
+        .select("wallet_amount")
+        .eq("id", userId)
+        .single();
+    if (error) {
+        console.error(error.message);
+        throw new Error();
+    }
+    return data;
+}

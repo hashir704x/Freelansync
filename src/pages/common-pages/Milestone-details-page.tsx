@@ -97,6 +97,9 @@ const MilestoneDetailsPage = () => {
                                 <UpadateMilestoneStatusDialog
                                     milestoneStatus={data.status}
                                     milestoneId={milestoneId as string}
+                                    projectId={data.project.id}
+                                    freelancerId={data.freelancer.id}
+                                    milestoneAmount={data.amount}
                                 />
                             )}
                     </div>

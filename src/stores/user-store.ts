@@ -11,10 +11,6 @@ const userStore = create(
             resetUser: () => set({ user: null, userExists: false }),
             activeChat: null,
             setActiveChat: (chat) => set({ activeChat: chat }),
-            setWalletAmount: (amount) =>
-                set((state) => ({
-                    user: state.user ? { ...state.user, wallet_amount: amount } : null,
-                })),
         }),
         {
             name: "user-store",

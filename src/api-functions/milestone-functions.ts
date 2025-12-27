@@ -48,7 +48,6 @@ export async function createMilestone({
     }
 
     const updatedBudget = projectBudget - data.amount;
-    console.log(projectId);
     const { error: updateError } = await supabaseClient
         .from("projects")
         .update({ budget: updatedBudget })
@@ -110,10 +109,36 @@ export async function getMilestoneDetailsById(
 export async function updateMilestoneStatus({
     milestoneId,
     status,
+    freelancerId,
+    milestoneAmount,
 }: {
     milestoneId: string;
+    milestoneAmount: number;
     status: MilestoneStatusType;
+    freelancerId: string;
 }): Promise<void> {
+    if (status === "COMPLETED") {
+        const { error, data } = await supabaseClient
+            .from("freelancers")
+            .select("wallet_amount")
+            .eq("id", freelancerId)
+            .single();
+        if (error) {
+            console.error(error.message);
+            throw new Error(errorMessageMaker(error.message));
+        }
+
+        const updatedWalletAmount = data.wallet_amount + milestoneAmount;
+        const { error: updateError } = await supabaseClient
+            .from("freelancers")
+            .update({ wallet_amount: updatedWalletAmount })
+            .eq("id", freelancerId);    
+        if (updateError) {
+            console.error(updateError.message);
+            throw new Error(errorMessageMaker(updateError.message));
+        }
+    }
+    
     const { error } = await supabaseClient
         .from("milestones")
         .update({ status: status })

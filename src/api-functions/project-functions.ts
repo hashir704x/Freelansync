@@ -8,9 +8,7 @@ import type {
 } from "@/Types";
 import { errorMessageMaker } from "./error-message-maker";
 
-export async function createProject(
-    params: CreateProjectParamsType
-): Promise<{ id: string; newWalletAmount: number }> {
+export async function createProject(params: CreateProjectParamsType): Promise<string> {
     const { error: walletError, data: walletData } = await supabaseClient
         .from("clients")
         .select("wallet_amount")
@@ -19,6 +17,10 @@ export async function createProject(
     if (walletError) {
         console.error(walletError.message);
         throw new Error(errorMessageMaker(walletError.message));
+    }
+
+    if (walletData.wallet_amount < params.budget) {
+        throw new Error("You do not have enough funds for this project!");
     }
 
     const { data, error } = await supabaseClient
@@ -42,7 +44,7 @@ export async function createProject(
 
     const newWalletAmount = walletData.wallet_amount - data.budget;
 
-    const { error: updateError, data: updateData } = await supabaseClient
+    const { error: updateError } = await supabaseClient
         .from("clients")
         .update({ wallet_amount: newWalletAmount })
         .eq("id", params.clientId)
@@ -52,8 +54,7 @@ export async function createProject(
         console.error(updateError.message);
         throw new Error(errorMessageMaker(updateError.message));
     }
-
-    return { id: data.id, newWalletAmount: updateData.wallet_amount };
+    return data.id;
 }
 
 export async function getAllProjectsForClient(

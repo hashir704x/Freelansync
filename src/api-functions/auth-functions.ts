@@ -30,7 +30,7 @@ export async function signup(params: SignupParamsType): Promise<SignupResponseTy
         const clientResponse = await supabaseClient
             .from("clients")
             .insert([{ id: userId, username: params.username, email: params.email }])
-            .select("id, email, username, role, profile_pic, wallet_amount")
+            .select("id, email, username, role, profile_pic")
             .single();
         if (clientResponse.error) {
             console.error(clientResponse.error.message);
@@ -90,7 +90,7 @@ export async function login(params: {
 
     const targetRoleTableResponse = await supabaseClient
         .from(targetTable)
-        .select("id, email, username, role, profile_pic, wallet_amount")
+        .select("id, email, username, role, profile_pic")
         .eq("id", userId)
         .single();
 
