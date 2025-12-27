@@ -59,7 +59,7 @@ const ImageViewPopup = ({
                 <img
                     src={imageViewUrl}
                     alt="Preview"
-                    className="rounded-2xl object-contain md:w-[800px] w-full h-full transition-transform duration-300 hover:scale-[1.03]"
+                    className="rounded-2xl object-contain w-full h-full"
                 />
 
                 <button
