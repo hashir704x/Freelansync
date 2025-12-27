@@ -15,6 +15,7 @@ export async function createMilestone({
     projectId,
     clientUsername,
     projectTitle,
+    projectBudget,
 }: {
     projectId: string;
     clientId: string;
@@ -24,21 +25,38 @@ export async function createMilestone({
     amount: number;
     clientUsername: string;
     projectTitle: string;
+    projectBudget: number;
 }): Promise<void> {
-    const { error } = await supabaseClient.from("milestones").insert([
-        {
-            title: title,
-            description: description,
-            amount: amount,
-            project: projectId,
-            client: clientId,
-            freelancer: freelancerId,
-            status: "LOCKED",
-        },
-    ]);
+    const { error, data } = await supabaseClient
+        .from("milestones")
+        .insert([
+            {
+                title: title,
+                description: description,
+                amount: amount,
+                project: projectId,
+                client: clientId,
+                freelancer: freelancerId,
+                status: "LOCKED",
+            },
+        ])
+        .select("amount")
+        .single();
     if (error) {
         console.error(error.message);
         throw new Error(errorMessageMaker(error.message));
+    }
+
+    const updatedBudget = projectBudget - data.amount;
+    console.log(projectId);
+    const { error: updateError } = await supabaseClient
+        .from("projects")
+        .update({ budget: updatedBudget })
+        .eq("id", projectId);
+
+    if (updateError) {
+        console.error(updateError.message);
+        throw new Error(updateError.message);
     }
 
     const { error: notificationError } = await supabaseClient
@@ -59,7 +77,7 @@ export async function createMilestone({
 }
 
 export async function getAllMilestonesForProject(
-    projectId: string,
+    projectId: string
 ): Promise<MilestonesFromBackendType[]> {
     const { error, data } = await supabaseClient
         .from("milestones")
@@ -73,12 +91,12 @@ export async function getAllMilestonesForProject(
 }
 
 export async function getMilestoneDetailsById(
-    milestoneId: string,
+    milestoneId: string
 ): Promise<MilestoneDetailesFromBackendType> {
     const { data, error } = await supabaseClient
         .from("milestones")
         .select(
-            "*, freelancer(id, username, profile_pic, domains, email), client(id, username, email, profile_pic), project(id, title, description, budget, domains, status)",
+            "*, freelancer(id, username, profile_pic, domains, email), client(id, username, email, profile_pic), project(id, title, description, budget, domains, status)"
         )
         .eq("id", milestoneId)
         .single();
@@ -143,9 +161,7 @@ export async function submitMilestone({
         if (!fileData.publicUrl) {
             console.error("Error! Failed to get file  public url");
             throw new Error(
-                errorMessageMaker(
-                    "Failed to upload file, Failed to get public url",
-                ),
+                errorMessageMaker("Failed to upload file, Failed to get public url")
             );
         }
 

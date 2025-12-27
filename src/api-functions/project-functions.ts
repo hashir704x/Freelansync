@@ -8,7 +8,19 @@ import type {
 } from "@/Types";
 import { errorMessageMaker } from "./error-message-maker";
 
-export async function createProject(params: CreateProjectParamsType): Promise<string> {
+export async function createProject(
+    params: CreateProjectParamsType
+): Promise<{ id: string; newWalletAmount: number }> {
+    const { error: walletError, data: walletData } = await supabaseClient
+        .from("clients")
+        .select("wallet_amount")
+        .eq("id", params.clientId)
+        .single();
+    if (walletError) {
+        console.error(walletError.message);
+        throw new Error(errorMessageMaker(walletError.message));
+    }
+
     const { data, error } = await supabaseClient
         .from("projects")
         .insert([
@@ -21,14 +33,27 @@ export async function createProject(params: CreateProjectParamsType): Promise<st
                 budget: params.budget,
             },
         ])
-        .select("id")
+        .select("id, budget")
         .single();
     if (error) {
         console.error(error.message);
         throw new Error(errorMessageMaker(error.message));
     }
 
-    return data.id;
+    const newWalletAmount = walletData.wallet_amount - data.budget;
+
+    const { error: updateError, data: updateData } = await supabaseClient
+        .from("clients")
+        .update({ wallet_amount: newWalletAmount })
+        .eq("id", params.clientId)
+        .select("wallet_amount")
+        .single();
+    if (updateError) {
+        console.error(updateError.message);
+        throw new Error(errorMessageMaker(updateError.message));
+    }
+
+    return { id: data.id, newWalletAmount: updateData.wallet_amount };
 }
 
 export async function getAllProjectsForClient(
@@ -141,4 +166,3 @@ export async function getMessagesForProject({
 
     return data;
 }
-

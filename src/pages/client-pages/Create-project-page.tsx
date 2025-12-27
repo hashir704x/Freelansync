@@ -16,6 +16,7 @@ const CreateProjectPage = () => {
 
     // zustand states
     const user = userStore((state) => state.user) as UserType;
+    const setWalletAmount = userStore((state) => state.setWalletAmount);
 
     // local states
     const [title, setTitle] = useState("");
@@ -26,8 +27,9 @@ const CreateProjectPage = () => {
 
     const { isPending, mutate } = useMutation({
         mutationFn: createProject,
-        onSuccess(projectId) {
-            navigate(`/client/project-details/${projectId}`);
+        onSuccess(data) {
+            navigate(`/client/project-details/${data.id}`);
+            setWalletAmount(data.newWalletAmount);
             queryClient.invalidateQueries({
                 queryKey: ["get-all-projects-for-client"],
             });
@@ -51,6 +53,11 @@ const CreateProjectPage = () => {
 
         if (budget < 5000) {
             toast.warning("Budget must be min Rs 5000");
+            return;
+        }
+
+        if (budget > user.wallet_amount) {
+            toast.warning("You do not have enough funds for this project!");
             return;
         }
 

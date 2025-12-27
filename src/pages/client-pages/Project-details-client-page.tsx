@@ -155,6 +155,7 @@ const ProjectDetialsClientPage = () => {
                             user={user}
                             projectId={projectId as string}
                             projectTitle={data.title}
+                            projectBudget={data.budget}
                         />
                     )}
                 </div>

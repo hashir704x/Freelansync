@@ -14,6 +14,7 @@ export type UserStoreType = {
     resetUser: () => void;
     activeChat: ChatFromBackendType | null;
     setActiveChat: (chat: ChatFromBackendType | null) => void;
+    setWalletAmount: (amount: number) => void;
 };
 
 export type SignupParamsType = {

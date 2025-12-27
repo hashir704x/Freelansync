@@ -15,7 +15,6 @@ const DashboardUserCard = ({ user }: { user: UserType }) => {
             {/* User Info */}
             <div className="mt-6 text-center space-y-1">
                 <h2 className="text-xl font-semibold tracking-wide">{user.username}</h2>
-
                 <p className="text-sm text-white/80">{user.email}</p>
             </div>
 
@@ -28,7 +27,9 @@ const DashboardUserCard = ({ user }: { user: UserType }) => {
                     Wallet Balance
                 </span>
 
-                <span className="text-2xl font-bold mb-4">${user.wallet_amount}</span>
+                <span className="text-2xl font-bold mb-4">
+                    Rs. {user.wallet_amount.toLocaleString("en-US")}
+                </span>
             </div>
         </div>
     );

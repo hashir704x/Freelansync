@@ -32,6 +32,7 @@ type PropsType = {
     clientUsername: string;
     projectId: string;
     projectTitle: string;
+    projectBudget: number;
 };
 
 const CreateMilestoneDialog = (props: PropsType) => {
@@ -50,6 +51,10 @@ const CreateMilestoneDialog = (props: PropsType) => {
             setDescription("");
             setFreelancerId("");
             setTitle("");
+
+            queryClient.invalidateQueries({
+                queryKey: ["get-project-details", props.projectId],
+            });
             queryClient.invalidateQueries({
                 queryKey: ["get-all-milestones-for-project", props.projectId],
             });
@@ -72,6 +77,11 @@ const CreateMilestoneDialog = (props: PropsType) => {
             return;
         }
 
+        if (amount > props.projectBudget) {
+            toast.error("Project budget is not enough for this milestone!");
+            return;
+        }
+
         mutate({
             title: title,
             amount: amount,
@@ -81,6 +91,7 @@ const CreateMilestoneDialog = (props: PropsType) => {
             projectId: props.projectId,
             clientUsername: props.clientUsername,
             projectTitle: props.projectTitle,
+            projectBudget: props.projectBudget,
         });
     }
 

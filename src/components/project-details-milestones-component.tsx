@@ -13,6 +13,7 @@ type PropsType = {
     user: UserType;
     projectId: string;
     projectTitle: string;
+    projectBudget: number;
 };
 
 const ProjectDetialsMilestonesComponent = (props: PropsType) => {
@@ -34,6 +35,7 @@ const ProjectDetialsMilestonesComponent = (props: PropsType) => {
                         freelancersData={props.freelancersData}
                         projectId={props.projectId}
                         projectTitle={props.projectTitle}
+                        projectBudget={props.projectBudget}
                     />
                 )}
             </div>
