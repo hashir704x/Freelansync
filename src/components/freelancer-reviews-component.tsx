@@ -18,7 +18,7 @@ const FreelancerReviewsComponent = ({ freelancerId }: { freelancerId: string }) 
 
     return (
         <div className="w-full">
-            <h2 className="text-xl font-semibold text-(--my-blue)">Reviews</h2>
+            <h2 className="text-xl font-semibold text-(--my-blue)">Freelancer Reviews</h2>
 
             {isLoading && (
                 <div className="flex justify-center mt-10">
@@ -39,16 +39,16 @@ const FreelancerReviewsComponent = ({ freelancerId }: { freelancerId: string }) 
             )}
 
             {data && data.length >= 1 && (
-                <div className="py-10">
+                <div className="py-4">
                     <Carousel
-                        opts={{ loop: true, align: "start" }}
-                        className="relative mt-6"
+                        opts={{ loop: false, align: "start" }}
+                        className="relative"
                     >
                         <CarouselContent className="p-2">
                             {data.map((item) => (
                                 <CarouselItem
                                     key={item.id}
-                                    className="basis-full sm:basis-1/2 lg:basis-1/3   p-4"
+                                    className="basis-full sm:basis-1/2 lg:basis-1/3 p-4"
                                 >
                                     <div className="h-full w-full p-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-xl flex flex-col justify-between">
                                         <p className="mt-4 text-sm sm:text-base leading-relaxed">
@@ -67,7 +67,7 @@ const FreelancerReviewsComponent = ({ freelancerId }: { freelancerId: string }) 
                                             )}
                                         </div>
 
-                                        <div className="flex justify-between items-center mt-6">
+                                        <div className="flex justify-between items-center mt-2">
                                             <div className="text-sm">
                                                 <p className="font-semibold">
                                                     {item.client.username}

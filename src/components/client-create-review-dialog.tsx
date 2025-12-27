@@ -38,9 +38,9 @@ const ClientCreateReviewDialog = (props: PropsType) => {
             props.setOpenCreateReviewDialog(false);
             setComment("");
             setStarsCount(1);
-            // queryClient.invalidateQueries({
-            //     queryKey: []
-            // })
+            queryClient.invalidateQueries({
+                queryKey: ["get-freelancer-reviews", props.freelancerId],
+            });
         },
         onError(error) {
             toast.error(`Failed to create review: ${error.message}`);
