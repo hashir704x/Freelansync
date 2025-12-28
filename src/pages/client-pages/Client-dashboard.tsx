@@ -35,7 +35,7 @@ const ClientDashboard = () => {
                 </div>
             )}
             {data && (
-                <div className="max-w-6xl mx-auto py-8 px-4 flex flex-col gap-8">
+                <div className="max-w-6xl mx-auto py-8 px-4 flex flex-col gap-8 pb-20">
                     <div className="flex gap-4 flex-col justify-center lg:justify-start lg:flex-row">
                         <ClientDashboardPieChart projectsData={data} />
                         <ClientDashboardBarChart projectsData={data} />

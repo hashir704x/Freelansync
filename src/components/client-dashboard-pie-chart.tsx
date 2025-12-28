@@ -57,9 +57,9 @@ export default function ClientDashboardPieChart({ projectsData }: Props) {
         });
 
         return [
-            { status: "DRAFT", projects: counts.DRAFT, fill: "var(--chart-1)" },
-            { status: "ACTIVE", projects: counts.ACTIVE, fill: "var(--my-blue)" },
-            { status: "COMPLETED", projects: counts.COMPLETED, fill: "var(--chart-3)" },
+            { status: "DRAFT", projects: counts.DRAFT, fill: "var(--chart-3)" },
+            { status: "ACTIVE", projects: counts.ACTIVE, fill: "var(--chart-1)" },
+            { status: "COMPLETED", projects: counts.COMPLETED, fill: "var(--chart-2)" },
             { status: "DISPUTED", projects: counts.DISPUTED, fill: "var(--chart-4)" },
         ];
     }, [projectsData]);

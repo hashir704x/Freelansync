@@ -167,3 +167,31 @@ export async function getMessagesForProject({
 
     return data;
 }
+
+export async function markProjectAsCompleted(params: {
+    projectId: string;
+}): Promise<boolean> {
+    const { data, error } = await supabaseClient
+        .from("milestones")
+        .select("status")
+        .eq("project", params.projectId);
+    if (error) {
+        console.error(error.message);
+        throw new Error(error.message);
+    }
+
+    const anyNonCompleted = data.some((item) => item.status !== "COMPLETED");
+    if (anyNonCompleted) {
+        return false;
+    }
+
+    const { error: updateError } = await supabaseClient
+        .from("projects")
+        .update({ status: "COMPLETED" })
+        .eq("id", params.projectId);
+    if (updateError) {
+        console.error(updateError.message);
+        throw new Error(updateError.message);
+    }
+    return true;
+}

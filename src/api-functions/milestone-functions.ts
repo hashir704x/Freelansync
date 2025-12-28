@@ -50,7 +50,7 @@ export async function createMilestone({
     const updatedBudget = projectBudget - data.amount;
     const { error: updateError } = await supabaseClient
         .from("projects")
-        .update({ budget: updatedBudget })
+        .update({ budget: updatedBudget, status: "ACTIVE" })
         .eq("id", projectId);
 
     if (updateError) {
@@ -132,13 +132,13 @@ export async function updateMilestoneStatus({
         const { error: updateError } = await supabaseClient
             .from("freelancers")
             .update({ wallet_amount: updatedWalletAmount })
-            .eq("id", freelancerId);    
+            .eq("id", freelancerId);
         if (updateError) {
             console.error(updateError.message);
             throw new Error(errorMessageMaker(updateError.message));
         }
     }
-    
+
     const { error } = await supabaseClient
         .from("milestones")
         .update({ status: status })

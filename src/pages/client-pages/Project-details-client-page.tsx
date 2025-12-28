@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MessageCircleMore } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import ClientProjectCompletionDialog from "@/components/client-project-completion-dialog";
 
 const ProjectDetialsClientPage = () => {
     const { projectId } = useParams();
@@ -24,6 +25,8 @@ const ProjectDetialsClientPage = () => {
         queryFn: () => getProjectDetailsById(projectId as string),
         queryKey: ["get-project-details", projectId],
     });
+
+    const [openCompleteProjectDialog, setOpenCompleteProjectDialog] = useState(false);
 
     return (
         <div>
@@ -70,15 +73,21 @@ const ProjectDetialsClientPage = () => {
                                 >
                                     Freelancers
                                 </button>
-                                <button
-                                    onClick={() => setActiveOption("add_freelancer")}
-                                    className={`${
-                                        activeOption === "add_freelancer" &&
-                                        "bg-(--my-blue) text-white"
-                                    } w-full h-10 rounded cursor-pointer transition-all duration-200 px-2`}
-                                >
-                                    Add Freelancers
-                                </button>
+
+                                {data.status !== "COMPLETED" &&
+                                    data.status !== "DISPUTED" && (
+                                        <button
+                                            onClick={() =>
+                                                setActiveOption("add_freelancer")
+                                            }
+                                            className={`${
+                                                activeOption === "add_freelancer" &&
+                                                "bg-(--my-blue) text-white"
+                                            } w-full h-10 rounded cursor-pointer transition-all duration-200 px-2`}
+                                        >
+                                            Add Freelancers
+                                        </button>
+                                    )}
                                 <button
                                     onClick={() => setActiveOption("milestones")}
                                     className={`${
@@ -113,10 +122,12 @@ const ProjectDetialsClientPage = () => {
                             <span
                                 className={`text-sm font-semibold px-3 py-2 rounded-full ${
                                     data.status === "DRAFT"
-                                        ? "bg-yellow-100 text-yellow-800"
+                                        ? "bg-chart-3/40 text-yellow-700"
                                         : data.status === "ACTIVE"
-                                        ? "bg-blue-100 text-blue-800"
-                                        : "bg-green-100 text-green-800"
+                                        ? "bg-chart-1/20 text-blue-700"
+                                        : data.status === "COMPLETED"
+                                        ? "bg-chart-2/30 text-green-700"
+                                        : "bg-chart-4/30 text-red-700"
                                 }`}
                             >
                                 {data.status.replace("_", " ")}
@@ -131,7 +142,34 @@ const ProjectDetialsClientPage = () => {
                                     <MessageCircleMore /> Open Chat
                                 </Button>
                             </Link>
+
+                            {data.status !== "COMPLETED" &&
+                                data.status !== "DISPUTED" && (
+                                    <ClientProjectCompletionDialog
+                                        openCompleteProjectDialog={
+                                            openCompleteProjectDialog
+                                        }
+                                        setOpenCompleteProjectDialog={
+                                            setOpenCompleteProjectDialog
+                                        }
+                                        projectId={projectId as string}
+                                    />
+                                )}
                         </div>
+
+                        {data.status === "COMPLETED" && (
+                            <p className="mt-4 text-gray-700 font-medium">
+                                You cannot add freelancers or create new milestones in a
+                                completed project
+                            </p>
+                        )}
+
+                        {data.status === "DISPUTED" && (
+                            <p className="mt-4 text-gray-700 font-medium">
+                                You cannot add freelancers or create new milestones in a
+                                disputed project
+                            </p>
+                        )}
                     </div>
 
                     {activeOption === "info" && (
@@ -156,6 +194,7 @@ const ProjectDetialsClientPage = () => {
                             projectId={projectId as string}
                             projectTitle={data.title}
                             projectBudget={data.budget}
+                            projectStatus={data.status}
                         />
                     )}
                 </div>

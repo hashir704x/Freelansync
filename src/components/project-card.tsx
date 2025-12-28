@@ -22,10 +22,12 @@ const ProjectCard = ({ projectData }: { projectData: ProjectFromBackendType }) =
                 <span
                     className={`text-xs font-semibold px-2 py-1 rounded-full ${
                         projectData.status === "DRAFT"
-                            ? "bg-yellow-100 text-yellow-800"
+                            ? "bg-chart-3/40 text-yellow-700"
                             : projectData.status === "ACTIVE"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-green-100 text-green-800"
+                            ? "bg-chart-1/20 text-blue-700"
+                            : projectData.status === "COMPLETED"
+                            ? "bg-chart-2/30 text-green-700"
+                            : "bg-chart-4/30 text-red-700"
                     }`}
                 >
                     {projectData.status.replace("_", " ")}

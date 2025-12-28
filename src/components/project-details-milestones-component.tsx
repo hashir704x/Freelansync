@@ -14,6 +14,7 @@ type PropsType = {
     projectId: string;
     projectTitle: string;
     projectBudget: number;
+    projectStatus: string;
 };
 
 const ProjectDetialsMilestonesComponent = (props: PropsType) => {
@@ -28,16 +29,19 @@ const ProjectDetialsMilestonesComponent = (props: PropsType) => {
                 <h2 className="text-2xl font-semibold text-gray-900 mb-3">
                     Project Milestones
                 </h2>
-                {props.freelancersData && props.user.role === "client" && (
-                    <CreateMilestoneDialog
-                        clientUsername={props.user.username}
-                        clientId={props.user.id}
-                        freelancersData={props.freelancersData}
-                        projectId={props.projectId}
-                        projectTitle={props.projectTitle}
-                        projectBudget={props.projectBudget}
-                    />
-                )}
+                {props.freelancersData &&
+                    props.user.role === "client" &&
+                    props.projectStatus !== "COMPLETED" &&
+                    props.projectStatus !== "DISPUTED" && (
+                        <CreateMilestoneDialog
+                            clientUsername={props.user.username}
+                            clientId={props.user.id}
+                            freelancersData={props.freelancersData}
+                            projectId={props.projectId}
+                            projectTitle={props.projectTitle}
+                            projectBudget={props.projectBudget}
+                        />
+                    )}
             </div>
 
             {isLoading && (

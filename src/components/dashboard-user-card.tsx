@@ -10,7 +10,7 @@ const DashboardUserCard = ({ user }: { user: UserType }) => {
     });
 
     return (
-        <div className="flex-1 rounded-2xl bg-linear-to-br from-(--my-blue) to-blue-600  shadow-lg flex flex-col items-center text-white justify-center">
+        <div className="flex-1 rounded-2xl bg-(--my-blue) shadow-lg flex flex-col items-center text-white justify-center">
             {/* Avatar */}
             <div className="relative">
                 <img
