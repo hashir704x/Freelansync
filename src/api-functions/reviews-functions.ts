@@ -7,7 +7,23 @@ export async function createReview(params: {
     clientId: string;
     stars: number;
     comment: string;
-}): Promise<void> {
+}): Promise<string | undefined> {
+    const { count, error: countError } = await supabaseClient
+        .from("freelancer_reviews")
+        .select("*", { count: "exact", head: true })
+        .eq("client", params.clientId)
+        .eq("freelancer", params.freelancerId);
+    if (countError) {
+        console.error(countError.message);
+        throw new Error(errorMessageMaker(countError.message));
+    }
+
+    if (count && count >= 3) {
+        return "Max limit of review reached. You can only review a freelancer max 3 times";
+    }
+
+    console.log(count);
+
     const { error } = await supabaseClient.from("freelancer_reviews").insert([
         {
             client: params.clientId,

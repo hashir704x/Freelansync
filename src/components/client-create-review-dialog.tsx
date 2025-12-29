@@ -33,8 +33,12 @@ const ClientCreateReviewDialog = (props: PropsType) => {
 
     const { isPending, mutate } = useMutation({
         mutationFn: createReview,
-        onSuccess() {
-            toast.success("Review created successfully");
+        onSuccess(message) {
+            if (message) {
+                toast.warning(message);
+            } else {
+                toast.success("Review created successfully");
+            }
             props.setOpenCreateReviewDialog(false);
             setComment("");
             setStarsCount(1);

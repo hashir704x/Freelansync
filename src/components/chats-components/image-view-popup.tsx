@@ -15,7 +15,7 @@ const ImageViewPopup = ({
 }: PropsType) => {
     const handleClose = () => {
         setShowImageView(false);
-        setTimeout(() => setImageViewUrl(null), 300);
+        setImageViewUrl(null);
     };
 
     // const handleDownload = async () => {

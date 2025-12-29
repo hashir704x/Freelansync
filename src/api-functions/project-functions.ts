@@ -164,8 +164,77 @@ export async function getMessagesForProject({
         console.error(error.message);
         throw new Error();
     }
-
     return data;
+}
+
+export async function sendProjectChatMessage(params: {
+    projectId: string;
+    userId: string;
+    senderUsername: string;
+    messageText: string;
+}): Promise<void> {
+    const { error } = await supabaseClient.from("project_messages").insert([
+        {
+            project: params.projectId,
+            sender: params.userId,
+            sender_username: params.senderUsername,
+            message_text: params.messageText,
+        },
+    ]);
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
+    }
+}
+
+export async function uploadGroupChatMedia({
+    file,
+    senderId,
+    senderUsername,
+    projectId,
+}: {
+    file: File;
+    senderId: string;
+    senderUsername: string;
+    projectId: string;
+}): Promise<void> {
+    const fileName = `${Date.now()}_${senderId}_${file.name}`;
+    const { error } = await supabaseClient.storage
+        .from("freelansync-media")
+        .upload(`chat-media/${fileName}`, file, {
+            upsert: false,
+            cacheControl: "3600",
+            contentType: file.type,
+        });
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
+    }
+
+    const { data: fileData } = supabaseClient.storage
+        .from("freelansync-media")
+        .getPublicUrl(`chat-media/${fileName}`);
+    if (!fileData.publicUrl) {
+        console.error("Error! Failed to get file public url");
+        throw new Error(
+            errorMessageMaker("Failed to upload file, Failed to get public url")
+        );
+    }
+    const ext = file.name.split(".").pop()?.toLowerCase() || "file";
+
+    const { error: messageError } = await supabaseClient.from("project_messages").insert([
+        {
+            project: projectId,
+            sender: senderId,
+            sender_username: senderUsername,
+            message_text: fileData.publicUrl,
+            file_type: ext,
+        },
+    ]);
+    if (messageError) {
+        console.error(messageError.message);
+        throw new Error(errorMessageMaker(messageError.message));
+    }
 }
 
 export async function markProjectAsCompleted(params: {
@@ -191,7 +260,7 @@ export async function markProjectAsCompleted(params: {
         .eq("id", params.projectId);
     if (updateError) {
         console.error(updateError.message);
-        throw new Error(updateError.message);
+        throw new Error(errorMessageMaker(updateError.message));
     }
     return true;
 }

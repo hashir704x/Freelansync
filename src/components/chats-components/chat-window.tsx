@@ -29,6 +29,7 @@ const ChatWindow = ({
     const [sendingMessageLoading, setSendingMessageLoading] = useState(false);
     const [openShareFileDialog, setOpenShareFileDialog] = useState(false);
     const [targetFile, setTargetFile] = useState<null | File>(null);
+    
     const [showImageView, setShowImageView] = useState(false);
     const [imageViewUrl, setImageViewUrl] = useState<null | string>(null);
 
@@ -162,8 +163,9 @@ const ChatWindow = ({
                                 key={item.id}
                                 className={`flex ${
                                     isSentByCurrentUser ? "justify-end" : "justify-start"
-                                } mb-5`}
+                                } mb-4`}
                             >
+
                                 {item.file_type ? (
                                     <div>
                                         {item.file_type.match(/(jpg|jpeg|png|webp)$/i) ? (

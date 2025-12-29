@@ -69,7 +69,8 @@ export default function FreelancerSidebar() {
     const { data } = useQuery({
         queryFn: () => getAllChatsForUser({ userRole: "freelancer" }),
         queryKey: ["get-all-chats-for-user"],
-        refetchInterval: 5 * 60 * 1000,
+        refetchInterval: 2 * 60 * 1000,
+
         refetchIntervalInBackground: true,
     });
 

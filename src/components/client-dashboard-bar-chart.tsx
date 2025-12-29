@@ -1,5 +1,3 @@
-"use client";
-
 import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
@@ -35,7 +33,6 @@ type Props = {
 // Map projects to new budget ranges
 function mapProjectsToBudgetRanges(projects: ProjectFromBackendType[]) {
     const bins: Record<string, number> = {
-        "0-5k": 0,
         "5k-20k": 0,
         "20k-50k": 0,
         "50k-100k": 0,
@@ -44,8 +41,8 @@ function mapProjectsToBudgetRanges(projects: ProjectFromBackendType[]) {
 
     projects.forEach((p) => {
         const budget = p.budget;
-        if (budget <= 5000) bins["0-5k"]++;
-        else if (budget <= 20000) bins["5k-20k"]++;
+
+        if (budget <= 20000) bins["5k-20k"]++;
         else if (budget <= 50000) bins["20k-50k"]++;
         else if (budget <= 100000) bins["50k-100k"]++;
         else bins["100k+"]++;

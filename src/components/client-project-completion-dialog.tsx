@@ -73,7 +73,7 @@ const ClientProjectCompletionDialog = ({
                         variant="custom"
                         className="bg-(--my-blue) hover:bg-(--my-blue-light) cursor-pointer"
                     >
-                        {isPending && <Spinner />} Create
+                        {isPending && <Spinner />} Confirm
                     </Button>
                 </AlertDialogFooter>
             </AlertDialogContent>
