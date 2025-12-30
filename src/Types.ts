@@ -241,7 +241,7 @@ export type MilestoneDetailesFromBackendType = {
         id: string;
         title: string;
         description: string;
-        budget: string;
+        original_budget: string;
         domains: string[];
         status: "DRAFT";
     };

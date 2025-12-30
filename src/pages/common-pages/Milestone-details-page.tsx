@@ -11,6 +11,7 @@ import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import SubmitMilestoneDialog from "@/components/submit-milestone-dialog";
 import DeleteMilestoneSubmissionDialog from "@/components/delete-milestone-submission-dialog";
+import ClientDeleteMilestoneDialog from "@/components/client-delete-milestone-dialog";
 
 const MilestoneDetailsPage = () => {
     const user = userStore((state) => state.user) as UserType;
@@ -59,48 +60,82 @@ const MilestoneDetailsPage = () => {
                 </div>
             )}
 
-            {data && (
+            {!isError && data && (
                 <div className="max-w-6xl mx-auto px-6 py-8 space-y-10">
-                    {/* Milestone Header */}
-                    <div className="mb-8">
-                        <h1 className="text-3xl font-semibold text-gray-900 mb-3">
-                            {data.title}
-                        </h1>
-                        <p className="text-gray-700 leading-relaxed mb-3">
-                            {data.description ||
-                                "No description provided for this milestone."}
-                        </p>
-                        <div className="flex flex-wrap gap-6 text-sm items-center">
-                            <span className="px-4 py-1.5 font-medium text-white bg-(--my-blue) rounded-full shadow">
-                                💰 Rs {data.amount.toLocaleString()}
+                    <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+                        {/* Header */}
+                        <div className="mb-4">
+                            <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+                                {data.title}
+                            </h1>
+                            <p className="mt-2 text-gray-600 leading-relaxed text-sm">
+                                {data.description ||
+                                    "No description provided for this milestone."}
+                            </p>
+                        </div>
+
+                        {/* Meta Info */}
+                        <div className="flex flex-wrap items-center gap-3 text-sm mb-4">
+                            <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 font-medium text-(--my-blue)">
+                                <span className="text-base">💰</span>
+                                Rs {data.amount.toLocaleString()}
                             </span>
-                            <span className="px-4 py-1.5 font-medium text-white bg-(--my-blue) rounded-full shadow">
-                                📅 {new Date(data.created_at).toLocaleDateString()}
+
+                            <span className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-4 py-1.5 font-medium text-gray-700">
+                                <span className="text-base">📅</span>
+                                {new Date(data.created_at).toLocaleDateString()}
                             </span>
+
                             <span
-                                className={`px-4 py-1.5 font-medium rounded-full ${
-                                    data.status === "LOCKED"
-                                        ? "bg-red-100 text-red-700"
-                                        : data.status === "IN_PROGRESS"
-                                        ? "bg-blue-100 text-blue-700"
-                                        : data.status === "SUBMITTED"
-                                        ? "bg-green-100 text-green-700"
-                                        : "bg-gray-200 text-gray-700"
-                                }`}
+                                className={`inline-flex items-center rounded-full px-4 py-1.5 font-semibold tracking-wide
+                ${
+                    data.status === "LOCKED"
+                        ? "bg-red-50 text-red-700 ring-1 ring-red-200"
+                        : data.status === "IN_PROGRESS"
+                        ? "bg-blue-50 text-blue-700 ring-1 ring-blue-200"
+                        : data.status === "SUBMITTED"
+                        ? "bg-green-50 text-green-700 ring-1 ring-green-200"
+                        : "bg-gray-100 text-gray-700 ring-1 ring-gray-300"
+                }
+            `}
                             >
                                 {data.status.replace("_", " ")}
                             </span>
                         </div>
+
+                        {/* Actions */}
                         {user.role === "client" &&
                             user.id === data.client.id &&
                             data.status !== "COMPLETED" && (
-                                <UpadateMilestoneStatusDialog
-                                    milestoneStatus={data.status}
-                                    milestoneId={milestoneId as string}
-                                    projectId={data.project.id}
-                                    freelancerId={data.freelancer.id}
-                                    milestoneAmount={data.amount}
-                                />
+                                <div className="flex flex-wrap items-center gap-3 border-t border-gray-100 ">
+                                    {data.status === "LOCKED" && (
+                                        <UpadateMilestoneStatusDialog
+                                            requiredStatus="IN_PROGRESS"
+                                            milestoneId={milestoneId as string}
+                                            projectId={data.project.id}
+                                            freelancerId={data.freelancer.id}
+                                            milestoneAmount={data.amount}
+                                        />
+                                    )}
+
+                                    {data.status === "SUBMITTED" && (
+                                        <UpadateMilestoneStatusDialog
+                                            requiredStatus="COMPLETED"
+                                            milestoneId={milestoneId as string}
+                                            projectId={data.project.id}
+                                            freelancerId={data.freelancer.id}
+                                            milestoneAmount={data.amount}
+                                        />
+                                    )}
+
+                                    {data.status === "LOCKED" && (
+                                        <ClientDeleteMilestoneDialog
+                                            milestoneId={data.id}
+                                            projectId={data.project.id}
+                                            milestoneAmount={data.amount}
+                                        />
+                                    )}
+                                </div>
                             )}
                     </div>
 
@@ -117,7 +152,7 @@ const MilestoneDetailsPage = () => {
                             </span>
                         </h3>
 
-                        <p className="text-gray-700 leading-relaxed mb-4">
+                        <p className="text-gray-700 leading-relaxed mb-4 text-sm">
                             {data.project.description ||
                                 "No description provided for this project."}
                         </p>
@@ -125,7 +160,7 @@ const MilestoneDetailsPage = () => {
                         <div className="flex flex-wrap gap-3">
                             <span className="px-4 py-1.5 text-sm bg-(--my-blue-light)/20 text-(--my-blue) font-medium rounded-full border border-(--my-blue-light)">
                                 Project Budget: Rs{" "}
-                                {Number(data.project.budget).toLocaleString()}
+                                {Number(data.project.original_budget).toLocaleString()}
                             </span>
                             <span className="px-4 py-1.5 text-sm bg-gray-100 text-gray-800 font-medium rounded-full border border-gray-200">
                                 Status: {data.project.status}

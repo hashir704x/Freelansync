@@ -3,7 +3,6 @@ import { errorMessageMaker } from "./error-message-maker";
 import type {
     MilestoneDetailesFromBackendType,
     MilestonesFromBackendType,
-    MilestoneStatusType,
 } from "@/Types";
 
 export async function createMilestone({
@@ -95,7 +94,7 @@ export async function getMilestoneDetailsById(
     const { data, error } = await supabaseClient
         .from("milestones")
         .select(
-            "*, freelancer(id, username, profile_pic, domains, email), client(id, username, email, profile_pic), project(id, title, description, budget, domains, status)"
+            "*, freelancer(id, username, profile_pic, domains, email), client(id, username, email, profile_pic), project(id, title, description, original_budget, domains, status)"
         )
         .eq("id", milestoneId)
         .single();
@@ -108,16 +107,16 @@ export async function getMilestoneDetailsById(
 
 export async function updateMilestoneStatus({
     milestoneId,
-    status,
     freelancerId,
     milestoneAmount,
+    requiredChoice,
 }: {
     milestoneId: string;
     milestoneAmount: number;
-    status: MilestoneStatusType;
     freelancerId: string;
+    requiredChoice: "IN_PROGRESS" | "COMPLETED";
 }): Promise<void> {
-    if (status === "COMPLETED") {
+    if (requiredChoice === "COMPLETED") {
         const { error, data } = await supabaseClient
             .from("freelancers")
             .select("wallet_amount")
@@ -137,15 +136,24 @@ export async function updateMilestoneStatus({
             console.error(updateError.message);
             throw new Error(errorMessageMaker(updateError.message));
         }
-    }
 
-    const { error } = await supabaseClient
-        .from("milestones")
-        .update({ status: status })
-        .eq("id", milestoneId);
-    if (error) {
-        console.error(error.message);
-        throw new Error(errorMessageMaker(error.message));
+        const { error: milestoneError } = await supabaseClient
+            .from("milestones")
+            .update({ status: "COMPLETED" })
+            .eq("id", milestoneId);
+        if (milestoneError) {
+            console.error(milestoneError.message);
+            throw new Error(errorMessageMaker(milestoneError.message));
+        }
+    } else {
+        const { error: milestoneError } = await supabaseClient
+            .from("milestones")
+            .update({ status: "IN_PROGRESS" })
+            .eq("id", milestoneId);
+        if (milestoneError) {
+            console.error(milestoneError.message);
+            throw new Error(errorMessageMaker(milestoneError.message));
+        }
     }
 }
 
@@ -267,4 +275,39 @@ export async function getRecentMilestonesForUser({
         throw new Error();
     }
     return data;
+}
+
+export async function deleteMilestone(params: {
+    milestoneId: string;
+    milestoneAmount: number;
+    projectId: string;
+}) {
+    const { data, error: projectError } = await supabaseClient
+        .from("projects")
+        .select("budget")
+        .eq("id", params.projectId)
+        .single();
+    if (projectError) {
+        console.error(projectError.message);
+        throw new Error(errorMessageMaker(projectError.message));
+    }
+
+    const newBudget = data.budget + params.milestoneAmount;
+    const { error: projectUpdateError } = await supabaseClient
+        .from("projects")
+        .update({ budget: newBudget })
+        .eq("id", params.projectId);
+    if (projectUpdateError) {
+        console.error(projectUpdateError.message);
+        throw new Error(errorMessageMaker(projectUpdateError.message));
+    }
+
+    const { error } = await supabaseClient
+        .from("milestones")
+        .delete()
+        .eq("id", params.milestoneId);
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
+    }
 }

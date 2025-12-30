@@ -5,9 +5,9 @@ import { User } from "lucide-react";
 type PropsType = {
     user: UserType;
     data: ProjectDetailsByIdFromBackendType;
-    activeState: "info" | "freelancers" | "milestones" | "add_freelancer";
-    projectId: string;
-    projectTitle: string;
+    activeState?: "info" | "freelancers" | "milestones" | "add_freelancer";
+    projectId?: string;
+    projectTitle?: string;
 };
 
 const ProjectDetailsFreelancersComponent = ({

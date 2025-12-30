@@ -94,7 +94,7 @@ const ProjectDetailsFreelancerPage = () => {
                             <span className="flex items-center gap-1">
                                 <span className="text-gray-400">💰</span>
                                 <span className="font-semibold text-gray-800">
-                                    Rs {data.budget.toLocaleString()}
+                                    Rs {data.original_budget.toLocaleString()}
                                 </span>
                             </span>
                             <span className="flex items-center gap-1">
@@ -118,7 +118,7 @@ const ProjectDetailsFreelancerPage = () => {
                     )}
 
                     {activeOption === "freelancers" && (
-                        <ProjectDetailsFreelancersComponent data={data} user={user} />
+                        <ProjectDetailsFreelancersComponent data={data} user={user}  />
                     )}
 
                     {activeOption === "milestones" && (

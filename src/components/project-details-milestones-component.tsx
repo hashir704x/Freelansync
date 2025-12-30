@@ -14,7 +14,7 @@ type PropsType = {
     projectId: string;
     projectTitle: string;
     projectBudget: number;
-    projectStatus: string;
+    projectStatus?: string;
 };
 
 const ProjectDetialsMilestonesComponent = (props: PropsType) => {
