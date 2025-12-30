@@ -40,7 +40,7 @@ function mapProjectsToBudgetRanges(projects: ProjectFromBackendType[]) {
     };
 
     projects.forEach((p) => {
-        const budget = p.budget;
+        const budget = p.original_budget;
 
         if (budget <= 20000) bins["5k-20k"]++;
         else if (budget <= 50000) bins["20k-50k"]++;

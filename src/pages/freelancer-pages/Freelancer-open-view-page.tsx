@@ -5,21 +5,18 @@ import type { UserType } from "@/Types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import InviteFreelancerIntoProjectSidebar from "@/components/invite-freelancer-into-project-sidebar";
-import { MessageCircleMore, UserStar } from "lucide-react";
+import { MessageCircleMore } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { checkChatExistance } from "@/api-functions/chats-functions";
 import { toast } from "sonner";
 import ClientCreateChatDialog from "@/components/chats-components/client-create-chat-dialog";
 import { useState } from "react";
-import ClientCreateReviewDialog from "@/components/client-create-review-dialog";
 import FreelancerReviewsComponent from "@/components/freelancer-reviews-component";
 
 const FreelancerOpenViewPage = () => {
     const navigate = useNavigate();
     const user = userStore((state) => state.user) as UserType;
     const [openCreateChatDialog, setOpenCreateChatDialog] = useState(false);
-    const [openCreateReviewDialog, setOpenCreateReviewDialog] = useState(false);
-
     const { freelancerId } = useParams();
     const { data, isError, isLoading } = useQuery({
         queryFn: () => getFreelancerDetails(freelancerId as string),
@@ -102,26 +99,6 @@ const FreelancerOpenViewPage = () => {
                                     freelancerId={data.id}
                                 />
                             </div>
-                            {user.role === "client" && (
-                                <div>
-                                    <Button
-                                        variant="custom"
-                                        onClick={() => setOpenCreateReviewDialog(true)}
-                                    >
-                                        <UserStar /> Give Review
-                                    </Button>
-
-                                    <ClientCreateReviewDialog
-                                        clientId={user.id}
-                                        freelancerId={data.id}
-                                        freelancerName={data.username}
-                                        openCreateReviewDialog={openCreateReviewDialog}
-                                        setOpenCreateReviewDialog={
-                                            setOpenCreateReviewDialog
-                                        }
-                                    />
-                                </div>
-                            )}
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

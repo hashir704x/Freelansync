@@ -33,6 +33,7 @@ export async function createProject(params: CreateProjectParamsType): Promise<st
                 skills: params.skills,
                 domains: params.domains,
                 budget: params.budget,
+                original_budget: params.budget,
             },
         ])
         .select("id, budget")
@@ -109,7 +110,15 @@ export async function recommendProjectsForInvitationForFreelancer({
 }: {
     clientId: string;
     freelancerId: string;
-}): Promise<{ id: string; title: string; domains: string[]; budget: number }[]> {
+}): Promise<
+    {
+        id: string;
+        title: string;
+        domains: string[];
+        budget: number;
+        original_budget: number;
+    }[]
+> {
     const { data: links, error: linkError } = await supabaseClient
         .from("project_and_freelancer_link")
         .select("project")
@@ -126,7 +135,7 @@ export async function recommendProjectsForInvitationForFreelancer({
     if (linkedProjectIds.length > 0) {
         const { data, error } = await supabaseClient
             .from("projects")
-            .select("id, title, domains, budget")
+            .select("id, title, domains, budget, original_budget")
             .eq("client", clientId)
             .not("id", "in", `(${linkedProjectIds.join(",")})`);
 
@@ -139,7 +148,7 @@ export async function recommendProjectsForInvitationForFreelancer({
     } else {
         const { data, error } = await supabaseClient
             .from("projects")
-            .select("id, title, domains, budget")
+            .select("id, title, domains, budget, original_budget")
             .eq("client", clientId);
 
         if (error) {

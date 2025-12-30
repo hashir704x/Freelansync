@@ -41,7 +41,7 @@ function mapProjectsToBudgetRanges(projects: AllProjectsForFreelancerFromBackend
     };
 
     projects.forEach((p) => {
-        const budget = p.project.budget;
+        const budget = p.project.original_budget;
         if (budget <= 5000) bins["0-5k"]++;
         else if (budget <= 20000) bins["5k-20k"]++;
         else if (budget <= 50000) bins["20k-50k"]++;

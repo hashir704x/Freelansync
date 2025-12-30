@@ -109,16 +109,7 @@ const ProjectDetialsClientPage = () => {
                                     year: "numeric",
                                 })}
                             </span>
-                            <span className="flex items-center gap-1">
-                                <span className="text-gray-400">💰</span>
-                                <span className="font-semibold text-gray-800">
-                                    Rs {data.budget.toLocaleString()}
-                                </span>
-                            </span>
-                            <span className="flex items-center gap-1">
-                                <span className="text-gray-400">🧠</span>
-                                {data.skills.length} skills required
-                            </span>
+
                             <span
                                 className={`text-sm font-semibold px-3 py-2 rounded-full ${
                                     data.status === "DRAFT"
@@ -157,6 +148,40 @@ const ProjectDetialsClientPage = () => {
                                 )}
                         </div>
 
+                        <div className="flex flex-col gap-2 rounded-2xl border py-4 px-6 shadow-sm mt-4">
+                            {/* Header */}
+                            <div>
+                                <p className="text-xs uppercase tracking-wider text-gray-400">
+                                    Project Budget
+                                </p>
+                            </div>
+
+                            {/* Numbers */}
+                            <div className="grid grid-cols-2 gap-4">
+                                {/* Original */}
+                                <div>
+                                    <p className="text-sm text-gray-500">Original</p>
+                                    <p className="mt-1 sm:text-xl font-medium text-gray-900">
+                                        Rs {data.original_budget.toLocaleString()}
+                                    </p>
+                                </div>
+
+                                {/* Available */}
+                                <div className="border-l pl-6">
+                                    <p className="text-sm text-gray-500">Available</p>
+                                    <p className="mt-1 sm:text-xl font-semibold text-(--my-blue)">
+                                        Rs {data.budget.toLocaleString()}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Context */}
+                            <p className="text-xs text-gray-400">
+                                Available funds decrease automatically as milestones are
+                                added.
+                            </p>
+                        </div>
+
                         {data.status === "COMPLETED" && (
                             <p className="mt-4 text-gray-700 font-medium">
                                 You cannot add freelancers or create new milestones in a
@@ -177,7 +202,13 @@ const ProjectDetialsClientPage = () => {
                     )}
 
                     {activeOption === "freelancers" && (
-                        <ProjectDetailsFreelancersComponent data={data} user={user} />
+                        <ProjectDetailsFreelancersComponent
+                            data={data}
+                            user={user}
+                            activeState={activeOption}
+                            projectId={projectId as string}
+                            projectTitle={data.title as string}
+                        />
                     )}
 
                     {activeOption === "add_freelancer" && (

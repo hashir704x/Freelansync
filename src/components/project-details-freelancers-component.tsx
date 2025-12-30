@@ -5,9 +5,18 @@ import { User } from "lucide-react";
 type PropsType = {
     user: UserType;
     data: ProjectDetailsByIdFromBackendType;
+    activeState: "info" | "freelancers" | "milestones" | "add_freelancer";
+    projectId: string;
+    projectTitle: string;
 };
 
-const ProjectDetailsFreelancersComponent = ({ data, user }: PropsType) => {
+const ProjectDetailsFreelancersComponent = ({
+    data,
+    user,
+    activeState,
+    projectId,
+    projectTitle,
+}: PropsType) => {
     return (
         <div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-3">
@@ -35,6 +44,9 @@ const ProjectDetailsFreelancersComponent = ({ data, user }: PropsType) => {
                                 showInviteButton={false}
                                 user={user}
                                 data={item.freelancer}
+                                activeState={activeState}
+                                projectId={projectId}
+                                projectTitle={projectTitle}
                             />
                         ))}
                     </div>

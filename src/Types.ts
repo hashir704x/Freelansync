@@ -83,6 +83,7 @@ export type ProjectFromBackendType = {
     clientId: string;
     status: "DRAFT" | "COMPLETED" | "DISPUTED" | "ACTIVE";
     created_at: string;
+    original_budget: number;
 };
 
 export type ProjectDetailsByIdFromBackendType = {
@@ -94,6 +95,7 @@ export type ProjectDetailsByIdFromBackendType = {
     skills: string[];
     status: "DRAFT" | "COMPLETED" | "DISPUTED" | "ACTIVE";
     budget: number;
+    original_budget: number;
 
     client: {
         id: string;

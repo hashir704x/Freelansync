@@ -2,19 +2,25 @@ import type { FreelancerFromBackendType, UserType } from "@/Types";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import InviteFreelancerConfirmDialog from "./invite-freelancer-confirm-dialog";
+import ClientCreateReviewDialog from "./client-create-review-dialog";
+import { useState } from "react";
+import { UserStar } from "lucide-react";
 
 type PropsType = {
     data: FreelancerFromBackendType;
     showInviteButton: boolean;
     user: UserType;
+    activeState: "info" | "freelancers" | "milestones" | "add_freelancer" | undefined;
+    projectId?: string;
+    projectTitle?: string;
 };
 
 const FreelancerCard = (props: PropsType) => {
+    const [openCreateReviewDialog, setOpenCreateReviewDialog] = useState(false);
+
     return (
         <div
-            className={`bg-white rounded-2xl transition-all duration-300 border border-gray-200 p-4 flex flex-col w-[340px] justify-between shadow-[0_3px_10px_rgb(0,0,0,0.2)] hover:-translate-y-1 hover:shadow-lg ${
-                props.showInviteButton ? "h-[450px]" : "h-[420px]"
-            } `}
+            className={`bg-white rounded-2xl transition-all duration-300 border border-gray-200 p-4 flex flex-col w-[340px] justify-between shadow-[0_3px_10px_rgb(0,0,0,0.2)] hover:-translate-y-1 hover:shadow-lg h-[450px]`}
         >
             <div className="flex items-center gap-4">
                 <img
@@ -97,6 +103,31 @@ const FreelancerCard = (props: PropsType) => {
                     clientUsername={props.user.username}
                 />
             )}
+
+            {props.activeState &&
+                props.projectId &&
+                props.projectTitle &&
+                props.activeState === "freelancers" &&
+                props.user.role === "client" && (
+                    <div>
+                        <Button
+                            className="w-full mt-2"
+                            variant="custom"
+                            onClick={() => setOpenCreateReviewDialog(true)}
+                        >
+                            <UserStar /> Give Review
+                        </Button>
+                        <ClientCreateReviewDialog
+                            clientId={props.user.id}
+                            freelancerId={props.data.id}
+                            freelancerName={props.data.username}
+                            openCreateReviewDialog={openCreateReviewDialog}
+                            setOpenCreateReviewDialog={setOpenCreateReviewDialog}
+                            projectId={props.projectId}
+                            projectTitle={props.projectTitle}
+                        />
+                    </div>
+                )}
         </div>
     );
 };

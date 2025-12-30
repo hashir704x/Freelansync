@@ -7,29 +7,15 @@ export async function createReview(params: {
     clientId: string;
     stars: number;
     comment: string;
-}): Promise<string | undefined> {
-    const { count, error: countError } = await supabaseClient
-        .from("freelancer_reviews")
-        .select("*", { count: "exact", head: true })
-        .eq("client", params.clientId)
-        .eq("freelancer", params.freelancerId);
-    if (countError) {
-        console.error(countError.message);
-        throw new Error(errorMessageMaker(countError.message));
-    }
-
-    if (count && count >= 3) {
-        return "Max limit of review reached. You can only review a freelancer max 3 times";
-    }
-
-    console.log(count);
-
+    projectId: string;
+}): Promise<void> {
     const { error } = await supabaseClient.from("freelancer_reviews").insert([
         {
             client: params.clientId,
             freelancer: params.freelancerId,
             comment: params.comment,
             stars: params.stars,
+            project: params.projectId,
         },
     ]);
     if (error) {
@@ -52,4 +38,23 @@ export async function getAllReviewsForFreelancer(
     }
 
     return data as unknown as FreelancerReviewFromBackendType[];
+}
+
+export async function checkReviewExistance(params: {
+    freelancerId: string;
+    clientId: string;
+    projectId: string;
+}): Promise<false | { id: string; comment: string; stars: number }> {
+    const { data, error } = await supabaseClient
+        .from("freelancer_reviews")
+        .select("id, comment, stars")
+        .eq("freelancer", params.freelancerId)
+        .eq("client", params.clientId)
+        .eq("project", params.projectId);
+    if (error) {
+        console.error(error.message);
+        throw new Error();
+    }
+    if (data.length === 0) return false;
+    else return data[0];
 }

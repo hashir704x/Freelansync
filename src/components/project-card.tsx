@@ -17,7 +17,7 @@ const ProjectCard = ({ projectData }: { projectData: ProjectFromBackendType }) =
             {/* Budget & Status */}
             <div className="flex justify-between items-center mt-3">
                 <span className="text-gray-700 font-medium">
-                    💰 Rs {projectData.budget.toLocaleString()}
+                    💰 Rs {projectData.original_budget.toLocaleString()}
                 </span>
                 <span
                     className={`text-xs font-semibold px-2 py-1 rounded-full ${

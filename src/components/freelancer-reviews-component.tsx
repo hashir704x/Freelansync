@@ -51,7 +51,7 @@ const FreelancerReviewsComponent = ({ freelancerId }: { freelancerId: string }) 
                                     className="basis-full sm:basis-1/2 lg:basis-1/3 p-4"
                                 >
                                     <div className="h-full w-full p-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-xl flex flex-col justify-between">
-                                        <p className="mt-4 text-sm sm:text-base leading-relaxed">
+                                        <p className="mt-4 text-sm leading-relaxed">
                                             "{item.comment}"
                                         </p>
 
