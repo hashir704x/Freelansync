@@ -215,6 +215,8 @@ const ProjectDetialsClientPage = () => {
                         <ProjectDetailsAddFreelancersComponent
                             user={user}
                             projectId={projectId as string}
+                            activeState={activeOption}
+                            projectSkills={data.skills}
                         />
                     )}
 

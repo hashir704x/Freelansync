@@ -146,6 +146,38 @@ const UserNotificationsComponent = () => {
                                                         navigate(
                                                             `/client/project-details/${item.project_id}`
                                                         );
+                                                    } else if (
+                                                        item.type === "Dispute_Raised"
+                                                    ) {
+                                                        queryClient.invalidateQueries({
+                                                            queryKey: [
+                                                                "get-project-details",
+                                                                item.project_id,
+                                                            ],
+                                                        });
+
+                                                        queryClient.invalidateQueries({
+                                                            queryKey: [
+                                                                "get-all-milestones-for-project",
+                                                                item.project_id,
+                                                            ],
+                                                        });
+
+                                                        queryClient.invalidateQueries({
+                                                            queryKey: [
+                                                                "get-all-projects-for-client",
+                                                            ],
+                                                        });
+
+                                                        queryClient.invalidateQueries({
+                                                            queryKey: [
+                                                                "get-recent-milestones-for-user",
+                                                            ],
+                                                        });
+                                                        
+                                                        navigate(
+                                                            `/client/project-details/${item.project_id}`
+                                                        );
                                                     }
                                                 } else {
                                                     if (

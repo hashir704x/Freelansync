@@ -70,7 +70,6 @@ export default function FreelancerSidebar() {
         queryFn: () => getAllChatsForUser({ userRole: "freelancer" }),
         queryKey: ["get-all-chats-for-user"],
         refetchInterval: 2 * 60 * 1000,
-
         refetchIntervalInBackground: true,
     });
 

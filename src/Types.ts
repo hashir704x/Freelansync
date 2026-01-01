@@ -194,10 +194,16 @@ export type NotificationsFromBackendType = {
         | "Invitation_Rejected"
         | "Invitation_Recieved"
         | "Milestone_Assigned"
-        | "Milestone_Submitted";
+        | "Milestone_Submitted"
+        | "Dispute_Raised";
 };
 
-export type MilestoneStatusType = "LOCKED" | "IN_PROGRESS" | "COMPLETED" | "SUBMITTED";
+export type MilestoneStatusType =
+    | "LOCKED"
+    | "IN_PROGRESS"
+    | "COMPLETED"
+    | "SUBMITTED"
+    | "DISPUTED";
 
 export type MilestonesFromBackendType = {
     id: string;

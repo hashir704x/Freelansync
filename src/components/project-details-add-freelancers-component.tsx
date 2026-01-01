@@ -6,13 +6,18 @@ import { Spinner } from "./ui/spinner";
 import FreelancerCard from "./freelancer-card";
 import type { FreelancerFromBackendType, UserType } from "@/Types";
 import InvitedFreelancersSidebar from "./invited-freelancers-sidebar";
+import ClientAiMatchmakingComponent from "./client-ai-matchmaking-component";
 
 const ProjectDetailsAddFreelancersComponent = ({
     user,
     projectId,
+    activeState,
+    projectSkills,
 }: {
     user: UserType;
     projectId: string;
+    activeState: "info" | "freelancers" | "milestones" | "add_freelancer";
+    projectSkills: string[];
 }) => {
     const { data, isError, isLoading } = useQuery({
         queryFn: () => getFreelancersToRecommend(projectId),
@@ -97,10 +102,22 @@ const ProjectDetailsAddFreelancersComponent = ({
                                         data={item}
                                         showInviteButton={true}
                                         user={user}
+                                        activeState={activeState}
                                     />
                                 ))}
                             </div>
                         )}
+                    </div>
+                )}
+
+                {findBy === "ai_matchmaking" && (
+                    <div>
+                        <ClientAiMatchmakingComponent
+                            projectSkills={projectSkills}
+                            projectId={projectId}
+                            user={user}
+                            activeState={activeState}
+                        />
                     </div>
                 )}
             </div>

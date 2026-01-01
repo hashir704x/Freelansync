@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import SubmitMilestoneDialog from "@/components/submit-milestone-dialog";
 import DeleteMilestoneSubmissionDialog from "@/components/delete-milestone-submission-dialog";
 import ClientDeleteMilestoneDialog from "@/components/client-delete-milestone-dialog";
+import FreelancerRaiseDisputeDialog from "@/components/freelancer-raise-dispute-dialog";
+import FreelancerDeleteDisputeDialog from "@/components/freelancer-delete-dispute-dialog";
 
 const MilestoneDetailsPage = () => {
     const user = userStore((state) => state.user) as UserType;
@@ -90,17 +92,45 @@ const MilestoneDetailsPage = () => {
                                 className={`inline-flex items-center rounded-full px-4 py-1.5 font-semibold tracking-wide
                 ${
                     data.status === "LOCKED"
-                        ? "bg-red-50 text-red-700 ring-1 ring-red-200"
+                        ? "bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200"
                         : data.status === "IN_PROGRESS"
                         ? "bg-blue-50 text-blue-700 ring-1 ring-blue-200"
                         : data.status === "SUBMITTED"
                         ? "bg-green-50 text-green-700 ring-1 ring-green-200"
+                        : data.status === "DISPUTED"
+                        ? "bg-red-50 text-red-700 ring-1 ring-red-200"
                         : "bg-gray-100 text-gray-700 ring-1 ring-gray-300"
                 }
             `}
                             >
                                 {data.status.replace("_", " ")}
                             </span>
+
+                            {user.role === "freelancer" &&
+                                user.id === data.freelancer.id &&
+                                data.status === "SUBMITTED" && (
+                                    <div>
+                                        <FreelancerRaiseDisputeDialog
+                                            clientId={data.client.id}
+                                            freelancerId={data.freelancer.id}
+                                            projectId={data.project.id}
+                                            milestoneId={data.id}
+                                            freelancerUsername={data.freelancer.username}
+                                            projectTitle={data.project.title}
+                                        />
+                                    </div>
+                                )}
+
+                            {user.role === "freelancer" &&
+                                user.id === data.freelancer.id &&
+                                data.status === "DISPUTED" && (
+                                    <div>
+                                        <FreelancerDeleteDisputeDialog
+                                            milestoneId={data.id}
+                                            projectId={data.project.id}
+                                        />
+                                    </div>
+                                )}
                         </div>
 
                         {/* Actions */}
@@ -323,7 +353,8 @@ const MilestoneDetailsPage = () => {
                             )}
 
                             {(data.status === "SUBMITTED" ||
-                                data.status === "COMPLETED") && (
+                                data.status === "COMPLETED" ||
+                                data.status === "DISPUTED") && (
                                 <div className="bg-white rounded-lg border border-gray-100 p-6 space-y-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                                     <div className="flex justify-between items-center flex-wrap gap-3">
                                         <h2 className="text-xl font-semibold text-gray-900">
@@ -395,7 +426,8 @@ const MilestoneDetailsPage = () => {
                             )}
 
                             {(data.status === "SUBMITTED" ||
-                                data.status === "COMPLETED") && (
+                                data.status === "COMPLETED" ||
+                                data.status === "DISPUTED") && (
                                 <div className="bg-white rounded-lg border border-gray-100 p-6 space-y-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                                     <h2 className="text-xl font-semibold text-gray-900">
                                         Milestone Submission

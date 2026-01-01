@@ -1,6 +1,6 @@
 import type { InvitationsForFreelancerFromBackendType } from "@/Types";
 import { CalendarDays, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 import FreelancerConfirmInvitationDialog from "./freelancer-confirm-invitation-dialog";
 
 const FreelancerInvitationCard = ({
@@ -56,7 +56,7 @@ const FreelancerInvitationCard = ({
 
                 <div>
                     <Link
-                        to={"#"}
+                        to={`/freelancer/client-details/${invitationData.client.id}`}
                         className="text-gray-800 font-medium flex items-center justify-center md:justify-end gap-2 text-sm sm:text-base hover:underline"
                     >
                         <User className="w-4 h-4 text-gray-500" />

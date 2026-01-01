@@ -138,3 +138,36 @@ export async function getFreelancerDetails(
     }
     return data;
 }
+
+export async function getAiMatchMakingFreelancersResults(params: {
+    skills: string[];
+    count: number;
+}) {
+    try {
+        const response = await fetch(
+            "https://freelancerrecommendation-production.up.railway.app/recommend",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ skills: params.skills, top_n: params.count }),
+            }
+        );
+        const apiData = await response.json();
+        const idsOnly = apiData.recommendations.map((item: { id: string }) => item.id);
+        const { data: freelancersData, error: freelancerError } = await supabaseClient
+            .from("freelancers")
+            .select(
+                "id, username, description, email, profile_pic, role, skills, domains, created_at"
+            )
+            .in("id", idsOnly);
+
+        if (freelancerError) throw new Error(freelancerError.message);
+
+        return freelancersData;
+    } catch (error) {
+        console.error(error);
+        throw new Error();
+    }
+}
