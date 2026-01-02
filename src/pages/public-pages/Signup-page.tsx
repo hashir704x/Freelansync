@@ -36,6 +36,7 @@ const SignupPage = () => {
     const [skills, setSkills] = useState<string[]>([]);
     const [domains, setDomains] = useState<string[]>([]);
     const [description, setDescription] = useState("");
+    const [experience, setExperience] = useState(0);
     const [role, setRole] = useState<"client" | "freelancer" | "">(() => {
         if (activeSearch === "client") return "client";
         else if (activeSearch === "freelancer") return "freelancer";
@@ -58,7 +59,7 @@ const SignupPage = () => {
                 email: data.email,
                 profile_pic: data.profile_pic,
                 role: data.role,
-                username: data.username
+                username: data.username,
             });
             navigate(`/${data.role}`);
         },
@@ -98,6 +99,7 @@ const SignupPage = () => {
             description: description,
             domains: domains,
             skills: skills,
+            experience: experience,
         });
     }
 
@@ -193,13 +195,29 @@ const SignupPage = () => {
 
                     {role && role === "freelancer" && (
                         <div className="flex flex-col gap-3">
+                            <div className="flex-1">
+                                <label htmlFor="email" className="text-sm">
+                                    Experience
+                                </label>
+                                <Input
+                                    type="number"
+                                    id="experience"
+                                    placeholder="Enter experience in years"
+                                    value={experience}
+                                    onChange={(e) =>
+                                        setExperience(Number(e.target.value))
+                                    }
+                                    className="text-sm"
+                                />
+                            </div>
+
                             <div>
                                 <label htmlFor="freelancer-desc" className="text-sm">
                                     Description
                                 </label>
                                 <textarea
                                     id="freelancer-desc"
-                                    rows={5}
+                                    rows={3}
                                     placeholder="Describe your work or profession"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}

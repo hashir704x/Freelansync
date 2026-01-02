@@ -23,6 +23,7 @@ export type SignupParamsType = {
     skills?: string[];
     domains?: string[];
     role: "freelancer" | "client";
+    experience?: number;
 };
 
 export type SignupResponseType = {

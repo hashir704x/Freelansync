@@ -49,6 +49,7 @@ export async function signup(params: SignupParamsType): Promise<SignupResponseTy
                     description: params.description,
                     domains: params.domains,
                     skills: params.skills,
+                    experience: params.experience,
                 },
             ])
             .select("id, email, username, role, profile_pic, wallet_amount")
