@@ -17,6 +17,7 @@ import CreateProjectPage from "./pages/client-pages/Create-project-page";
 import ProjectDetialsClientPage from "./pages/client-pages/Project-details-client-page";
 import ClientAllProjectsPage from "./pages/client-pages/Client-all-projects-page";
 import AllFreelancersClientPage from "./pages/client-pages/All-freelancers-client-page";
+import AddFundsPage from "./pages/client-pages/Add-funds-page";
 
 // freelancer pages
 import FreelancerDashboard from "./pages/freelancer-pages/Freelancer-dashboard";
@@ -86,7 +87,10 @@ const router = createBrowserRouter([
                 path: "project-chat/:projectId",
                 element: <ProjectChatPage />,
             },
-
+            {
+                path: "add-funds",
+                element: <AddFundsPage />,
+            },
         ],
     },
     {

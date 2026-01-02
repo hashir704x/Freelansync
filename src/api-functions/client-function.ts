@@ -100,3 +100,19 @@ export async function getUserWalletFunds({
     }
     return data;
 }
+
+export async function addFundsIntoClientWallet(params: {
+    userId: string;
+    walletAmount: number;
+    addedFunds: number;
+    clientId: string;
+}) {
+    const { error } = await supabaseClient
+        .from("clients")
+        .update({ wallet_amount: params.walletAmount + params.addedFunds })
+        .eq("id", params.clientId);
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
+    }
+}
