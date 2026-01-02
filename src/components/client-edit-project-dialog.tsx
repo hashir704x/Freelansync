@@ -1,42 +1,55 @@
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+    AlertDialogDescription
+} from "@/components/ui/alert-dialog";
 import { useState } from "react";
-import SkillsPicker from "@/components/skills-picker";
-import DomainPicker from "@/components/domain-picker";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
+import { Button } from "./ui/button";
+import { SquarePen } from "lucide-react";
+import type { ProjectDetailsByIdFromBackendType } from "@/Types";
+import DomainPicker from "./domain-picker";
+import SkillsPicker from "./skills-picker";
+import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createProject } from "@/api-functions/project-functions";
-import { userStore } from "@/stores/user-store";
-import type { UserType } from "@/Types";
-import { useNavigate } from "react-router-dom";
+import { updateProject } from "@/api-functions/project-functions";
 
-const CreateProjectPage = () => {
-    const navigate = useNavigate();
+const ClientEditProjectDialog = ({
+    projectData,
+}: {
+    projectData: ProjectDetailsByIdFromBackendType;
+}) => {
     const queryClient = useQueryClient();
+    const [open, setOpen] = useState(false);
 
-    // zustand states
-    const user = userStore((state) => state.user) as UserType;
+    const [title, setTitle] = useState(projectData.title);
+    const [description, setDescription] = useState(projectData.description);
+    const [skills, setSkills] = useState<string[]>(projectData.skills);
+    const [domains, setDomains] = useState<string[]>(projectData.domains);
 
-    // local states
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [budget, setBudget] = useState<number>(0);
-    const [skills, setSkills] = useState<string[]>([]);
-    const [domains, setDomains] = useState<string[]>([]);
-
-    const { isPending, mutate } = useMutation({
-        mutationFn: createProject,
-        onSuccess(id) {
-            navigate(`/client/project-details/${id}`);
+    const { mutate, isPending } = useMutation({
+        mutationFn: updateProject,
+        onSuccess() {
+            toast.success("Project updated successfully");
+            queryClient.invalidateQueries({
+                queryKey: ["get-project-details", projectData.id],
+            });
             queryClient.invalidateQueries({
                 queryKey: ["get-all-projects-for-client"],
             });
             queryClient.invalidateQueries({
-                queryKey: ["get-client-wallet-funds"],
+                queryKey: ["get-all-milestones-for-project", projectData.id],
             });
+
+            setOpen(false);
         },
         onError(error) {
-            toast.error(`Failed to create project, ${error.message}`);
+            toast.error(`Failed to edit project, ${error.message}`);
         },
     });
 
@@ -52,15 +65,9 @@ const CreateProjectPage = () => {
             return;
         }
 
-        if (budget < 5000) {
-            toast.warning("Budget must be min Rs 5000");
-            return;
-        }
-
         mutate({
+            id: projectData.id,
             title: title,
-            clientId: user.id,
-            budget: budget,
             description: description,
             domains: domains,
             skills: skills,
@@ -68,17 +75,26 @@ const CreateProjectPage = () => {
     }
 
     return (
-        <div>
-            <h1 className="text-2xl font-semibold h-[60px] border-b flex justify-center items-center shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
-                Create New Project
-            </h1>
+        <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogTrigger asChild>
+                <Button variant="custom">
+                    <SquarePen />
+                </Button>
+            </AlertDialogTrigger>
 
-            <div className="max-w-3xl mx-auto mt-4 rounded-md p-3">
-                <h1 className="text-2xl font-semibold text-(--my-blue)">
-                    Create your new project
-                </h1>
+            <AlertDialogContent className="p-4">
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Edit Project {projectData.title}</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        You can edit title, description, skills and domains linked to the
+                        project
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
 
-                <form onSubmit={handleSubmit} className="bg-white space-y-5 mt-2">
+                <form
+                    onSubmit={handleSubmit}
+                    className="bg-white space-y-3 mt-2 text-sm sm:text-base"
+                >
                     <div className="flex flex-col space-y-2">
                         <label htmlFor="title" className="font-medium text-gray-700">
                             Project Title
@@ -111,20 +127,6 @@ const CreateProjectPage = () => {
                     </div>
 
                     <div className="flex flex-col space-y-2">
-                        <label htmlFor="budget" className="font-medium text-gray-700">
-                            Estimated Budget (min Rs 5000)
-                        </label>
-                        <input
-                            id="budget"
-                            type="number"
-                            min={0}
-                            value={budget}
-                            onChange={(e) => setBudget(Number(e.target.value))}
-                            className="border border-gray-300 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-(--my-blue)"
-                        />
-                    </div>
-
-                    <div className="flex flex-col space-y-2">
                         <label className="font-medium text-gray-700">
                             Project Domains
                         </label>
@@ -138,14 +140,22 @@ const CreateProjectPage = () => {
                         <SkillsPicker value={skills} onChange={setSkills} />
                     </div>
 
-                    <Button disabled={isPending} variant="custom" type="submit">
-                        {isPending && <Spinner />}
-                        Create Project
-                    </Button>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+                        <Button
+                            disabled={isPending}
+                            variant="custom"
+                            type="submit"
+                            className="cursor-pointer"
+                        >
+                            {isPending && <Spinner />}
+                            Update Project
+                        </Button>
+                    </AlertDialogFooter>
                 </form>
-            </div>
-        </div>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 };
 
-export default CreateProjectPage;
+export default ClientEditProjectDialog;

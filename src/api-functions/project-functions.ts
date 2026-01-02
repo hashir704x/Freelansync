@@ -273,3 +273,62 @@ export async function markProjectAsCompleted(params: {
     }
     return true;
 }
+
+export async function updateProject(params: {
+    id: string;
+    title: string;
+    description: string;
+    skills: string[];
+    domains: string[];
+}) {
+    const { error } = await supabaseClient
+        .from("projects")
+        .update({
+            title: params.title,
+            description: params.description,
+            domains: params.domains,
+            skills: params.skills,
+        })
+        .eq("id", params.id);
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
+    }
+}
+
+export async function addFundsToProject({
+    projectId,
+    clientBalance,
+    addedFunds,
+    projectCurrentBudget,
+    projectOriginalBudget,
+    clientId,
+}: {
+    projectId: string;
+    addedFunds: number;
+    clientBalance: number;
+    projectOriginalBudget: number;
+    projectCurrentBudget: number;
+    clientId: string;
+}) {
+    const { error: projectUpdateError } = await supabaseClient
+        .from("projects")
+        .update({
+            original_budget: projectOriginalBudget + addedFunds,
+            budget: projectCurrentBudget + addedFunds,
+        })
+        .eq("id", projectId);
+    if (projectUpdateError) {
+        console.error(projectUpdateError.message);
+        throw new Error(errorMessageMaker(projectUpdateError.message));
+    }
+
+    const { error: clientUpdateError } = await supabaseClient
+        .from("clients")
+        .update({ wallet_amount: clientBalance - addedFunds })
+        .eq("id", clientId);
+    if (clientUpdateError) {
+        console.error(clientUpdateError.message);
+        throw new Error(errorMessageMaker(clientUpdateError.message));
+    }
+}

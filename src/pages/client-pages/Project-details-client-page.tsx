@@ -12,6 +12,8 @@ import { MessageCircleMore } from "lucide-react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ClientProjectCompletionDialog from "@/components/client-project-completion-dialog";
+import ClientEditProjectDialog from "@/components/client-edit-project-dialog";
+import ClientProjectAddFundsDialog from "@/components/client-project-add-funds-dialog";
 
 const ProjectDetialsClientPage = () => {
     const { projectId } = useParams();
@@ -124,6 +126,11 @@ const ProjectDetialsClientPage = () => {
                                 {data.status.replace("_", " ")}
                             </span>
 
+                            <span className="flex items-center gap-1">
+                                <span className="text-gray-400">🧠</span>
+                                {data.skills.length} skills required
+                            </span>
+
                             <Link
                                 to={`/${
                                     user.role === "client" ? "client" : "freelancer"
@@ -146,6 +153,19 @@ const ProjectDetialsClientPage = () => {
                                         projectId={projectId as string}
                                     />
                                 )}
+
+                            <div>
+                                <ClientEditProjectDialog projectData={data} />
+                            </div>
+
+                            <div>
+                                <ClientProjectAddFundsDialog
+                                    userId={user.id}
+                                    projectId={projectId as string}
+                                    projectCurrentBudget={data.budget}
+                                    projectOriginalBudget={data.original_budget}
+                                />
+                            </div>
                         </div>
 
                         <div className="flex flex-col gap-2 rounded-2xl border py-4 px-6 shadow-sm mt-4">

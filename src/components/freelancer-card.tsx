@@ -10,7 +10,7 @@ type PropsType = {
     data: FreelancerFromBackendType;
     showInviteButton: boolean;
     user: UserType;
-    activeState: "info" | "freelancers" | "milestones" | "add_freelancer" | undefined;
+    activeState?: "info" | "freelancers" | "milestones" | "add_freelancer" | undefined;
     projectId?: string;
     projectTitle?: string;
 };

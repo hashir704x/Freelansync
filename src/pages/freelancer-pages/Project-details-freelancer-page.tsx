@@ -91,6 +91,21 @@ const ProjectDetailsFreelancerPage = () => {
                                     year: "numeric",
                                 })}
                             </span>
+
+                            <span
+                                className={`text-sm font-semibold px-3 py-2 rounded-full ${
+                                    data.status === "DRAFT"
+                                        ? "bg-chart-3/40 text-yellow-700"
+                                        : data.status === "ACTIVE"
+                                        ? "bg-chart-1/20 text-blue-700"
+                                        : data.status === "COMPLETED"
+                                        ? "bg-chart-2/30 text-green-700"
+                                        : "bg-chart-4/30 text-red-700"
+                                }`}
+                            >
+                                {data.status.replace("_", " ")}
+                            </span>
+                            
                             <span className="flex items-center gap-1">
                                 <span className="text-gray-400">💰</span>
                                 <span className="font-semibold text-gray-800">
@@ -118,7 +133,7 @@ const ProjectDetailsFreelancerPage = () => {
                     )}
 
                     {activeOption === "freelancers" && (
-                        <ProjectDetailsFreelancersComponent data={data} user={user}  />
+                        <ProjectDetailsFreelancersComponent data={data} user={user} />
                     )}
 
                     {activeOption === "milestones" && (

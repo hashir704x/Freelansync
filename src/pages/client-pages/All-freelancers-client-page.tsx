@@ -18,7 +18,7 @@ const AllFreelancersClientPage = () => {
     const user = userStore((state) => state.user) as UserType;
 
     let filteredFreelancers: FreelancerFromBackendType[] = data || [];
-    
+
     const s = search.trim().toLocaleLowerCase();
     if (data && s !== "") {
         filteredFreelancers = data.filter(

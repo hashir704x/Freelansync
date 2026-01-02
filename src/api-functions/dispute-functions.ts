@@ -66,19 +66,11 @@ export async function deleteDispute(params: {
     const { error } = await supabaseClient
         .from("disputes")
         .delete()
-        .eq("project", params.projectId);
+        .eq("project", params.projectId)
+        .eq("milestone", params.milestoneId);
     if (error) {
         console.error(error.message);
         throw new Error(errorMessageMaker(error.message));
-    }
-
-    const { error: projectError } = await supabaseClient
-        .from("projects")
-        .update({ status: "ACTIVE" })
-        .eq("id", params.projectId);
-    if (projectError) {
-        console.error(projectError.message);
-        throw new Error(errorMessageMaker(projectError.message));
     }
 
     const { error: milestoneError } = await supabaseClient
@@ -88,5 +80,25 @@ export async function deleteDispute(params: {
     if (milestoneError) {
         console.error(milestoneError.message);
         throw new Error(errorMessageMaker(milestoneError.message));
+    }
+
+    const { count, error: disputeReadError } = await supabaseClient
+        .from("disputes")
+        .select("*", { count: "exact", head: true })
+        .eq("project", params.projectId);
+    if (disputeReadError) {
+        console.error(disputeReadError.message);
+        throw new Error(errorMessageMaker(disputeReadError.message));
+    }
+
+    if (count === 0) {
+        const { error: projectError } = await supabaseClient
+            .from("projects")
+            .update({ status: "ACTIVE" })
+            .eq("id", params.projectId);
+        if (projectError) {
+            console.error(projectError.message);
+            throw new Error(errorMessageMaker(projectError.message));
+        }
     }
 }
