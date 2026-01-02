@@ -75,7 +75,7 @@ export default function ClientSidebar() {
     const { data } = useQuery({
         queryFn: () => getAllChatsForUser({ userRole: "client" }),
         queryKey: ["get-all-chats-for-user"],
-        refetchInterval: 2 * 60 * 1000,
+        refetchInterval: 20 * 1000,
         refetchIntervalInBackground: true,
     });
 

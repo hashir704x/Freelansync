@@ -18,7 +18,7 @@ const ChatPage = () => {
     const { data, isLoading, isError } = useQuery({
         queryFn: () => getAllChatsForUser({ userRole: user.role }),
         queryKey: ["get-all-chats-for-user"],
-        refetchInterval: 2 * 60 * 1000,
+        refetchInterval: 20 * 1000,
         refetchIntervalInBackground: true,
     });
 

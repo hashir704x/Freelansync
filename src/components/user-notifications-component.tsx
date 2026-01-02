@@ -27,7 +27,7 @@ const UserNotificationsComponent = () => {
     const { data, isLoading } = useQuery({
         queryFn: () => getAllNotificationsForUser(user.id),
         queryKey: ["get-all-notifications-for-user"],
-        refetchInterval: 2 * 60 * 1000,
+        refetchInterval: 20 * 1000,
         refetchIntervalInBackground: true,
     });
 
@@ -174,7 +174,7 @@ const UserNotificationsComponent = () => {
                                                                 "get-recent-milestones-for-user",
                                                             ],
                                                         });
-                                                        
+
                                                         navigate(
                                                             `/client/project-details/${item.project_id}`
                                                         );
