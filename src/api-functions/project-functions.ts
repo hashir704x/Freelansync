@@ -332,3 +332,57 @@ export async function addFundsToProject({
         throw new Error(errorMessageMaker(clientUpdateError.message));
     }
 }
+
+export async function deleteProject({
+    projectId,
+    projectAmount,
+    clientId,
+}: {
+    projectId: string;
+    projectAmount: number;
+    clientId: string;
+}) {
+    const { data, error } = await supabaseClient
+        .from("projects")
+        .select("status")
+        .eq("id", projectId)
+        .single();
+    if (error) {
+        console.error(error.message);
+        throw new Error(errorMessageMaker(error.message));
+    }
+
+    if (data.status !== "DRAFT") {
+        throw new Error(
+            "Cannot delete project. For deletion project must be in DRAFT status"
+        );
+    }
+
+    const { error: clientWalletError, data: walletData } = await supabaseClient
+        .from("clients")
+        .select("wallet_amount")
+        .eq("id", clientId)
+        .single();
+    if (clientWalletError) {
+        console.error(clientWalletError.message);
+        throw new Error(errorMessageMaker(clientWalletError.message));
+    }
+
+    const { error: clientError } = await supabaseClient
+        .from("clients")
+        .update({ wallet_amount: walletData.wallet_amount + projectAmount })
+        .eq("id", clientId);
+    if (clientError) {
+        console.error(clientError.message);
+        throw new Error(errorMessageMaker(clientError.message));
+    }
+
+    const { error: deleteError } = await supabaseClient
+        .from("projects")
+        .delete()
+        .eq("id", projectId);
+    if (deleteError) {
+        console.error(deleteError.message);
+        throw new Error(errorMessageMaker(deleteError.message));
+    }
+}

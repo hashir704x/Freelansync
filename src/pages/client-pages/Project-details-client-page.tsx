@@ -14,6 +14,7 @@ import { Link, useParams } from "react-router-dom";
 import ClientProjectCompletionDialog from "@/components/client-project-completion-dialog";
 import ClientEditProjectDialog from "@/components/client-edit-project-dialog";
 import ClientProjectAddFundsDialog from "@/components/client-project-add-funds-dialog";
+import ClientDeleteProjectDialog from "@/components/client-delete-project-dialog";
 
 const ProjectDetialsClientPage = () => {
     const { projectId } = useParams();
@@ -166,6 +167,15 @@ const ProjectDetialsClientPage = () => {
                                     projectOriginalBudget={data.original_budget}
                                 />
                             </div>
+                            {data.status === "DRAFT" && (
+                                <div>
+                                    <ClientDeleteProjectDialog
+                                        clientId={user.id}
+                                        projectAmount={data.original_budget}
+                                        projectId={data.id}
+                                    />
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex flex-col gap-2 rounded-2xl border py-4 px-6 shadow-sm mt-4">
