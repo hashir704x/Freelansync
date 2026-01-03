@@ -44,6 +44,27 @@ const MilestoneDetailsPage = () => {
         setOpenDialog(true);
     }
 
+    const handleDownload = async (fileUrl: string) => {
+        try {
+            const res = await fetch(fileUrl);
+            if (!res.ok) throw new Error("Failed to fetch file");
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = fileUrl.split("/").pop() || "download";
+            document.body.appendChild(a);
+            a.click();
+
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error("File download failed:", err);
+        }
+    };
+
     return (
         <div>
             <h1 className="text-2xl font-semibold h-[60px] border-b flex justify-center items-center shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
@@ -391,7 +412,16 @@ const MilestoneDetailsPage = () => {
                                                 </span>
                                             </div>
                                             <div className="flex gap-2">
-                                                <Button variant="custom">Download</Button>
+                                                <Button
+                                                    variant="custom"
+                                                    onClick={() =>
+                                                        handleDownload(
+                                                            data.file as string
+                                                        )
+                                                    }
+                                                >
+                                                    Download
+                                                </Button>
                                             </div>
                                         </div>
                                     )}
@@ -452,7 +482,16 @@ const MilestoneDetailsPage = () => {
                                                 </span>
                                             </div>
                                             <div className="flex gap-2">
-                                                <Button variant="custom">Download</Button>
+                                                <Button
+                                                    variant="custom"
+                                                    onClick={() =>
+                                                        handleDownload(
+                                                            data.file as string
+                                                        )
+                                                    }
+                                                >
+                                                    Download
+                                                </Button>
                                             </div>
                                         </div>
                                     )}

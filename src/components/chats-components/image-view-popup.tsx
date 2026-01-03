@@ -18,23 +18,23 @@ const ImageViewPopup = ({
         setImageViewUrl(null);
     };
 
-    // const handleDownload = async () => {
-    //     try {
-    //         const res = await fetch(imageViewUrl);
-    //         const blob = await res.blob();
-    //         const url = window.URL.createObjectURL(blob);
-    //         const a = document.createElement("a");
-    //         a.href = url;
-    //         const fileName = imageViewUrl.split("/").pop() || "image.jpg";
-    //         a.download = fileName;
-    //         document.body.appendChild(a);
-    //         a.click();
-    //         a.remove();
-    //         window.URL.revokeObjectURL(url);
-    //     } catch (err) {
-    //         console.error("Image download failed:", err);
-    //     }
-    // };
+    const handleDownload = async () => {
+        try {
+            const res = await fetch(imageViewUrl);
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            const fileName = imageViewUrl.split("/").pop() || "image.jpg";
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error("Image download failed:", err);
+        }
+    };
 
     return (
         <div
@@ -63,7 +63,7 @@ const ImageViewPopup = ({
                 />
 
                 <button
-                    // onClick={handleDownload}
+                    onClick={handleDownload}
                     className="absolute inset-0 flex items-center justify-center"
                 >
                     <div className="bg-black/50 hover:bg-black/70 text-white p-4 rounded-full backdrop-blur-md transition transform hover:scale-110">
